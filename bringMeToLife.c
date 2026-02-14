@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 //This script is to remind myself how to 2D string arrays work
-
+//And I am not gonna optimize it so deal with it 
 
 int main(void)
 {
