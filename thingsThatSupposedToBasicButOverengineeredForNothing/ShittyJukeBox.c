@@ -1,10 +1,22 @@
+#ifdef _WIN32
+    #define WIN32_LEAN_AND_MEAN   // kills 90% of the bloat nobody uses
+    #include <windows.h>
+#else
+    #include <unistd.h>     // usleep, etc.
+    #include <signal.h>     // SIGINT
+#endif
+
+#ifdef _WIN32
+    #define usleep(us) Sleep((us) / 1000)
+#else
+    // usleep already there
+#endif
+
+#include <time.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <unistd.h>
-#include <signal.h>
-#include <time.h>
-#include <ctype.h>
 
 #define BOLD "\e[1m"
 #define FIX_FONT "\e[0m"
@@ -797,6 +809,19 @@ enum nightcoreSongList {
 };
 
 
+#ifdef _WIN32
+    BOOL WINAPI CtrlHandler(DWORD fdwCtrlType) {
+        if (fdwCtrlType == CTRL_C_EVENT) {
+            // your rickroll gamble code here
+            printf("Ctrl+C caught – rolling dice...\n");
+            // run your rand() % 10 thing
+            // epilepsy_typewriter(rickroll);
+            exit(0);
+        }
+        return FALSE;
+    }
+#endif
+
 typedef void (*writer)(char *lyrics);
 
 typedef int (*MenuFunction)();
@@ -814,7 +839,27 @@ int main(void)
 {
     srand(time(NULL));
     setvbuf(stdout,NULL,_IONBF,0);
-    signal(SIGINT,sigintHandler);
+
+     #ifdef _WIN32
+        // Enable ANSI colors & modern console
+        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        DWORD dwMode;
+        GetConsoleMode(hOut, &dwMode);
+        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT;
+        SetConsoleMode(hOut, dwMode);
+
+        // Ctrl+C handler
+        SetConsoleCtrlHandler(CtrlHandler, TRUE);
+    #else
+        signal(SIGINT, sigintHandler);
+    #endif
+
+
+
+
+
+
+    
 
     while(1)
     {
@@ -968,11 +1013,21 @@ void sigintHandler(int sig) //Ctrl+C magic
     int gettingRickrolledOrNot = (rand() % 9)+1; //Never trust a computer's calculation use bracelets    -Sun Tzu (or Linus Torvalds IDK)
     if (gettingRickrolledOrNot == 3)
     {
-        printf(WIPE_TERMINAL);
+        #ifdef _WIN32
+             system("cls");
+        #else
+             printf(WIPE_TERMINAL);
+        #endif
         usleep(5000);
         epilepsy_typewriter(rickroll); //If you get this ctrl+c ain't saving you. I FUCKING REALIZED IT AFTER 3RD ONE...REDUCED FREQ
     }
-    printf(WIPE_TERMINAL);
+
+    #ifdef _WIN32
+        system("cls");
+    #else
+        printf(WIPE_TERMINAL);
+    #endif
+
     printf(BRING_BACK_THE_CURSOR_FROM_THE_DEAD); //Don't worry bro got your cursor back
     exit(0);
 }
@@ -1053,15 +1108,24 @@ int nightcoreInput(void)
     };
     int songCount = sizeof(nightcoreSongs)/sizeof(nightcoreSongs[0]);
     int i = 0;
-    printf(WIPE_TERMINAL BOLD);
+    
+    #ifdef _WIN32
+        system("cls");
+    #else
+        printf(WIPE_TERMINAL BOLD);
+    #endif
+
     while (nightcoreSongs[i] != NULL)
     {   
         printf("%d)%s\n",i+1,nightcoreSongs[i]);
         usleep(50000);
         i++;    
     }
-    printf(FIX_FONT);
-
+    #ifdef _WIN32
+        //Suck my dick
+    #else
+        printf(FIX_FONT);
+    #endif
     printf("Please select a poison(1-%d) or Ctrl+C to exit:",songCount-1);                                                      
     //Program -for some reason- doesn't know how to handle just an 'enter' stroke please don't > /// < 
     if(scanf("%d", &choice) != 1 || choice < 1 || choice > 8)  
@@ -1079,7 +1143,12 @@ int nightcoreInput(void)
 
 
 void epilepsy_typewriter(const char* song) {
-    printf(WIPE_TERMINAL);
+    #ifdef _WIN32
+        system("cls");
+    #else
+        printf(WIPE_TERMINAL);
+    #endif
+
     // hide cursor clear screen and shit.
     long color_timer = 0;
     while (*song != '\0') {
@@ -1104,7 +1173,11 @@ void typewriter(const char* song)
 
 
     printf(VANISH_CURSOR);
-    printf(WIPE_TERMINAL);
+    #ifdef _WIN32
+        system("cls");
+    #else
+        printf(WIPE_TERMINAL);
+    #endif
     usleep(250000);
     while (*song != '\0')
     {
@@ -1125,7 +1198,11 @@ void typewriter(const char* song)
 int genreMenu(void)
 {
     int genrePick = -1;
-    printf(WIPE_TERMINAL);
+    #ifdef _WIN32
+        system("cls");
+    #else
+        printf(WIPE_TERMINAL);
+    #endif
     printf(BOLD "\t\t _-JUST A SHITTY JUKEBOX-_\n" FIX_FONT);
     printf(BOLD "Genres\n" FIX_FONT);
     printf("1)%s\n",genres[0]);
