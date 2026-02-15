@@ -6,6 +6,8 @@
 #include <time.h>
 #include <ctype.h>
 
+#define NORMAL_EMO_OFFSET   13
+#define SEIZURE_EMO_OFFSET  53
 #define BOLD "\e[1m"
 #define FIX_FONT "\e[0m"
 #define WIPE_TERMINAL "\033[H\033[J"
@@ -165,70 +167,63 @@ const char *howYouRemindMe =
 
 
 const char *nirvanaLithium = 
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
+    "I'm so happy 'cause today I found my friends\n"
     "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
-    "Yeah, yeah, yeah\n"
-    "Yeah, yeah, yeah\n"
-    "Yeah, yeah, yeah\n"
-    "Yeah, yeah, yeah\n"
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
+    "I'm so ugly but that's okay 'cause so are you\n"
+    "We broke our mirrors\n"
+    "Sunday morning is everyday for all I care\n"
+    "And I'm not scared\n"
+    "Light my candles in a daze 'cause I found God\n"
     "Yeah\n"
     "Yeah\n"
     "Yeah\n"
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
-    "Yeah, yeah, yeah\n"
-    "Yeah, yeah, yeah\n"
-    "Yeah, yeah, yeah\n"
-    "Yeah, yeah, yeah\n"
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
-    "I'm so happy 'cause today\n"
-    "I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, but that's okay\n"
-    "My world is nothing without your love\n"
     "Yeah\n"
     "Yeah\n"
-    "Yeah\n";
+    "Yeah\n"
+    "I'm so lonely, that's okay, I shaved my head\n"
+    "And I'm not sad\n"
+    "And just maybe I'm to blame for all I've heard\n"
+    "But I'm not sure\n"
+    "I'm so excited, I can't wait to meet you there\n"
+    "And I don't care\n"
+    "I'm so horny, that's okay, my will is good\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "I like it, I'm not gonna crack\n"
+    "I miss you, I'm not gonna crack\n"
+    "I love you, I'm not gonna crack\n"
+    "I killed you, I'm not gonna crack\n"
+    "I like it, I'm not gonna crack\n"
+    "I miss you, I'm not gonna crack\n"
+    "I love you, I'm not gonna crack\n"
+    "I killed you, I'm not gonna crack\n"
+    "I'm so happy 'cause today I found my friends\n"
+    "They're in my head\n"
+    "I'm so ugly, that's okay 'cause so are you\n"
+    "We broke our mirrors\n"
+    "Sunday morning is everyday for all I care\n"
+    "And I'm not scared\n"
+    "Light my candles in a daze 'cause I found God\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "I like it, I'm not gonna crack\n"
+    "I miss you, I'm not gonna crack\n"
+    "I love you, I'm not gonna crack\n"
+    "I killed you, I'm not gonna crack\n"
+    "I like it, I'm not gonna crack\n"
+    "I miss you, I'm not gonna crack\n"
+    "I love you, I'm not gonna crack\n"
+    "I killed you, I'm not gonna crack\n";
 
 
 
@@ -864,7 +859,7 @@ int main(void)
 
             else if (songChoice > 53)
             {
-                songChoice = (songChoice % 53);
+                songChoice = (songChoice % SEIZURE_EMO_OFFSET);
                 switch (songChoice-1)
                 {
                     case BRING_ME_TO_LIFE:
@@ -910,7 +905,7 @@ int main(void)
             }
             
             else{
-                songChoice = (songChoice % 13);
+                songChoice = (songChoice % NORMAL_EMO_OFFSET);
                 switch (songChoice-1)
                 {
                     case BRING_ME_TO_LIFE:
@@ -1026,11 +1021,11 @@ int emoInput(void)
             switch (reply)
             {
                 case 'y':
-                    return(choice+53);
+                    return(choice+SEIZURE_EMO_OFFSET);
                     break;
                 
                 default:
-                    return(choice+13);
+                    return(choice+NORMAL_EMO_OFFSET);
                     break;
             }
         }
@@ -1064,7 +1059,7 @@ int nightcoreInput(void)
 
     printf("Please select a poison(1-%d) or Ctrl+C to exit:",songCount-1);                                                      
     //Program -for some reason- doesn't know how to handle just an 'enter' stroke please don't > /// < 
-    if(scanf("%d", &choice) != 1 || choice < 1 || choice > 8)  
+    if(scanf("%d", &choice) != 1 || choice < 1 || choice > songCount)  
     {
         int c;
         while ((c = getchar()) != '\n' && c != EOF) { } 
@@ -1124,6 +1119,7 @@ void typewriter(const char* song)
 
 int genreMenu(void)
 {
+    int lengthOfCatalouge = sizeof(genres)/sizeof(genres[0]);
     int genrePick = -1;
     printf(WIPE_TERMINAL);
     printf(BOLD "\t\t _-JUST A SHITTY JUKEBOX-_\n" FIX_FONT);
@@ -1132,7 +1128,7 @@ int genreMenu(void)
     printf("2)%s\n\n",genres[1]);
 
     printf("Select one genre to see it's special menu(1-2):");
-    if (scanf("%d",&genrePick) != 1 || genrePick < 1 || genrePick > 2)
+    if (scanf("%d",&genrePick) != 1 || genrePick < 1 || genrePick > lengthOfCatalouge)
     {   
         int c;
         while ((c = getchar()) != '\n' && c != EOF) { } 
