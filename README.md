@@ -20,4 +20,6 @@
 
 cc filename.c -o output #To compile
 
-./output #To run (but since all the files written for Linux and don't have Windows ports I presume yu already know to do this because windows sux)
+./output 
+#To run (but since all the files written for 
+#Linux and don't have Windows ports I presume you already know to do this because windows sux)
