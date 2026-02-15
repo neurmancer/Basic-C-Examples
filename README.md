@@ -12,6 +12,7 @@
 
 - And a Loading bar will give you Easter Eggs based on RNG(That's for you little gamblers)
 
+- An important program added.(it needs to load shit first.)
 
 ## Compile&Run (basically for every file in this repo)
 ```bash
