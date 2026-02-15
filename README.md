@@ -2,6 +2,7 @@
 
 - Added a hello, world program
 - Added a basic prime number counter with user input
+- Added a Function Pointer introduction Lecture (honestly it's not the best practice to use them this way but good for seeing syntax)
 
 ## Added funny things
 
@@ -23,7 +24,8 @@
 ## Compile&Run (basically for every file in this repo)
 ```bash
 
-#For the ones don't know how to compile and run
+#For the ones don't know how to compile and run 
+#if there is additional lib/flag for any specific file it will be commented within file itself.
 
 cc filename.c -o output #To compile
 
