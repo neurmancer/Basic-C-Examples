@@ -14,6 +14,12 @@
 
 - An important program added.(it needs to load shit first.)
 
+## ADDED ASM DISASSEMBLIES OF FILES FOR THOSE LOW-LEVEL GREMLINS LIKE ME LOVES SPICY C NUDES
+
+- Basically Every script I'll put in the repo will get it's assembly file with the same name 
+- I may add -O2 flag to make it torturing to get what even the program was in the first place if I feel like it
+
+
 ## Compile&Run (basically for every file in this repo)
 ```bash
 
