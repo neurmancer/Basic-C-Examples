@@ -134,7 +134,18 @@ howYouRemindMe:
 	.ascii	" 'cause today\nI found my friends\nThey're in my head\nI'm s"
 	.ascii	"o ugly, but that's okay\nMy world is nothing without your lo"
 	.ascii	"ve\nYeah, yeah, yeah\nYeah, yeah, yeah\nYeah, yeah, yeah\nYe"
-	.ascii	"ah, yeah, yeah\nI'm so happy 'cause t"
+	.ascii	"ah, yeah, yeah\nI'm so happy 'cause today\nI found my friend"
+	.ascii	"s\nThey're in my head\nI'm so ugly, but that's okay\nMy worl"
+	.ascii	"d is nothing without your love\nI'm so happy 'cause today\nI"
+	.ascii	" found my friends\nThey're in my head\nI'm so ugly, but that"
+	.ascii	"'s okay\nMy world is nothing without your love\nYeah\nYeah\n"
+	.ascii	"Yeah\nI'm so happy 'cause today\nI found my friends\nThey're"
+	.ascii	" in my head\nI'm so ugly, but that's okay\nMy world is nothi"
+	.ascii	"ng without your love\nI'm so happy 'cause today\nI found my "
+	.ascii	"friends\nThey're in my head\nI'm so ugly, but that's okay\nM"
+	.ascii	"y world is nothing without your love\nYeah, yeah, yeah\nYeah"
+	.ascii	", yeah, yeah\nYeah, yeah, yeah\nYeah, yeah, yeah\nI'm so hap"
+	.ascii	"py 'cause t"
 	.string	"oday\nI found my friends\nThey're in my head\nI'm so ugly, but that's okay\nMy world is nothing without your love\nI'm so happy 'cause today\nI found my friends\nThey're in my head\nI'm so ugly, but that's okay\nMy world is nothing without your love\nYeah\nYeah\nYeah\n"
 	.section	.data.rel.local
 	.align 8
@@ -217,6 +228,36 @@ theUnforgiven:
 	.size	fadeToBlack, 8
 fadeToBlack:
 	.quad	.LC7
+	.globl	rickroll
+	.section	.rodata
+	.align 8
+.LC8:
+	.ascii	"We're no strangers to love\nYou know the rules and so do I\n"
+	.ascii	"A full commitment's what I'm thinking of\nYou wouldn't get t"
+	.ascii	"his from any other guy\nI just wanna tell you how I'm feelin"
+	.ascii	"g\nGotta make you understand\nNever gonna give you up\nNever"
+	.ascii	" gonna let you down\nNever gonna run around and desert you\n"
+	.ascii	"Never gonna make you cry\nNever gonna say goodbye\nNever gon"
+	.ascii	"na tell a lie and hurt you\nNever gonna give you up\nNever g"
+	.ascii	"onna let you down\nNever gonna run around and desert you\nNe"
+	.ascii	"ver gonna make you cry\nNever gonna say goodbye\nNever gonna"
+	.ascii	" tell a lie and hurt you\nWe've known each other for so long"
+	.ascii	"\nYour heart's been aching but you're too shy to say it\nIns"
+	.ascii	"ide we both know what's been going on\nWe know the game and "
+	.ascii	"we're gonna play it\nAnd if you ask me how I'm feeling\nDon'"
+	.ascii	"t tell me you're too blind to see\nNever gonna give you up\n"
+	.ascii	"Never gonna let you down\nNever gonna run around and desert "
+	.ascii	"you\nN"
+	.string	"ever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n"
+	.section	.data.rel.local
+	.align 8
+	.type	rickroll, @object
+	.size	rickroll, 8
+rickroll:
+	.quad	.LC8
+	.section	.rodata
+.LC9:
+	.string	"\033[?25h"
 	.text
 	.globl	main
 	.type	main, @function
@@ -230,6 +271,10 @@ main:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
+	movl	$0, %edi
+	call	time@PLT
+	movl	%eax, %edi
+	call	srand@PLT
 	movq	stdout(%rip), %rax
 	movl	$0, %ecx
 	movl	$2, %edx
@@ -240,6 +285,7 @@ main:
 	movq	%rax, %rsi
 	movl	$2, %edi
 	call	signal@PLT
+.L13:
 	call	jukeBoxInput
 	movl	%eax, -4(%rbp)
 	cmpl	$0, -4(%rbp)
@@ -312,19 +358,20 @@ main:
 .L14:
 	nop
 .L2:
+	leaq	.LC9(%rip), %rax
+	movq	%rax, %rdi
 	movl	$0, %eax
-	leave
-	.cfi_def_cfa 7, 8
-	ret
+	call	printf@PLT
+	jmp	.L13
 	.cfi_endproc
 .LFE6:
 	.size	main, .-main
 	.section	.rodata
-.LC8:
-	.string	"\033[?25l"
-.LC9:
-	.string	"\033[H\033[J"
 .LC10:
+	.string	"\033[?25l"
+.LC11:
+	.string	"\033[H\033[J"
+.LC12:
 	.string	"%c\007"
 	.text
 	.globl	typewriter
@@ -340,11 +387,11 @@ typewriter:
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
 	movq	%rdi, -8(%rbp)
-	leaq	.LC8(%rip), %rax
+	leaq	.LC10(%rip), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf@PLT
-	leaq	.LC9(%rip), %rax
+	leaq	.LC11(%rip), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf@PLT
@@ -362,7 +409,7 @@ typewriter:
 	movzbl	(%rax), %eax
 	movsbl	%al, %eax
 	movl	%eax, %esi
-	leaq	.LC10(%rip), %rax
+	leaq	.LC12(%rip), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf@PLT
@@ -390,10 +437,6 @@ typewriter:
 	.cfi_endproc
 .LFE7:
 	.size	typewriter, .-typewriter
-	.section	.rodata
-.LC11:
-	.string	"\033[?25h"
-	.text
 	.globl	sigintHandler
 	.type	sigintHandler, @function
 sigintHandler:
@@ -405,13 +448,36 @@ sigintHandler:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$16, %rsp
-	movl	%edi, -4(%rbp)
-	leaq	.LC9(%rip), %rax
+	subq	$32, %rsp
+	movl	%edi, -20(%rbp)
+	call	rand@PLT
+	movl	%eax, %edx
+	movl	%edx, %eax
+	sarl	$31, %eax
+	shrl	$30, %eax
+	addl	%eax, %edx
+	andl	$3, %edx
+	subl	%eax, %edx
+	movl	%edx, %eax
+	addl	$1, %eax
+	movl	%eax, -4(%rbp)
+	cmpl	$3, -4(%rbp)
+	jne	.L21
+	leaq	.LC11(%rip), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf@PLT
+	movl	$5000, %edi
+	call	usleep@PLT
+	movq	rickroll(%rip), %rax
+	movq	%rax, %rdi
+	call	epilepsy_typewriter
+.L21:
 	leaq	.LC11(%rip), %rax
+	movq	%rax, %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	leaq	.LC9(%rip), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf@PLT
@@ -422,30 +488,31 @@ sigintHandler:
 	.size	sigintHandler, .-sigintHandler
 	.section	.rodata
 	.align 8
-.LC12:
-	.string	"1)Bring Me To Life - Evanescence"
 .LC13:
-	.string	"2)Lithium - Evanescence"
+	.string	"1)Bring Me To Life - Evanescence"
 .LC14:
+	.string	"2)Lithium - Evanescence"
+.LC15:
 	.string	"3)My Immortal - Evanescence"
 	.align 8
-.LC15:
-	.string	"4)I Hate Everything About You - Three Days Grace"
 .LC16:
-	.string	"5)Unforgiven - Metallica"
+	.string	"4)I Hate Everything About You - Three Days Grace"
 .LC17:
+	.string	"5)Unforgiven - Metallica"
+.LC18:
 	.string	"6)Fade To Black - Metallica"
 	.align 8
-.LC18:
-	.string	"7)How You Remind Me - Nickelback"
 .LC19:
-	.string	"8)Lithium - Nirvana\n"
+	.string	"7)How You Remind Me - Nickelback"
 .LC20:
-	.string	"Please select a song(1-8):"
+	.string	"8)Lithium - Nirvana\n"
+	.align 8
 .LC21:
+	.string	"Please select a song(1-8) or Ctrl+C to exit:"
+.LC22:
 	.string	"%d"
 	.align 8
-.LC22:
+.LC23:
 	.string	"Bro...either try not to be a idiot or Delta the fuck out"
 	.text
 	.globl	jukeBoxInput
@@ -464,23 +531,20 @@ jukeBoxInput:
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
 	movl	$-1, -16(%rbp)
-	leaq	.LC9(%rip), %rax
+	leaq	.LC11(%rip), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf@PLT
-	leaq	.LC12(%rip), %rax
-	movq	%rax, %rdi
-	call	puts@PLT
 	leaq	.LC13(%rip), %rax
 	movq	%rax, %rdi
 	call	puts@PLT
 	leaq	.LC14(%rip), %rax
 	movq	%rax, %rdi
-	movl	$0, %eax
-	call	printf@PLT
+	call	puts@PLT
 	leaq	.LC15(%rip), %rax
 	movq	%rax, %rdi
-	call	puts@PLT
+	movl	$0, %eax
+	call	printf@PLT
 	leaq	.LC16(%rip), %rax
 	movq	%rax, %rdi
 	call	puts@PLT
@@ -495,51 +559,194 @@ jukeBoxInput:
 	call	puts@PLT
 	leaq	.LC20(%rip), %rax
 	movq	%rax, %rdi
+	call	puts@PLT
+	leaq	.LC21(%rip), %rax
+	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	leaq	-16(%rbp), %rax
 	movq	%rax, %rsi
-	leaq	.LC21(%rip), %rax
+	leaq	.LC22(%rip), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	__isoc99_scanf@PLT
 	cmpl	$1, %eax
-	jne	.L29
+	jne	.L30
 	movl	-16(%rbp), %eax
 	testl	%eax, %eax
-	jle	.L29
+	jle	.L30
 	movl	-16(%rbp), %eax
 	cmpl	$8, %eax
-	jle	.L23
-.L29:
+	jle	.L24
+.L30:
 	nop
-.L25:
+.L26:
 	call	getchar@PLT
 	movl	%eax, -12(%rbp)
 	cmpl	$10, -12(%rbp)
-	je	.L24
+	je	.L25
 	cmpl	$-1, -12(%rbp)
-	jne	.L25
-.L24:
-	leaq	.LC22(%rip), %rax
+	jne	.L26
+.L25:
+	leaq	.LC23(%rip), %rax
 	movq	%rax, %rdi
 	call	puts@PLT
 	movl	$0, %eax
-	jmp	.L27
-.L23:
+	jmp	.L28
+.L24:
 	movl	-16(%rbp), %eax
-.L27:
+.L28:
 	movq	-8(%rbp), %rdx
 	subq	%fs:40, %rdx
-	je	.L28
+	je	.L29
 	call	__stack_chk_fail@PLT
-.L28:
+.L29:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE9:
 	.size	jukeBoxInput, .-jukeBoxInput
+	.section	.rodata
+.LC30:
+	.string	"\033[38;2;%d;%d;%dm%c"
+.LC31:
+	.string	"\033[0m"
+	.text
+	.globl	epilepsy_typewriter
+	.type	epilepsy_typewriter, @function
+epilepsy_typewriter:
+.LFB10:
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$48, %rsp
+	movq	%rdi, -40(%rbp)
+	movq	$0, -8(%rbp)
+	jmp	.L32
+.L35:
+	pxor	%xmm1, %xmm1
+	cvtsi2sdq	-8(%rbp), %xmm1
+	movsd	.LC24(%rip), %xmm0
+	mulsd	%xmm0, %xmm1
+	movsd	.LC25(%rip), %xmm0
+	mulsd	%xmm0, %xmm1
+	movq	%xmm1, %rax
+	movq	%rax, %xmm0
+	call	sin@PLT
+	movsd	.LC26(%rip), %xmm1
+	mulsd	%xmm0, %xmm1
+	movsd	.LC27(%rip), %xmm0
+	addsd	%xmm1, %xmm0
+	cvttsd2sil	%xmm0, %eax
+	movl	%eax, -20(%rbp)
+	pxor	%xmm1, %xmm1
+	cvtsi2sdq	-8(%rbp), %xmm1
+	movsd	.LC24(%rip), %xmm0
+	mulsd	%xmm0, %xmm1
+	movsd	.LC25(%rip), %xmm0
+	mulsd	%xmm0, %xmm1
+	movsd	.LC28(%rip), %xmm0
+	addsd	%xmm0, %xmm1
+	movq	%xmm1, %rax
+	movq	%rax, %xmm0
+	call	sin@PLT
+	movsd	.LC26(%rip), %xmm1
+	mulsd	%xmm0, %xmm1
+	movsd	.LC27(%rip), %xmm0
+	addsd	%xmm1, %xmm0
+	cvttsd2sil	%xmm0, %eax
+	movl	%eax, -16(%rbp)
+	pxor	%xmm1, %xmm1
+	cvtsi2sdq	-8(%rbp), %xmm1
+	movsd	.LC24(%rip), %xmm0
+	mulsd	%xmm0, %xmm1
+	movsd	.LC25(%rip), %xmm0
+	mulsd	%xmm0, %xmm1
+	movsd	.LC29(%rip), %xmm0
+	addsd	%xmm0, %xmm1
+	movq	%xmm1, %rax
+	movq	%rax, %xmm0
+	call	sin@PLT
+	movsd	.LC26(%rip), %xmm1
+	mulsd	%xmm0, %xmm1
+	movsd	.LC27(%rip), %xmm0
+	addsd	%xmm1, %xmm0
+	cvttsd2sil	%xmm0, %eax
+	movl	%eax, -12(%rbp)
+	movq	-40(%rbp), %rax
+	movzbl	(%rax), %eax
+	movsbl	%al, %esi
+	movl	-12(%rbp), %ecx
+	movl	-16(%rbp), %edx
+	movl	-20(%rbp), %eax
+	movl	%esi, %r8d
+	movl	%eax, %esi
+	leaq	.LC30(%rip), %rax
+	movq	%rax, %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	movq	stdout(%rip), %rax
+	movq	%rax, %rdi
+	call	fflush@PLT
+	movq	-40(%rbp), %rax
+	movzbl	(%rax), %eax
+	cmpb	$10, %al
+	jne	.L33
+	movl	$450000, %edi
+	call	usleep@PLT
+	jmp	.L34
+.L33:
+	movl	$15555, %edi
+	call	usleep@PLT
+.L34:
+	addq	$1, -40(%rbp)
+	addq	$1, -8(%rbp)
+.L32:
+	movq	-40(%rbp), %rax
+	movzbl	(%rax), %eax
+	testb	%al, %al
+	jne	.L35
+	leaq	.LC31(%rip), %rax
+	movq	%rax, %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	nop
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE10:
+	.size	epilepsy_typewriter, .-epilepsy_typewriter
+	.section	.rodata
+	.align 8
+.LC24:
+	.long	1717986918
+	.long	1071015526
+	.align 8
+.LC25:
+	.long	-1717986918
+	.long	1070176665
+	.align 8
+.LC26:
+	.long	0
+	.long	1080016896
+	.align 8
+.LC27:
+	.long	0
+	.long	1080033280
+	.align 8
+.LC28:
+	.long	0
+	.long	1073741824
+	.align 8
+.LC29:
+	.long	0
+	.long	1074790400
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

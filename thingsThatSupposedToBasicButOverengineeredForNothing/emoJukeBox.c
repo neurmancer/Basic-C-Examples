@@ -3,11 +3,12 @@
 #include <math.h>
 #include <unistd.h>
 #include <signal.h>
+#include <time.h>
 
 #define WIPE_TERMINAL "\033[H\033[J"
 #define VANISH_CURSOR "\033[?25l"
 #define BRING_BACK_THE_CURSOR_FROM_THE_DEAD "\033[?25h" //Yeah I know it doesn't need to be that dramatic or long but C'MON WE ARE BUILDING A EMO JUKEBOX, DUH.
-
+#define FREQ 0.35
 
 const char *bringMeToLife = "How can you see into my eyes like open doors?\nLeading you down into my core\nWhere I've become so numb\nWithout a soul\nMy spirit's sleeping somewhere cold\nUntil you find it there and lead it back home\nWake me up inside (save me)\nCall my name and save me from the dark (wake me up)\nBid my blood to run (I can't wake up)\nBefore I come undone (save me)\nSave me from the nothing I've become\nNow that I know what I'm without\nYou can't just leave me\nBreathe into me and make me real\nBring (bring) me (me) to life\nWake me up inside (save me)\nCall my name and save me from the dark (wake me up)\nBid my blood to run (I can't wake up)\nBefore I come undone (save me)\nSave me from the nothing I've become\nBring me to life\nI've been living a lie\nThere's nothing inside\nBring me to life\nFrozen (frozen) inside without your touch\nWithout your love darling\nOnly (only) you are the life among the dead\nAll of this time I can't believe I couldn't see\nKept in the dark but you were there in front of me\nI've been sleeping a thousand years it seems\nGot to open my eyes to everything\nWithout a thought without a voice without a soul\nDon't let me die here\n(There must be something more) bring me to life\nWake me up inside (save me)\nCall my name and save me from the dark (wake me up)\nBid my blood to run (I can't wake up)\nBefore I come undone (save me)\nSave me from the nothing I've become\nBring me to life\nI've been living a lie\nThere's nothing inside\nBring me to life\n";
 
@@ -159,7 +160,7 @@ const char *howYouRemindMe =
     "No no\n";
 
 
-const char *nirvanaLithium =
+const char *nirvanaLithium = 
     "I'm so happy 'cause today\n"
     "I found my friends\n"
     "They're in my head\n"
@@ -170,6 +171,33 @@ const char *nirvanaLithium =
     "They're in my head\n"
     "I'm so ugly, but that's okay\n"
     "My world is nothing without your love\n"
+    "I'm so happy 'cause today\n"
+    "I found my friends\n"
+    "They're in my head\n"
+    "I'm so ugly, but that's okay\n"
+    "My world is nothing without your love\n"
+    "I'm so happy 'cause today\n"
+    "I found my friends\n"
+    "They're in my head\n"
+    "I'm so ugly, but that's okay\n"
+    "My world is nothing without your love\n"
+    "Yeah, yeah, yeah\n"
+    "Yeah, yeah, yeah\n"
+    "Yeah, yeah, yeah\n"
+    "Yeah, yeah, yeah\n"
+    "I'm so happy 'cause today\n"
+    "I found my friends\n"
+    "They're in my head\n"
+    "I'm so ugly, but that's okay\n"
+    "My world is nothing without your love\n"
+    "I'm so happy 'cause today\n"
+    "I found my friends\n"
+    "They're in my head\n"
+    "I'm so ugly, but that's okay\n"
+    "My world is nothing without your love\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
     "I'm so happy 'cause today\n"
     "I found my friends\n"
     "They're in my head\n"
@@ -332,6 +360,51 @@ const char *fadeToBlack =
     "Goodbye\n";
 
 
+const char *rickroll = 
+    "We're no strangers to love\n"
+    "You know the rules and so do I\n"
+    "A full commitment's what I'm thinking of\n"
+    "You wouldn't get this from any other guy\n"
+    "I just wanna tell you how I'm feeling\n"
+    "Gotta make you understand\n"
+    "Never gonna give you up\n"
+    "Never gonna let you down\n"
+    "Never gonna run around and desert you\n"
+    "Never gonna make you cry\n"
+    "Never gonna say goodbye\n"
+    "Never gonna tell a lie and hurt you\n"
+    "Never gonna give you up\n"
+    "Never gonna let you down\n"
+    "Never gonna run around and desert you\n"
+    "Never gonna make you cry\n"
+    "Never gonna say goodbye\n"
+    "Never gonna tell a lie and hurt you\n"
+    "We've known each other for so long\n"
+    "Your heart's been aching but you're too shy to say it\n"
+    "Inside we both know what's been going on\n"
+    "We know the game and we're gonna play it\n"
+    "And if you ask me how I'm feeling\n"
+    "Don't tell me you're too blind to see\n"
+    "Never gonna give you up\n"
+    "Never gonna let you down\n"
+    "Never gonna run around and desert you\n"
+    "Never gonna make you cry\n"
+    "Never gonna say goodbye\n"
+    "Never gonna tell a lie and hurt you\n"
+    "Never gonna give you up\n"
+    "Never gonna let you down\n"
+    "Never gonna run around and desert you\n"
+    "Never gonna make you cry\n"
+    "Never gonna say goodbye\n"
+    "Never gonna tell a lie and hurt you\n";
+
+
+
+
+
+
+
+void epilepsy_typewriter(const char* song);
 void typewriter(const char* song);
 void sigintHandler(int sig);
 int jukeBoxInput(void);
@@ -349,50 +422,53 @@ enum songList {
 
 int main(void)
 {
+    srand(time(NULL));
     setvbuf(stdout,NULL,_IONBF,0);
     signal(SIGINT,sigintHandler);
-    int songChoice = jukeBoxInput();
-    if (songChoice)
-    {
-        switch (songChoice-1)
+    while (1)
+    {    
+        int songChoice = jukeBoxInput();
+
+        if (songChoice)
         {
-        case BRING_ME_TO_LIFE:
-            typewriter(bringMeToLife);
-            break;
-        case LITHIUM_EVA:
-            typewriter(evanescenceLithium);  
-            break;
-        case MY_IMMORTAL:
-            typewriter(myImmortal);  
-            break;
-        case I_HATE_EVERYTHING_ABOUT_C:
-            typewriter(iHateEverything);
-            break;
-        case UNFORGIVEN:
-            typewriter(theUnforgiven);
-            
-            break;
-        case FADE_TO_BLACK:
-            typewriter(fadeToBlack);
-            
-            break;
-        case HOW_YOU_REMIND_ME:
-            typewriter(howYouRemindMe);
-            
-            break;
-        case LITHIUM_NIRVANA:
-            typewriter(nirvanaLithium);
-            
-            break;
-        default:
-            //Since we got what we need probably we don't need this but I let it stay 'till -O2 wipes it off.
-            break;
+            switch (songChoice-1)
+            {
+            case BRING_ME_TO_LIFE:
+                typewriter(bringMeToLife);
+                break;
+            case LITHIUM_EVA:
+                typewriter(evanescenceLithium);  
+                break;
+            case MY_IMMORTAL:
+                typewriter(myImmortal);  
+                break;
+            case I_HATE_EVERYTHING_ABOUT_C:
+                typewriter(iHateEverything);
+                break;
+            case UNFORGIVEN:
+                typewriter(theUnforgiven);
+                
+                break;
+            case FADE_TO_BLACK:
+                typewriter(fadeToBlack);
+                
+                break;
+            case HOW_YOU_REMIND_ME:
+                typewriter(howYouRemindMe);
+                
+                break;
+            case LITHIUM_NIRVANA:
+                typewriter(nirvanaLithium);
+                
+                break;
+            default:
+                //Since we got what we need probably we don't need this but I let it stay 'till -O2 wipes it off.
+                break;
+            }
+
+
         }
-
-
-
-
-
+        printf(BRING_BACK_THE_CURSOR_FROM_THE_DEAD);
     }
 
     return(0);
@@ -424,6 +500,13 @@ void typewriter(const char* song)
 
 void sigintHandler(int sig)
 {
+    int gettingRickrolledOrNot = (rand() % 4)+1; //Never trust a computer's calculation use bracelets    -Sun Tzu (or Linus Torvalds IDK)
+    if (gettingRickrolledOrNot == 3)
+    {
+        printf(WIPE_TERMINAL);
+        usleep(5000);
+        epilepsy_typewriter(rickroll); //If you get this ctrl+c ain't saving you.
+    }
     printf(WIPE_TERMINAL);
     printf(BRING_BACK_THE_CURSOR_FROM_THE_DEAD); //Don't worry bro got your cursor back
     exit(0);
@@ -444,7 +527,7 @@ int jukeBoxInput(void)
     printf("7)How You Remind Me - Nickelback\n");
     printf("8)Lithium - Nirvana\n\n");
 
-    printf("Please select a song(1-8):");                                                      
+    printf("Please select a song(1-8) or Ctrl+C to exit:");                                                      
     //Program -for some reason- doesn't know how to handle just an 'enter' stroke please don't > /// < 
     if(scanf("%d", &choice) != 1 || choice < 1 || choice > 8)  //I'll probably make the length dynamic one day but not today at 5.57AM
     {
@@ -459,6 +542,25 @@ int jukeBoxInput(void)
     }
 }
 
+
+void epilepsy_typewriter(const char* song) {
+    // hide cursor clear screen and shit.
+    long color_timer = 0;
+    while (*song != '\0') {
+        int r = (sin(FREQ * color_timer * 0.2) * 127) + 128;
+        int g = (sin(FREQ * color_timer * 0.2 + 2) * 127) + 128;
+        int b = (sin(FREQ * color_timer * 0.2 + 4) * 127) + 128;
+
+        printf("\033[38;2;%d;%d;%dm%c", r, g, b, *song);
+        fflush(stdout);
+
+        if (*song == '\n') usleep(450000);
+        else usleep(15555);
+        song++;
+        color_timer++;
+    }
+    printf("\033[0m"); // reset colors
+}
 
 /*
 
