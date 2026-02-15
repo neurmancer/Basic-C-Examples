@@ -9,6 +9,8 @@
 - Bring Me To Life lyrics spitter for CLI and will be improved
 - - Full extend of lyrics and better timing will be added 
 
+- BEHOLD EMO JUKEBOX HAS BEEN ADDED WITH A VAST(not so vast tho) SET OF SONGS YOU CAN PRINT ON YOUR CLI DRAMATICALLY SLOW FOR THE PERFECT EMO VIBES (and please don't blank enter it makes me sad...) 
+
 - A program that gives you an output file and spits a text on terminal anyways because I used stderr instead of stdout
 
 - And a Loading bar will give you Easter Eggs based on RNG(That's for you little gamblers)
