@@ -1090,8 +1090,11 @@ void epilepsy_typewriter(const char* song) {
         printf("\033[38;2;%d;%d;%dm%c", r, g, b, *song);
         fflush(stdout);
 
-        if (*song == '\n') usleep(450000);
-        else usleep(15555);
+        if (*song == '\n') 
+        {
+            usleep(45000);
+        }
+        else {usleep(13555);}
         song++;
         color_timer++;
     }
@@ -1110,13 +1113,13 @@ void typewriter(const char* song)
     {
         if (*song == '\n')
         {
-            usleep(350000);
+            usleep(290000); //I'm selecting those totally vibe based
             printf("%c\a",*song);
         }
         else
         {
             printf("%c",*song);
-            usleep(8*1250);
+            usleep(8*1150);
         }
         song++;
     }
