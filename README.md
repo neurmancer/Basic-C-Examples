@@ -4,6 +4,9 @@
 - Added a Basic FizzBuzz script
 - Added a basic prime number counter with user input
 - Added a Function Pointer introduction Lecture (honestly it's not the best practice to use them this way but good for seeing syntax)
+- Added a subfolder named RNG for basic rand() applications
+- Added a basic heads or tails program (with explanations)
+- Added a guess game
 
 ## Added funny things
 
