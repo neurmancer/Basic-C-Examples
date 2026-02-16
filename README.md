@@ -43,21 +43,16 @@
 - Now the V3 is untoby-fox'd (killed the switch you may wanna call it killswitch ;) pun intended...I mean I am makin shitty emo/nightcore jukebox for CLI don't expect good jokes)
 - winPORTsux won't get update in this repo anymore (you know why it is.)
 - AND FRESH ASM NUDES of the current version in the asmCNudes folder for low-level pervs.
-- New features will be added 'cuz why not?
 
 
-### SHITTY JUKEBOX IS GETTING IT'S OWN REPO
+
+### SHITTY JUKEBOX IS GOT IT'S OWN REPO
 - Due to my obssession overgrowing the 'basic' in the basic repo shitty jukebox will get it's own repo with new features and possible updated winSUXport.
-- When the first commit will be done I'll add the link here 
+
+- Here it is: https://github.com/neurmancer/ShittyJukeBoxCLI 
+- - I do explain shit so much for someone doesn't have people to read right?
 
 
-## Compiling & Running
-```bash
-#To compile use:
-cc/gcc ShittyJukeBox -o filename.out -lm #for math lib
-#To run
-./filename.o #Then have fun
-```
 
 ## Compile&Run (basically for every file in this repo)
 ```bash
