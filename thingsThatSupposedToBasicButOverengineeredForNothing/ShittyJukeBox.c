@@ -5,9 +5,9 @@
 #include <signal.h>
 #include <time.h>
 #include <ctype.h>
-
-#define NORMAL_EMO_OFFSET   13
-#define SEIZURE_EMO_OFFSET  53
+//She Loves Purple,So Do I
+//define NORMAL_EMO_OFFSET   13  IT was a pleasure to work with you guys...but I learned structs :/
+//define SEIZURE_EMO_OFFSET  53  Goodbye infinite mode ideas via using infinite primes 1000000000000066600000000000001 you'll always live in my heart
 #define BOLD "\e[1m"
 #define FIX_FONT "\e[0m"
 #define WIPE_TERMINAL "\033[H\033[J"
@@ -15,47 +15,43 @@
 #define BRING_BACK_THE_CURSOR_FROM_THE_DEAD "\033[?25h" //Yeah I know it doesn't need to be that dramatic nor that long but C'MON WE ARE BUILDING A EMO JUKEBOX, DUH.
 #define FREQ 0.45
 
-const char *bringMeToLife = "How can you see into my eyes like open doors?\nLeading you down into my core\nWhere I've become so numb\nWithout a soul\nMy spirit's sleeping somewhere cold\nUntil you find it there and lead it back home\nWake me up inside (save me)\nCall my name and save me from the dark (wake me up)\nBid my blood to run (I can't wake up)\nBefore I come undone (save me)\nSave me from the nothing I've become\nNow that I know what I'm without\nYou can't just leave me\nBreathe into me and make me real\nBring (bring) me (me) to life\nWake me up inside (save me)\nCall my name and save me from the dark (wake me up)\nBid my blood to run (I can't wake up)\nBefore I come undone (save me)\nSave me from the nothing I've become\nBring me to life\nI've been living a lie\nThere's nothing inside\nBring me to life\nFrozen (frozen) inside without your touch\nWithout your love darling\nOnly (only) you are the life among the dead\nAll of this time I can't believe I couldn't see\nKept in the dark but you were there in front of me\nI've been sleeping a thousand years it seems\nGot to open my eyes to everything\nWithout a thought without a voice without a soul\nDon't let me die here\n(There must be something more) bring me to life\nWake me up inside (save me)\nCall my name and save me from the dark (wake me up)\nBid my blood to run (I can't wake up)\nBefore I come undone (save me)\nSave me from the nothing I've become\nBring me to life\nI've been living a lie\nThere's nothing inside\nBring me to life\n";
-//She Loves Purple,So Do I
 
-const char *iHateEverything = "Every time we lie awake\n"
-    "After every hit we take\n"
-    "Every feeling that I get\n"
-    "But I haven't missed you yet\n"
-    "Every roommate kept awake\n"
-    "By every sigh and scream we make\n"
-    "All the feelings that I get\n"
-    "But I still don't miss you yet\n"
-    "Only when I stop to think about it\n"
-    "I hate everything about you\n"
-    "Why do I love you?\n"
-    "I hate everything about you\n"
-    "Why do I love you?\n"
-    "Every time we lie awake\n"
-    "After every hit we take\n"
-    "Every feeling that I get\n"
-    "But I haven't missed you yet\n"
-    "Only when I stop to think about it\n"
-    "I hate everything about you\n"
-    "Why do I love you?\n"
-    "I hate everything about you\n"
-    "Why do I love you?\n"
-    "Only when I stop to think about you\n"
-    "I know\n"
-    "Only when you stop to think about me\n"
-    "Do you know?\n"
-    "I hate everything about you\n"
-    "Why do I love you?\n"
-    "You hate everything about me\n"
-    "Why do you love me?\n"
-    "I hate\n"
-    "You hate\n"
-    "I hate\n"
-    "You love me\n"
-    "I hate everything about you\n"
-    "Why do I love you?\n";
+char *myTherapySession[] = { "How can you see into my eyes like open doors?\nLeading you down into my core\nWhere I've become so numb\nWithout a soul\nMy spirit's sleeping somewhere cold\nUntil you find it there and lead it back home\nWake me up inside (save me)\nCall my name and save me from the dark (wake me up)\nBid my blood to run (I can't wake up)\nBefore I come undone (save me)\nSave me from the nothing I've become\nNow that I know what I'm without\nYou can't just leave me\nBreathe into me and make me real\nBring (bring) me (me) to life\nWake me up inside (save me)\nCall my name and save me from the dark (wake me up)\nBid my blood to run (I can't wake up)\nBefore I come undone (save me)\nSave me from the nothing I've become\nBring me to life\nI've been living a lie\nThere's nothing inside\nBring me to life\nFrozen (frozen) inside without your touch\nWithout your love darling\nOnly (only) you are the life among the dead\nAll of this time I can't believe I couldn't see\nKept in the dark but you were there in front of me\nI've been sleeping a thousand years it seems\nGot to open my eyes to everything\nWithout a thought without a voice without a soul\nDon't let me die here\n(There must be something more) bring me to life\nWake me up inside (save me)\nCall my name and save me from the dark (wake me up)\nBid my blood to run (I can't wake up)\nBefore I come undone (save me)\nSave me from the nothing I've become\nBring me to life\nI've been living a lie\nThere's nothing inside\nBring me to life\n",
+    
+        //Lithium Eva
+    "Lithium, don't want to lock me up inside\n"
+    "Lithium, don't want to forget how it feels without\n"
+    "Lithium, I want to stay in love with my sorrow\n"
+    "Don't want to let it lay me down this time\n"
+    "Drown my will to fly\n"
+    "Here in the darkness I know myself\n"
+    "Can't break free until I let it go\n"
+    "Let me go\n"
+    "Darling, I forgive you after all\n"
+    "Anything is better than to be alone\n"
+    "And in the end I guess I had to fall\n"
+    "Always find my place among the ashes\n"
+    "I can't hold on to me\n"
+    "Wonder what's wrong with me\n"
+    "Lithium, don't want to lock me up inside\n"
+    "Lithium, don't want to forget how it feels without\n"
+    "Lithium, I want to stay in love with my sorrow\n"
+    "Don't want to let it lay me down this time\n"
+    "Drown my will to fly\n"
+    "Here in the darkness I know myself\n"
+    "Can't break free until I let it go\n"
+    "Let me go\n"
+    "Ooh, ooh, ooh\n"
+    "Ooh, ooh, ooh\n"
+    "Ooh, ooh, ooh\n"
+    "Ooh, ooh, ooh\n"
+    "Lithium, don't want to lock me up inside\n"
+    "Lithium, don't want to forget how it feels without\n"
+    "Lithium, I want to stay in love with my sorrow\n"
+    "Stay in love with you\n"
+    "Oh\n",
 
-const char *myImmortal =
+        //My Immortal Eva
     "I'm so tired of being here\n"
     "Suppressed by all my childish fears\n"
     "And if you have to leave\n"
@@ -94,175 +90,47 @@ const char *myImmortal =
     "But you still have\n"
     "All of me\n"
     "All of me\n"
-    "All of me\n";
+    "All of me\n",
 
+    //I hate everything aboout you
+    "Every time we lie awake\n"
+    "After every hit we take\n"
+    "Every feeling that I get\n"
+    "But I haven't missed you yet\n"
+    "Every roommate kept awake\n"
+    "By every sigh and scream we make\n"
+    "All the feelings that I get\n"
+    "But I still don't miss you yet\n"
+    "Only when I stop to think about it\n"
+    "I hate everything about you\n"
+    "Why do I love you?\n"
+    "I hate everything about you\n"
+    "Why do I love you?\n"
+    "Every time we lie awake\n"
+    "After every hit we take\n"
+    "Every feeling that I get\n"
+    "But I haven't missed you yet\n"
+    "Only when I stop to think about it\n"
+    "I hate everything about you\n"
+    "Why do I love you?\n"
+    "I hate everything about you\n"
+    "Why do I love you?\n"
+    "Only when I stop to think about you\n"
+    "I know\n"
+    "Only when you stop to think about me\n"
+    "Do you know?\n"
+    "I hate everything about you\n"
+    "Why do I love you?\n"
+    "You hate everything about me\n"
+    "Why do you love me?\n"
+    "I hate\n"
+    "You hate\n"
+    "I hate\n"
+    "You love me\n"
+    "I hate everything about you\n"
+    "Why do I love you?\n",
 
-const char *howYouRemindMe =
-    "Never made it as a wise man\n"
-    "I couldn't cut it as a poor man stealing\n"
-    "Tired of living like a blind man\n"
-    "I'm sick of sight without a sense of feeling\n"
-    "And this is how you remind me\n"
-    "This is how you remind me\n"
-    "Of what I really am\n"
-    "This is how you remind me\n"
-    "Of what I really am\n"
-    "It's not like you to say sorry\n"
-    "I was waiting on a different story\n"
-    "This time I'm mistaken\n"
-    "For handing you a heart worth breaking\n"
-    "And I've been wrong\n"
-    "I've been down\n"
-    "To the bottom of every bottle\n"
-    "These five words in my head\n"
-    "Scream \"Are we having fun yet?\"\n"
-    "Yeah, yeah, yeah, no no\n"
-    "Yeah, yeah, yeah, no no\n"
-    "It's not like you didn't know that\n"
-    "I said I love you and I swear I still do\n"
-    "And it must have been so bad\n"
-    "Cause living with him must have damn near killed you\n"
-    "And this is how you remind me\n"
-    "Of what I really am\n"
-    "This is how you remind me\n"
-    "Of what I really am\n"
-    "It's not like you to say sorry\n"
-    "I was waiting on a different story\n"
-    "This time I'm mistaken\n"
-    "For handing you a heart worth breaking\n"
-    "And I've been wrong\n"
-    "I've been down\n"
-    "To the bottom of every bottle\n"
-    "These five words in my head\n"
-    "Scream \"Are we having fun yet?\"\n"
-    "Yeah, yeah, yeah, no no\n"
-    "Yeah, yeah, yeah, no no\n"
-    "Yeah, yeah, yeah, no no\n"
-    "Yeah, yeah, yeah, no no\n"
-    "Never made it as a wise man\n"
-    "I couldn't cut it as a poor man stealing\n"
-    "And this is how you remind me\n"
-    "This is how you remind me\n"
-    "This is how you remind me\n"
-    "Of what I really am\n"
-    "This is how you remind me\n"
-    "Of what I really am\n"
-    "It's not like you to say sorry\n"
-    "I was waiting on a different story\n"
-    "This time I'm mistaken\n"
-    "For handing you a heart worth breaking\n"
-    "And I've been wrong\n"
-    "I've been down\n"
-    "To the bottom of every bottle\n"
-    "These five words in my head\n"
-    "Scream \"Are we having fun yet?\"\n"
-    "Yeah, yeah\n"
-    "Are we having fun yet?\n"
-    "Yeah, yeah\n"
-    "Are we having fun yet?\n"
-    "Yeah, yeah\n"
-    "Are we having fun yet?\n"
-    "Yeah, yeah\n"
-    "No no\n";
-
-
-const char *nirvanaLithium = 
-    "I'm so happy 'cause today I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly but that's okay 'cause so are you\n"
-    "We broke our mirrors\n"
-    "Sunday morning is everyday for all I care\n"
-    "And I'm not scared\n"
-    "Light my candles in a daze 'cause I found God\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "I'm so lonely, that's okay, I shaved my head\n"
-    "And I'm not sad\n"
-    "And just maybe I'm to blame for all I've heard\n"
-    "But I'm not sure\n"
-    "I'm so excited, I can't wait to meet you there\n"
-    "And I don't care\n"
-    "I'm so horny, that's okay, my will is good\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "I like it, I'm not gonna crack\n"
-    "I miss you, I'm not gonna crack\n"
-    "I love you, I'm not gonna crack\n"
-    "I killed you, I'm not gonna crack\n"
-    "I like it, I'm not gonna crack\n"
-    "I miss you, I'm not gonna crack\n"
-    "I love you, I'm not gonna crack\n"
-    "I killed you, I'm not gonna crack\n"
-    "I'm so happy 'cause today I found my friends\n"
-    "They're in my head\n"
-    "I'm so ugly, that's okay 'cause so are you\n"
-    "We broke our mirrors\n"
-    "Sunday morning is everyday for all I care\n"
-    "And I'm not scared\n"
-    "Light my candles in a daze 'cause I found God\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "Yeah\n"
-    "I like it, I'm not gonna crack\n"
-    "I miss you, I'm not gonna crack\n"
-    "I love you, I'm not gonna crack\n"
-    "I killed you, I'm not gonna crack\n"
-    "I like it, I'm not gonna crack\n"
-    "I miss you, I'm not gonna crack\n"
-    "I love you, I'm not gonna crack\n"
-    "I killed you, I'm not gonna crack\n";
-
-
-
-
-    const char *evanescenceLithium =
-    "Lithium, don't want to lock me up inside\n"
-    "Lithium, don't want to forget how it feels without\n"
-    "Lithium, I want to stay in love with my sorrow\n"
-    "Don't want to let it lay me down this time\n"
-    "Drown my will to fly\n"
-    "Here in the darkness I know myself\n"
-    "Can't break free until I let it go\n"
-    "Let me go\n"
-    "Darling, I forgive you after all\n"
-    "Anything is better than to be alone\n"
-    "And in the end I guess I had to fall\n"
-    "Always find my place among the ashes\n"
-    "I can't hold on to me\n"
-    "Wonder what's wrong with me\n"
-    "Lithium, don't want to lock me up inside\n"
-    "Lithium, don't want to forget how it feels without\n"
-    "Lithium, I want to stay in love with my sorrow\n"
-    "Don't want to let it lay me down this time\n"
-    "Drown my will to fly\n"
-    "Here in the darkness I know myself\n"
-    "Can't break free until I let it go\n"
-    "Let me go\n"
-    "Ooh, ooh, ooh\n"
-    "Ooh, ooh, ooh\n"
-    "Ooh, ooh, ooh\n"
-    "Ooh, ooh, ooh\n"
-    "Lithium, don't want to lock me up inside\n"
-    "Lithium, don't want to forget how it feels without\n"
-    "Lithium, I want to stay in love with my sorrow\n"
-    "Stay in love with you\n"
-    "Oh\n";
-
-
-const char *theUnforgiven =
+        //Unforgiven (my hardcoding habbits)
     "New blood joins this earth\n"
     "And quickly he's subdued\n"
     "Through constant pained disgrace\n"
@@ -332,10 +200,9 @@ const char *theUnforgiven =
     "So I dub thee unforgiven\n"
     "Never free\n"
     "Never me\n"
-    "So I dub thee unforgiven\n";
-
-
-const char *fadeToBlack =
+    "So I dub thee unforgiven\n",
+    
+            //Fade to black(my sleep schedule)
     "Life it seems will fade away\n"
     "Drifting further every day\n"
     "Getting lost within myself\n"
@@ -356,9 +223,140 @@ const char *fadeToBlack =
     "Now I can't think, think why I should even try\n"
     "Yesterday seems as though it never existed\n"
     "Death greets me warm, now I will just say goodbye\n"
-    "Goodbye\n";
+    "Goodbye\n",
+
+    //How you remind me
+    "Never made it as a wise man\n"
+    "I couldn't cut it as a poor man stealing\n"
+    "Tired of living like a blind man\n"
+    "I'm sick of sight without a sense of feeling\n"
+    "And this is how you remind me\n"
+    "This is how you remind me\n"
+    "Of what I really am\n"
+    "This is how you remind me\n"
+    "Of what I really am\n"
+    "It's not like you to say sorry\n"
+    "I was waiting on a different story\n"
+    "This time I'm mistaken\n"
+    "For handing you a heart worth breaking\n"
+    "And I've been wrong\n"
+    "I've been down\n"
+    "To the bottom of every bottle\n"
+    "These five words in my head\n"
+    "Scream \"Are we having fun yet?\"\n"
+    "Yeah, yeah, yeah, no no\n"
+    "Yeah, yeah, yeah, no no\n"
+    "It's not like you didn't know that\n"
+    "I said I love you and I swear I still do\n"
+    "And it must have been so bad\n"
+    "Cause living with him must have damn near killed you\n"
+    "And this is how you remind me\n"
+    "Of what I really am\n"
+    "This is how you remind me\n"
+    "Of what I really am\n"
+    "It's not like you to say sorry\n"
+    "I was waiting on a different story\n"
+    "This time I'm mistaken\n"
+    "For handing you a heart worth breaking\n"
+    "And I've been wrong\n"
+    "I've been down\n"
+    "To the bottom of every bottle\n"
+    "These five words in my head\n"
+    "Scream \"Are we having fun yet?\"\n"
+    "Yeah, yeah, yeah, no no\n"
+    "Yeah, yeah, yeah, no no\n"
+    "Yeah, yeah, yeah, no no\n"
+    "Yeah, yeah, yeah, no no\n"
+    "Never made it as a wise man\n"
+    "I couldn't cut it as a poor man stealing\n"
+    "And this is how you remind me\n"
+    "This is how you remind me\n"
+    "This is how you remind me\n"
+    "Of what I really am\n"
+    "This is how you remind me\n"
+    "Of what I really am\n"
+    "It's not like you to say sorry\n"
+    "I was waiting on a different story\n"
+    "This time I'm mistaken\n"
+    "For handing you a heart worth breaking\n"
+    "And I've been wrong\n"
+    "I've been down\n"
+    "To the bottom of every bottle\n"
+    "These five words in my head\n"
+    "Scream \"Are we having fun yet?\"\n"
+    "Yeah, yeah\n"
+    "Are we having fun yet?\n"
+    "Yeah, yeah\n"
+    "Are we having fun yet?\n"
+    "Yeah, yeah\n"
+    "Are we having fun yet?\n"
+    "Yeah, yeah\n"
+    "No no\n",
+
+    //Lithium - Nirvana
+
+    
+    "I'm so happy 'cause today I found my friends\n"
+    "They're in my head\n"
+    "I'm so ugly but that's okay 'cause so are you\n"
+    "We broke our mirrors\n"
+    "Sunday morning is everyday for all I care\n"
+    "And I'm not scared\n"
+    "Light my candles in a daze 'cause I found God\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "I'm so lonely, that's okay, I shaved my head\n"
+    "And I'm not sad\n"
+    "And just maybe I'm to blame for all I've heard\n"
+    "But I'm not sure\n"
+    "I'm so excited, I can't wait to meet you there\n"
+    "And I don't care\n"
+    "I'm so horny, that's okay, my will is good\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "I like it, I'm not gonna crack\n"
+    "I miss you, I'm not gonna crack\n"
+    "I love you, I'm not gonna crack\n"
+    "I killed you, I'm not gonna crack\n"
+    "I like it, I'm not gonna crack\n"
+    "I miss you, I'm not gonna crack\n"
+    "I love you, I'm not gonna crack\n"
+    "I killed you, I'm not gonna crack\n"
+    "I'm so happy 'cause today I found my friends\n"
+    "They're in my head\n"
+    "I'm so ugly, that's okay 'cause so are you\n"
+    "We broke our mirrors\n"
+    "Sunday morning is everyday for all I care\n"
+    "And I'm not scared\n"
+    "Light my candles in a daze 'cause I found God\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "Yeah\n"
+    "I like it, I'm not gonna crack\n"
+    "I miss you, I'm not gonna crack\n"
+    "I love you, I'm not gonna crack\n"
+    "I killed you, I'm not gonna crack\n"
+    "I like it, I'm not gonna crack\n"
+    "I miss you, I'm not gonna crack\n"
+    "I love you, I'm not gonna crack\n"
+    "I killed you, I'm not gonna crack\n"
+};
 
 
+//You'll stay as constant Mr.Astley
 const char *rickroll = 
     "We're no strangers to love\n"
     "You know the rules and so do I\n"
@@ -399,7 +397,8 @@ const char *rickroll =
 
 
 
-const char *angelWithAShotgun = 
+char *ADHDSongs[] = {
+        //Angel With A Shotgun
     "I'm an angel with a shotgun\n"
     "Fighting 'til the war's won\n"
     "I don't care if heaven won't take me back\n"
@@ -436,10 +435,10 @@ const char *angelWithAShotgun =
     "I'll throw away my faith, babe, just to keep you safe\n"
     "Don't you know you're everything I have?\n"
     "And I wanna live, not just survive\n"
-    "Tonight\n";
+    "Tonight\n",
 
 
-    const char *rockefellerStreet =
+            //Rockefeller Street
     "Daylight is fading away, night silhouettes in the sky\n"
     "LED lights are flashing on towers\n"
     "It's Manhattan's magical time\n"
@@ -473,152 +472,11 @@ const char *angelWithAShotgun =
     "1273 down the Rockefeller Street\n"
     "Life is marching on, do you feel that?\n"
     "1273 down the Rockefeller Street\n"
-    "Everything is more than surreal\n";
+    "Everything is more than surreal\n",
 
 
-const char *prettyRaveGirl = 
-    "I know this pretty rave girl\n"
-    "Always think about her\n"
-    "And when she says hi to me\n"
-    "Butterflies go right through me\n"
-    "And when I see her dancing\n"
-    "Wanna take a chance in\n"
-    "Getting a little closer\n"
-    "And maybe get to know her\n"
-    "Pretty rave girl\n"
-    "I know this pretty rave girl\n"
-    "Always think about her\n"
-    "And when she says hi to me\n"
-    "Butterflies go right through me\n"
-    "And when I see her dancing\n"
-    "Wanna take a chance in\n"
-    "Getting a little closer\n"
-    "And maybe get to know her\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n"
-    "I know this pretty rave girl\n"
-    "Always think about her\n"
-    "And when she says hi to me\n"
-    "Butterflies go right through me\n"
-    "And when I see her dancing\n"
-    "Wanna take a chance in\n"
-    "Getting a little closer\n"
-    "And maybe get to know her\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n"
-    "Pretty rave girl\n";
-
-
-const char *takeAHint = 
-    "Why am I always hit on by the boys I never like?\n"
-    "I can always see 'em coming, from the left or from the right\n"
-    "I don't want to be a priss, I'm just try'na be polite\n"
-    "But it always seems to bite me in the...\n"
-    "Ask me for my number, yeah, you put me on the spot\n"
-    "You think that we should hook-up, but I think that we should not\n"
-    "You had me at hello, then you opened up your mouth\n"
-    "And that is when it started going south\n"
-    "Oh!\n"
-    "Get your hands off my hips, 'fore I'll punch you in the lips\n"
-    "Stop your staring at my... Hey!\n"
-    "Take a hint, take a hint\n"
-    "No you can't buy me a drink, let me tell you what I think\n"
-    "I think you could use a mint\n"
-    "Take a hint, take a hint\n"
-    "T-take a hint, take a hint\n"
-    "I hate you like I love you in the same sentence\n"
-    "I can't be the one to fill the space in your bed, yeah\n"
-    "I guess you think you still got me\n"
-    "I could have you if I wanted\n"
-    "But sorry, it ain't happening, oh\n"
-    "Oh!\n"
-    "Get your hands off my hips, 'fore I'll punch you in the lips\n"
-    "Stop your staring at my... Hey!\n"
-    "Take a hint, take a hint\n"
-    "No you can't buy me a drink, let me tell you what I think\n"
-    "I think you could use a mint\n"
-    "Take a hint, take a hint\n"
-    "What about \"no\" don't you get?\n"
-    "So go and tell your friends\n"
-    "I'm not really interested\n"
-    "It's about time that you're leavin'\n"
-    "I'm gonna count to three and\n"
-    "Open my eyes and\n"
-    "You'll be gone\n"
-    "One\n"
-    "Get your hands off my...\n"
-    "Two\n"
-    "Or I'll punch you in the...\n"
-    "Three\n"
-    "Stop your staring at my... Hey!\n"
-    "Take a hint, take a hint\n"
-    "I am not your missing link\n"
-    "Let me tell you what I think\n"
-    "I think you could use a mint\n"
-    "Take a hint, take a hint\n"
-    "Take a hint, take a hint\n"
-    "Woah!\n"
-    "Get your hands off my hips, 'fore I'll punch you in the lips\n"
-    "Stop your staring at my... Hey!\n"
-    "Take a hint, take a hint\n"
-    "T-take a hint, take a hint\n";
-
-
-const char *howToBeAHeartbreaker = 
-    "Rule number one, is that you gotta have fun\n"
-    "But baby when you're done, you gotta be the first to run\n"
-    "Rule number two, just don't get attached to\n"
-    "Somebody you could lose\n"
-    "So le-let me tell you\n"
-    "This is how to be a heartbreaker\n"
-    "Boys they like a little danger\n"
-    "We'll get him falling for a stranger\n"
-    "A player, singing I lo-lo-lo love you\n"
-    "How to be a heartbreaker\n"
-    "Boys they like the look of danger\n"
-    "We'll get him falling for a stranger\n"
-    "A player, singing I lo-lo-lo love you\n"
-    "At least I think I do\n"
-    "Cause I lo-lo-lo love you\n"
-    "Rule number three, wear your heart on your cheek\n"
-    "But never on your sleeve, unless you wanna taste defeat\n"
-    "Rule number four, gotta be looking pure\n"
-    "Kiss him goodbye at the door, and leave him wanting more, more\n"
-    "This is how to be a heartbreaker\n"
-    "Boys they like a little danger\n"
-    "We'll get him falling for a stranger\n"
-    "A player, singing I lo-lo-lo love you\n"
-    "How to be a heartbreaker\n"
-    "Boys they like the look of danger\n"
-    "We'll get him falling for a stranger\n"
-    "A player, singing I lo-lo-lo love you\n"
-    "At least I think I do\n"
-    "Cause I lo-lo-lo love you\n"
-    "Girls, we do, whatever it will take\n"
-    "Cause girls don't want, we don't want our hearts to break in two\n"
-    "So it's better to be fake, can't risk losing\n"
-    "In love again, babe\n"
-    "This is how to be a heartbreaker\n"
-    "Boys they like a little danger\n"
-    "We'll get him falling for a stranger\n"
-    "A player, singing I lo-lo-lo love you\n"
-    "How to be a heartbreaker\n"
-    "Boys they like the look of danger\n"
-    "We'll get him falling for a stranger\n"
-    "A player, singing I lo-lo-lo love you\n"
-    "Cause I lo-lo-lo love you\n"
-    "At least I think I do\n";
     
-
-
-const char *teeth = 
+                //Teeth
     "Some days, you're the only thing I know\n"
     "Only thing that's burning when the nights grow cold\n"
     "Can't look away, can't look away\n"
@@ -670,10 +528,9 @@ const char *teeth =
     "Teeth\n"
     "Teeth\n"
     "Teeth\n"
-    "Never, never, never ever let go\n";
+    "Never, never, never ever let go\n",
 
-
-const char *thunder = 
+            //Thunder
     "Just a young gun with a quick fuse\n"
     "I was uptight, wanna let loose\n"
     "I was dreaming of bigger things\n"
@@ -726,10 +583,118 @@ const char *thunder =
     "Thunder, thun-, thunder\n"
     "Thun-thun-thunder, thunder, thunder\n"
     "Thunder, thun-, thunder\n"
-    "Thun-thun-thunder, thunder\n";
+    "Thun-thun-thunder, thunder\n",
 
 
-const char *lightItUp = 
+
+
+            //Take a hint
+
+ 
+    "Why am I always hit on by the boys I never like?\n"
+    "I can always see 'em coming, from the left or from the right\n"
+    "I don't want to be a priss, I'm just try'na be polite\n"
+    "But it always seems to bite me in the...\n"
+    "Ask me for my number, yeah, you put me on the spot\n"
+    "You think that we should hook-up, but I think that we should not\n"
+    "You had me at hello, then you opened up your mouth\n"
+    "And that is when it started going south\n"
+    "Oh!\n"
+    "Get your hands off my hips, 'fore I'll punch you in the lips\n"
+    "Stop your staring at my... Hey!\n"
+    "Take a hint, take a hint\n"
+    "No you can't buy me a drink, let me tell you what I think\n"
+    "I think you could use a mint\n"
+    "Take a hint, take a hint\n"
+    "T-take a hint, take a hint\n"
+    "I hate you like I love you in the same sentence\n"
+    "I can't be the one to fill the space in your bed, yeah\n"
+    "I guess you think you still got me\n"
+    "I could have you if I wanted\n"
+    "But sorry, it ain't happening, oh\n"
+    "Oh!\n"
+    "Get your hands off my hips, 'fore I'll punch you in the lips\n"
+    "Stop your staring at my... Hey!\n"
+    "Take a hint, take a hint\n"
+    "No you can't buy me a drink, let me tell you what I think\n"
+    "I think you could use a mint\n"
+    "Take a hint, take a hint\n"
+    "What about \"no\" don't you get?\n"
+    "So go and tell your friends\n"
+    "I'm not really interested\n"
+    "It's about time that you're leavin'\n"
+    "I'm gonna count to three and\n"
+    "Open my eyes and\n"
+    "You'll be gone\n"
+    "One\n"
+    "Get your hands off my...\n"
+    "Two\n"
+    "Or I'll punch you in the...\n"
+    "Three\n"
+    "Stop your staring at my... Hey!\n"
+    "Take a hint, take a hint\n"
+    "I am not your missing link\n"
+    "Let me tell you what I think\n"
+    "I think you could use a mint\n"
+    "Take a hint, take a hint\n"
+    "Take a hint, take a hint\n"
+    "Woah!\n"
+    "Get your hands off my hips, 'fore I'll punch you in the lips\n"
+    "Stop your staring at my... Hey!\n"
+    "Take a hint, take a hint\n"
+    "T-take a hint, take a hint\n",
+
+    
+        //How to Be a Heartbreaker
+
+    "Rule number one, is that you gotta have fun\n"
+    "But baby when you're done, you gotta be the first to run\n"
+    "Rule number two, just don't get attached to\n"
+    "Somebody you could lose\n"
+    "So le-let me tell you\n"
+    "This is how to be a heartbreaker\n"
+    "Boys they like a little danger\n"
+    "We'll get him falling for a stranger\n"
+    "A player, singing I lo-lo-lo love you\n"
+    "How to be a heartbreaker\n"
+    "Boys they like the look of danger\n"
+    "We'll get him falling for a stranger\n"
+    "A player, singing I lo-lo-lo love you\n"
+    "At least I think I do\n"
+    "Cause I lo-lo-lo love you\n"
+    "Rule number three, wear your heart on your cheek\n"
+    "But never on your sleeve, unless you wanna taste defeat\n"
+    "Rule number four, gotta be looking pure\n"
+    "Kiss him goodbye at the door, and leave him wanting more, more\n"
+    "This is how to be a heartbreaker\n"
+    "Boys they like a little danger\n"
+    "We'll get him falling for a stranger\n"
+    "A player, singing I lo-lo-lo love you\n"
+    "How to be a heartbreaker\n"
+    "Boys they like the look of danger\n"
+    "We'll get him falling for a stranger\n"
+    "A player, singing I lo-lo-lo love you\n"
+    "At least I think I do\n"
+    "Cause I lo-lo-lo love you\n"
+    "Girls, we do, whatever it will take\n"
+    "Cause girls don't want, we don't want our hearts to break in two\n"
+    "So it's better to be fake, can't risk losing\n"
+    "In love again, babe\n"
+    "This is how to be a heartbreaker\n"
+    "Boys they like a little danger\n"
+    "We'll get him falling for a stranger\n"
+    "A player, singing I lo-lo-lo love you\n"
+    "How to be a heartbreaker\n"
+    "Boys they like the look of danger\n"
+    "We'll get him falling for a stranger\n"
+    "A player, singing I lo-lo-lo love you\n"
+    "Cause I lo-lo-lo love you\n"
+    "At least I think I do\n",
+    
+
+
+
+            //Light it Up
     "Just like the street lights lit this town\n"
     "Like a fire in a blaze, gotta burn it down\n"
     "Can't be afraid to live this out\n"
@@ -757,17 +722,64 @@ const char *lightItUp =
     "Just like the sunrise, we gonna light it up\n"
     "Now\n"
     "Light it up, light it up\n"
-    "We light it, light it up\n";
+    "We light it, light it up\n",
 
+            //Pretty Rave Girl 
+    "I know this pretty rave girl\n"
+    "Always think about her\n"
+    "And when she says hi to me\n"
+    "Butterflies go right through me\n"
+    "And when I see her dancing\n"
+    "Wanna take a chance in\n"
+    "Getting a little closer\n"
+    "And maybe get to know her\n"
+    "Pretty rave girl\n"
+    "I know this pretty rave girl\n"
+    "Always think about her\n"
+    "And when she says hi to me\n"
+    "Butterflies go right through me\n"
+    "And when I see her dancing\n"
+    "Wanna take a chance in\n"
+    "Getting a little closer\n"
+    "And maybe get to know her\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+    "I know this pretty rave girl\n"
+    "Always think about her\n"
+    "And when she says hi to me\n"
+    "Butterflies go right through me\n"
+    "And when I see her dancing\n"
+    "Wanna take a chance in\n"
+    "Getting a little closer\n"
+    "And maybe get to know her\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+    "Pretty rave girl\n"
+};
+
+
+typedef struct {
+    int songIndex;
+    int iWantEpilepsySeizures;
+}songData;
 
 
 void epilepsy_typewriter(const char* song);
 void typewriter(const char* song);
 void sigintHandler(int sig);
 void asciiPrinter(void);
-int emoInput(void);
-int nightcoreInput(void);
+songData emoInput(void);
+songData nightcoreInput(void);
 int genreMenu(void);
+
+
 
 
 enum emoSongList {
@@ -781,7 +793,9 @@ enum emoSongList {
     LITHIUM_NIRVANA
 };
 
-enum nightcoreSongList {
+enum ADHDcore {
+
+        
     ANGEL_WITH_A_SHOTGUN,
     ROCKEFELLER_STREET,
     TEETH,
@@ -793,13 +807,13 @@ enum nightcoreSongList {
 };
 
 
-typedef void (*writer)(const char *lyrics);
+typedef void (*WriterFunction)(const char *lyrics);
 
-typedef int (*MenuFunction)();
+typedef songData (*MenuFunction)();
 
-writer writerType[] = {
-    epilepsy_typewriter,
-    typewriter
+WriterFunction writerType[] = {
+    typewriter,
+    epilepsy_typewriter
 };
 
 MenuFunction genre_menus[] = {
@@ -821,149 +835,37 @@ int main(void)
     setvbuf(stdout,NULL,_IONBF,0);
     signal(SIGINT,sigintHandler);
 
-    while(1)
+    while (1) //Yeah I ain't giving up my infinite loop unless you use Ctrl+C to roll rickroll dice
     {
         int genreChoice = genreMenu();
         if (genreChoice)
         {
-            int songChoice = genre_menus[genreChoice]();
-            if (songChoice < 13)
+            MenuFunction genre = genre_menus[genreChoice];
+            songData selectedSong = genre(); 
+            if (selectedSong.songIndex == -1)
             {
-                switch (songChoice-1)
-                {
-                    case ANGEL_WITH_A_SHOTGUN:
-                        epilepsy_typewriter(angelWithAShotgun);
-                        break;
-                    
-                    
-                    case ROCKEFELLER_STREET:
-                        epilepsy_typewriter(rockefellerStreet);
-                        break;
-                    
-                        
-                    case TEETH:
-                        epilepsy_typewriter(teeth);
-                        break;
-                    
-                        
-                    case THUNDER:
-                        epilepsy_typewriter(thunder);
-                        break;
-                    
-                        
-                    case TAKE_A_HINT:
-                        epilepsy_typewriter(takeAHint);
-                        break;
-                    
-                        
-                    case HOW_TO_BE_A_HB:
-                        epilepsy_typewriter(howToBeAHeartbreaker);
-                        break;
-                    
-                        
-                    case PRETTY_RAVE_GIRL:
-                        epilepsy_typewriter(prettyRaveGirl);
-                        break;
-                }
-            }
-
-            else if (songChoice > 53)
+                return(2);
+            } //As I said that's gonna help me
+            else 
             {
-                songChoice = (songChoice % SEIZURE_EMO_OFFSET);
-                switch (songChoice-1)
+                WriterFunction writer = writerType[selectedSong.iWantEpilepsySeizures];
+                switch (genreChoice)
                 {
-                    case BRING_ME_TO_LIFE:
-                        epilepsy_typewriter(bringMeToLife);
+                    case 1:
+                        writer(myTherapySession[selectedSong.songIndex-1]);
                         break;
-                    
-                        
-                    case LITHIUM_EVA:
-                        epilepsy_typewriter(evanescenceLithium);
+                    case 2:
+                        writer(ADHDSongs[selectedSong.songIndex-1]);
                         break;
-                    
-                        
-                    case MY_IMMORTAL:
-                        epilepsy_typewriter(myImmortal);
-                        break;
-                    
-                        
-                    case I_HATE_EVERYTHING_ABOUT_C:
-                        epilepsy_typewriter(iHateEverything);
-                        break;
-                    
-                        
-                    case UNFORGIVEN:
-                        epilepsy_typewriter(theUnforgiven);
-                        break;
-                    
-                        
-                    case FADE_TO_BLACK:
-                        epilepsy_typewriter(fadeToBlack);
-                        break;
-                    
-                        
-                    case HOW_YOU_REMIND_ME:
-                        epilepsy_typewriter(howYouRemindMe);
-                        break;
-                    
-                        
-                    case LITHIUM_NIRVANA:
-                        epilepsy_typewriter(nirvanaLithium);
-                        break;
-                
-                }
+                    }
             }
             
-            else{
-                songChoice = (songChoice % NORMAL_EMO_OFFSET);
-                switch (songChoice-1)
-                {
-                    case BRING_ME_TO_LIFE:
-                        typewriter(bringMeToLife);
-                        break;
-                    
-                        
-                    case LITHIUM_EVA:
-                        typewriter(evanescenceLithium);
-                        break;
-                    
-                        
-                    case MY_IMMORTAL:
-                        typewriter(myImmortal);
-                        break;
-                    
-                        
-                    case I_HATE_EVERYTHING_ABOUT_C:
-                        typewriter(iHateEverything);
-                        break;
-                    
-                        
-                    case UNFORGIVEN:
-                        typewriter(theUnforgiven);
-                        break;
-                    
-                        
-                    case FADE_TO_BLACK:
-                        typewriter(fadeToBlack);
-                        break;
-                    
-                        
-                    case HOW_YOU_REMIND_ME:
-                        typewriter(howYouRemindMe);
-                        break;
-                    
-                        
-                    case LITHIUM_NIRVANA:
-                        typewriter(nirvanaLithium);
-                        break;
-
-                }
-            
-            
-            }
-
         }
+        else {return(1);} //Menu Error Code (from that point I'll act like every error starting from 1-n to determine shit easier)
+        printf(WIPE_TERMINAL);
     }
+    
+    
     return(0);
 }
 
@@ -983,10 +885,12 @@ void sigintHandler(int sig) //Ctrl+C magic
 }
 
 
-int emoInput(void)
+songData emoInput(void)
 {
-    int choice = -1;
-
+   
+    songData songPrefs;
+    songPrefs.songIndex = -1;
+    songPrefs.iWantEpilepsySeizures = 0;
     const char *depressed_titles[] = {
         "Bring Me To Life - Evanescence",
         "Lithium - Evanescence",
@@ -1010,12 +914,13 @@ int emoInput(void)
     printf(FIX_FONT);
     printf("Please select a song(1-%d) or Ctrl+C to exit:",songCount-1); //-1 Because of NULL -                                                      
     //Program -for some reason- doesn't know how to handle just an 'enter' stroke please don't > /// < 
-    if(scanf("%d", &choice) != 1 || choice < 1 || choice > songCount)  //I'll probably make the length dynamic one day but not today at 5.57AM
+    if(scanf("%d", &songPrefs.songIndex) != 1 || songPrefs.songIndex < 1 || songPrefs.songIndex > songCount)  //I'll probably make the length dynamic one day but not today at 5.57AM
     {
         int c;
         while ((c = getchar()) != '\n' && c != EOF) { } //To clear stdin buffer ig my bro said trust me 
         printf("Bro...either try not to be a idiot or Delta the fuck out\n"); //Delta as in displacement a 'Naive' way to GTFO...(not physics 101 flex)
-        return(0);
+        songPrefs.songIndex = -1;
+        return(songPrefs);
     } 
     else
     {
@@ -1031,28 +936,29 @@ int emoInput(void)
             switch (reply)
             {
                 case 'y':
-                    return(choice+SEIZURE_EMO_OFFSET);
+                    songPrefs.iWantEpilepsySeizures = 1;
+                    return(songPrefs);
                     break;
                 
                 default:
-                    return(choice+NORMAL_EMO_OFFSET);
+                    return(songPrefs);
                     break;
             }
         }
         else
         {
+            songPrefs.iWantEpilepsySeizures = -1;
             printf("Fuck you.Sincerely...\n");
-            return(0);
+            return(songPrefs);
         }
         
     }
 }
 
 
-int nightcoreInput(void)
+songData nightcoreInput(void)
 {
-    int choice = -1;
-
+    songData songPrefs = {-1,1};
     char *nightcoreSongs[] = {"Angel with a Shotgun","Rockefeller Street",
             "Teeth","Thunder","Take a Hint","How to be a Heartbreaker","Light it Up","Pretty Rave Girl",NULL
     };
@@ -1069,22 +975,50 @@ int nightcoreInput(void)
 
     printf("Please select a poison(1-%d) or Ctrl+C to exit:",songCount-1);                                                      
     //Program -for some reason- doesn't know how to handle just an 'enter' stroke please don't > /// < 
-    if(scanf("%d", &choice) != 1 || choice < 1 || choice > songCount)  
+    if(scanf("%d", &songPrefs.songIndex) != 1 || songPrefs.songIndex < 1 || songPrefs.songIndex > songCount)  
     {
         int c;
         while ((c = getchar()) != '\n' && c != EOF) { } 
         printf("Bro...either try not to be a idiot or Delta the fuck out\n"); //Delta as in displacement a 'Naive' way to GTFO yeah yeah what ever.
-        return(0);
+        songPrefs.songIndex = -1;
+        return(songPrefs);
     } 
     else
     {
-        return(choice);
+        return(songPrefs);
+    }
+}
+
+int genreMenu(void)
+{
+    int lengthOfCatalouge = sizeof(genres)/sizeof(genres[0]);
+    int genrePick = -1;
+    printf(WIPE_TERMINAL);
+    printf(BOLD "\t\t\t_-JUST A SHITTY JUKEBOX-_\n" FIX_FONT);
+    asciiPrinter();
+    printf(BOLD "Genres\n" FIX_FONT);
+    printf("1)%s\n",genres[0]);
+    printf("2)%s\n\n",genres[1]);
+
+    printf("Select one genre to see its special menu(1-2):");
+    if (scanf("%d",&genrePick) != 1 || genrePick < 1 || genrePick > lengthOfCatalouge)
+    {   
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF) { } 
+        printf("Bro how hard can it be to pick 1 or 2? Delta...\n");
+        return(0); 
+    }
+    else
+    {
+        return(genrePick);
     }
 }
 
 
 void epilepsy_typewriter(const char* song) {
+    printf(VANISH_CURSOR);
     printf(WIPE_TERMINAL);
+    usleep(250000);
     // hide cursor clear screen and shit.
     long color_timer = 0;
     while (*song != '\0') {
@@ -1097,9 +1031,9 @@ void epilepsy_typewriter(const char* song) {
 
         if (*song == '\n') 
         {
-            usleep(45000);
+            usleep(75000);
         }
-        else {usleep(13555);}
+        else {usleep(135550);}
         song++;
         color_timer++;
     }
@@ -1120,43 +1054,18 @@ void typewriter(const char* song)
     {
         if (*song == '\n')
         {
-            usleep(290000); //I'm selecting those totally vibe based
+            usleep(320000); //I'm selecting those totally vibe based
             printf("%c\a",*song);
         }
         else
         {
             printf("%c",*song);
-            usleep(8*1200);
+            usleep(8*1440); //1440p montior vibes...
         }
         song++;
     }
     sleep(1);
     printf(WIPE_TERMINAL);
-}
-
-int genreMenu(void)
-{
-    int lengthOfCatalouge = sizeof(genres)/sizeof(genres[0]);
-    int genrePick = -1;
-    printf(WIPE_TERMINAL);
-    printf(BOLD "\t\t\t_-JUST A SHITTY JUKEBOX-_\n" FIX_FONT);
-    asciiPrinter();
-    printf(BOLD "Genres\n" FIX_FONT);
-    printf("1)%s\n",genres[0]);
-    printf("2)%s\n\n",genres[1]);
-
-    printf("Select one genre to see it's special menu(1-2):");
-    if (scanf("%d",&genrePick) != 1 || genrePick < 1 || genrePick > lengthOfCatalouge)
-    {   
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF) { } 
-        printf("Bro how hard can it be to pick 1 or 2? Delta...\n");
-        return(0); 
-    }
-    else
-    {
-        return(genrePick);
-    }
 }
 
 void asciiPrinter()
