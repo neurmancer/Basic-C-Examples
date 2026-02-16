@@ -1104,6 +1104,8 @@ void epilepsy_typewriter(const char* song) {
         color_timer++;
     }
     printf("\033[0m"); // reset colors
+    sleep(1);
+    printf(WIPE_TERMINAL);
 }
 
 
@@ -1124,10 +1126,12 @@ void typewriter(const char* song)
         else
         {
             printf("%c",*song);
-            usleep(8*1150);
+            usleep(8*1200);
         }
         song++;
     }
+    sleep(1);
+    printf(WIPE_TERMINAL);
 }
 
 int genreMenu(void)
@@ -1135,8 +1139,8 @@ int genreMenu(void)
     int lengthOfCatalouge = sizeof(genres)/sizeof(genres[0]);
     int genrePick = -1;
     printf(WIPE_TERMINAL);
-    printAscii();
-    printf(BOLD "\t\t\t _-JUST A SHITTY JUKEBOX-_\n" FIX_FONT);
+    printf(BOLD "\t\t\t_-JUST A SHITTY JUKEBOX-_\n" FIX_FONT);
+    asciiPrinter();
     printf(BOLD "Genres\n" FIX_FONT);
     printf("1)%s\n",genres[0]);
     printf("2)%s\n\n",genres[1]);
@@ -1160,7 +1164,7 @@ void asciiPrinter()
 
     for (int i = 0; i < (sizeof(asciiArt)/sizeof(asciiArt[0])); i++)
     {
-        printf("\t\t\t%s\n",asciiArt[i]);
+        printf("  \t\t\t%s\n",asciiArt[i]);
     }
 
     printf("\n\n");

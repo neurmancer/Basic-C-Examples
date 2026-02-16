@@ -36,6 +36,7 @@
 - Uses prime numbers to determine if you want RGB or not becaues I still don't know how to use structs and don't feel like rushing it.It'll be added when I learn
 - Now apperantly it got it's own windows branch which I'll provide with .exe file too since Win users don't know what a compiler is.
 - WindowsPORT has it's own branch called winPORTsux which I won't merge(and since I started to C 5 days ago. That port is possible thanks to Grok(taught me what IFNDEF is))
+- Now with a ASCII JUKEBOX in Genre Menu (fullscreen advised by me lol as developer yk I'd do as I say if I were you)
 
 ## Compiling & Running
 ```bash
