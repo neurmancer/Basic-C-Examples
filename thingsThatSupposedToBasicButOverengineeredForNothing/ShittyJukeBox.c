@@ -796,6 +796,11 @@ typedef void (*writer)(char *lyrics);
 
 typedef int (*MenuFunction)();
 
+writer writerType[] = {
+    epilepsy_typewriter,
+    typewriter
+};
+
 MenuFunction genre_menus[] = {
     NULL,
     emoInput,
