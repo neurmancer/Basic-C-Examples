@@ -764,6 +764,7 @@ const char *lightItUp =
 void epilepsy_typewriter(const char* song);
 void typewriter(const char* song);
 void sigintHandler(int sig);
+void asciiPrinter(void);
 int emoInput(void);
 int nightcoreInput(void);
 int genreMenu(void);
@@ -792,7 +793,7 @@ enum nightcoreSongList {
 };
 
 
-typedef void (*writer)(char *lyrics);
+typedef void (*writer)(const char *lyrics);
 
 typedef int (*MenuFunction)();
 
@@ -805,6 +806,10 @@ MenuFunction genre_menus[] = {
     NULL,
     emoInput,
     nightcoreInput
+};
+
+char *asciiArt[] = {"  ______________   ","  /  __________  \\"," |  | LITHIUM  |  | "," |  |----------|  | "," |  | SONG B2  |  | "," |  |__________|  |",
+    "|  _   ____   _  |", " | (O) |____| (O) |","|  Coin [50c]    |", " |________________|"
 };
 
 
@@ -1130,7 +1135,8 @@ int genreMenu(void)
     int lengthOfCatalouge = sizeof(genres)/sizeof(genres[0]);
     int genrePick = -1;
     printf(WIPE_TERMINAL);
-    printf(BOLD "\t\t _-JUST A SHITTY JUKEBOX-_\n" FIX_FONT);
+    printAscii();
+    printf(BOLD "\t\t\t _-JUST A SHITTY JUKEBOX-_\n" FIX_FONT);
     printf(BOLD "Genres\n" FIX_FONT);
     printf("1)%s\n",genres[0]);
     printf("2)%s\n\n",genres[1]);
@@ -1148,6 +1154,18 @@ int genreMenu(void)
         return(genrePick);
     }
 }
+
+void asciiPrinter()
+{
+
+    for (int i = 0; i < (sizeof(asciiArt)/sizeof(asciiArt[0])); i++)
+    {
+        printf("\t\t\t%s\n",asciiArt[i]);
+    }
+
+    printf("\n\n");
+}
+
 
 
 /*
