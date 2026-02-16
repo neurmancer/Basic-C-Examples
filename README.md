@@ -7,6 +7,7 @@
 - Added a subfolder named RNG for basic rand() applications
 - Added a basic heads or tails program (with explanations)
 - Added a guess game
+- Added a D6 roller (Now go implement you D20 DND freaks)
 
 ## Added funny things
 
@@ -25,7 +26,7 @@
 
 - Basically Every script I'll put in the repo will get it's assembly file with the same name 
 - I may add -O2 flag to make it torturing to get what even the program was in the first place if I feel like it
-
+- Fresh C nudes came (17.02.2026 00.02AM)
 
 
 
