@@ -75,6 +75,6 @@ void sigsegvHandler(int sig)
     fflush(stdout);
     sleep(6);
     printf("\033[H\033[JSegmentation fault (core dumped)\n");
-    printf("\033[?25l"); //Don't worry I didn't eat your cursor here it is...
+    printf("\033[?25h"); //Don't worry I didn't eat your cursor here it is...
     exit(1);
 }
