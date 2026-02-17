@@ -8,6 +8,8 @@
 - Added a basic heads or tails program (with explanations)
 - Added a guess game
 - Added a D6 roller (Now go implement you D20 DND freaks)
+- Added a basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
+
 
 ## Added funny things
 
