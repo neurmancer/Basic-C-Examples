@@ -9,6 +9,7 @@
 - Added a guess game
 - Added a D6 roller (Now go implement you D20 DND freaks)
 - Added a basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
+- Added a second pointer lecture and moved the pointer shit into a subfolder called Pointerhell
 - Added a Magic 8Ball thingy that roasts you
 
 ## Added funny things
@@ -44,7 +45,7 @@
 - Now with a ASCII JUKEBOX in Genre Menu (fullscreen advised by me lol as developer yk I'd do as I say if I were you)
 - Now the V3 is untoby-fox'd (killed the switch you may wanna call it killswitch ;) pun intended...I mean I am makin shitty emo/nightcore jukebox for CLI don't expect good jokes)
 - winPORTsux won't get update in this repo anymore (you know why it is.)
-- AND FRESH ASM NUDES of the current version in the asmCNudes folder for low-level pervs.
+- AND **FRESH ASM NUDES** of the current version in the asmCNudes folder for low-level pervs.
 
 
 
