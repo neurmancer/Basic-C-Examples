@@ -15,10 +15,11 @@
 - Added a Basic FizzBuzz script
 - Added a basic prime number counter with user input
 - Added a subfolder named RNG for basic rand() applications
-- Added a basic heads or tails program (with explanations)
-- Added a guess game
-- Added a D6 roller (Now go implement you D20 DND freaks)
-- Added a Magic 8Ball thingy that roasts you
+- - Added a basic heads or tails program (with explanations)
+- - Added a guess game
+- - Added a D6 roller (Now go implement you D20 DND freaks)
+- - Added a Magic 8Ball thingy that roasts you
+- - Added a Rock,Paper,Scissors game (but it's cursed AF)
 
 ### Lectureish (boring part)
 - Added a basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
