@@ -1,18 +1,33 @@
 ## A BASIC C SCRIPT FILE FOR BEGINNERS(ME lulz) 
 
+## Table of Contents
+* [Basic Projects and Lectures](#basic-projects-and-lectures)
+* [Funny Things](#funny-things)
+* [SHITTY JUKEBOX V3(New Repo)](#shitty-jukebox-v3)
+* [Compiling & Running](#compile-and-run)
+
+
+
+# Basic Projects and Lectures
+
+### Projects
 - Added a hello, world script
 - Added a Basic FizzBuzz script
 - Added a basic prime number counter with user input
-- Added a Function Pointer introduction Lecture (honestly it's not the best practice to use them this way but good for seeing syntax)
 - Added a subfolder named RNG for basic rand() applications
 - Added a basic heads or tails program (with explanations)
 - Added a guess game
 - Added a D6 roller (Now go implement you D20 DND freaks)
-- Added a basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
-- Added a second pointer lecture and moved the pointer shit into a subfolder called Pointerhell
 - Added a Magic 8Ball thingy that roasts you
 
-## Added funny things
+### Lectureish (boring part)
+- Added a basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
+- Added a second pointer lecture and moved the pointer shit into a subfolder called Pointerhell
+- Added a Function Pointer introduction Lecture (honestly it's not the best practice to use them this way but good for seeing syntax)
+- Added a fibonacci sequence function (with loops and recursion)
+
+
+## Funny Things
 
 - Bring Me To Life lyrics spitter for CLI and will be improved
 - - Full extend of lyrics and better timing will be added 
@@ -25,7 +40,7 @@
 
 - An important program added.(it needs to load shit first.)
 
-## ADDED ASM DISASSEMBLIES OF FILES FOR THOSE LOW-LEVEL GREMLINS LIKE ME LOVES SPICY C NUDES
+## ASM DISASSEMBLIES OF FILES FOR THOSE LOW-LEVEL GREMLINS LIKE ME LOVES SPICY C NUDES
 
 - Basically Every script I'll put in the repo will get it's assembly file with the same name 
 - I may add -O2 flag to make it torturing to get what even the program was in the first place if I feel like it
@@ -33,7 +48,8 @@
 
 
 
-# SHITTY JUKEBOX V3 DROPPED
+
+# SHITTY JUKEBOX V3
 - Old rock/metal song lyrics now with RGB lyrics option
 - Nightcore on crack some cool old musics that roots back to early 2010s (and if you have 2 monitors I strongly advise using with DVD Screensaver) forced RGB lyrics
 - A jukebox ascii art at the bottom and lyrics on the top of the code
@@ -47,8 +63,6 @@
 - winPORTsux won't get update in this repo anymore (you know why it is.)
 - AND **FRESH ASM NUDES** of the current version in the asmCNudes folder for low-level pervs.
 
-
-
 ### SHITTY JUKEBOX IS GOT IT'S OWN REPO
 - Due to my obssession overgrowing the 'basic' in the basic repo shitty jukebox will get it's own repo with new features and possible updated winSUXport.
 
@@ -57,7 +71,7 @@
 
 
 
-## Compile&Run (basically for every file in this repo)
+## Compile and Run
 ```bash
 
 #For the ones don't know how to compile and run 
