@@ -3,7 +3,7 @@
 ## Table of Contents
 * [Basic Projects and Lectures](#basic-projects-and-lectures)
 * [Funny Things](#funny-things)
-* [Spicy C Nudes(Deleted files due to maintanence will be back)](#asm-disassemblies-of-files-for-those-low-level-gremlins-like-me-loves-spicy-c-nudes)
+* [Spicy C Nudes](#asm-disassemblies-of-files-for-those-low-level-gremlins-like-me-loves-spicy-c-nudes)
 * [SHITTY JUKEBOX V3(New Repo)](#shitty-jukebox-v3)
 * [Compiling & Running](#compile-and-run)
 
