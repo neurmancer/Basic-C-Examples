@@ -14,6 +14,7 @@
 - Added a hello, world script
 - Added a Basic FizzBuzz script
 - Added a basic prime number counter with user input
+- Added a Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 - Added a basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here
 - Added a subfolder named RNG for basic rand() applications
 - - Added a basic heads or tails program (with explanations)
