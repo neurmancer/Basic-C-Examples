@@ -13,26 +13,32 @@
 
 int countBits(unsigned int number);
 
+typedef struct{
+    int delta;
+    int angle;
+}Line;
 
 int main(void)
 {
-    int angle = 0;
+    Line line = {0,0}; 
+
     for (int i = 0; i < 64; i++)
     {
   
         if (countBits(i) % 2 == 0)
         {
+            line.delta;
             printf("Moved straight\n");
 
         }
         else
         {
-            angle+=60;
-            printf("Rotated 60 degrees.\tCurrent angle: %d\n",angle);
+            line.angle+=60;
+            printf("Rotated 60 degrees.\tCurrent angle: %d\n",line.angle);
         }
-        if (angle >= 360)
+        if (line.angle >= 360)
         {
-            angle = angle % 360; // Keeping it periodic
+            line.angle = line.angle % 360; // Keeping it periodic
         }
         sleep(1);
     }
