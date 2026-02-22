@@ -17,7 +17,7 @@ int main(void)
     if(scanf(" %d",&userInput) != 1)
     {
         int c;
-        while (c = getchar() != '\n' && c != EOF) {c++;/*Nothing to see here just clearing input buffer*/ }
+        while ((c = getchar()) != '\n' && c != EOF) {c++;/*Nothing to see here just clearing input buffer*/ }
         printf("Try again next time with actual nums yk\n.");
         return(-13);
     }
@@ -31,7 +31,7 @@ int main(void)
         if(scanf(" %d",ptr) != 1) //The address that the pointer holding 
         {
             int c;
-            while (c = getchar() != '\n' && c != EOF) {c++;/*Really...nothing to see here just clearing input buffer UnU*/ }
+            while ((c = getchar()) != '\n' && c != EOF) {c++;/*Really...nothing to see here just clearing input buffer UnU*/ }
             printf("Try again next time with actual nums idiot\n.");
             return(-53);        //Yeah I love primes ends with 3 so what?
         }        
