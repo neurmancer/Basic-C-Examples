@@ -31,7 +31,7 @@ int main(void)
     {
         a = rand() % 101;
         b = rand() % 101;
-        printf("A:%d\tB:%d\tRes:%d\n",cmp_popCounts(a,b));
+        printf("A:%d\tB:%d\tRes:%d\n",a,b,cmp_popCounts(a,b));
     }
     return(0);
 }
