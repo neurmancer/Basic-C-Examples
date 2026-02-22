@@ -14,9 +14,10 @@
 - Added a Basic FizzBuzz script
 - Added a basic prime number counter with user input
 - Added a Koch Curve from Binary interpretation I made (not sure if it's accurate) 
-- Added a get_time program experiment
+- Added a get time program experiment
 - Added a basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here
-- Added a cmp_popcount program
+- Added a cmp popcount program
+
 - Added a subfolder named RNG for basic rand() applications
 - - Added a basic heads or tails program (with explanations)
 - - Added a guess game
@@ -30,20 +31,18 @@
 - Added a Function Pointer introduction Lecture (honestly it's not the best practice to use them this way but good for seeing syntax)
 - Added a fibonacci sequence function (with loops and recursion)
 - Added a basic enum101 lectureishy (yeah I started to make words up)
-
+-
+ Added a subfolder for dynamic memory allocation
+> - Added introduction for malloc() 
 
 ## Funny Things
 
-- Bring Me To Life lyrics spitter for CLI and will be improved
-- - Full extend of lyrics and better timing will be added 
-
-- BEHOLD EMO JUKEBOX HAS BEEN ADDED WITH A VAST(not so vast tho) SET OF SONGS YOU CAN PRINT ON YOUR CLI DRAMATICALLY SLOW FOR THE PERFECT EMO VIBES (and please don't blank enter it makes me sad...) (now it has it's own section a little down)
+- Bring Me To Life lyrics spitter for CLI (prototype shitty jukebox from day 3)
 
 - A program that gives you an output file and spits a text on terminal anyways because I used stderr instead of stdout
 
-- And a Loading bar will give you Easter Eggs based on RNG(That's for you little gamblers)
+- Added a walking segfault PTSD on purpose 
 
-- An important program added.(it needs to load shit first.)
 
 ## ASM DISASSEMBLIES OF FILES FOR THOSE LOW-LEVEL GREMLINS LIKE ME LOVES SPICY C NUDES
 
@@ -73,3 +72,4 @@ cc filename.c -o output #To compile
 ./output 
 #To run (but since all the files written for 
 #Linux and don't have Windows ports I presume you already know to do this because windows sux)
+```
