@@ -4,7 +4,6 @@
 * [Basic Projects and Lectures](#basic-projects-and-lectures)
 * [Funny Things](#funny-things)
 * [Spicy C Nudes](#asm-disassemblies-of-files-for-those-low-level-gremlins-like-me-loves-spicy-c-nudes)
-* [SHITTY JUKEBOX V3(New Repo)](#shitty-jukebox-v3)
 * [Compiling & Running](#compile-and-run)
 
 
@@ -16,6 +15,7 @@
 - Added a basic prime number counter with user input
 - Added a Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 - Added a basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here
+- Added a cmp_popcount program
 - Added a subfolder named RNG for basic rand() applications
 - - Added a basic heads or tails program (with explanations)
 - - Added a guess game
@@ -52,20 +52,6 @@
 
 
 
-
-# SHITTY JUKEBOX V3
-- Old rock/metal song lyrics now with RGB lyrics option
-- Nightcore on crack some cool old musics that roots back to early 2010s (and if you have 2 monitors I strongly advise using with DVD Screensaver) forced RGB lyrics
-- A jukebox ascii art at the bottom and lyrics on the top of the code
-- Interactive loop 
-- %10 chance of getting rickrolled as you try to exit and brick Ctrl+C 'till it is done
-- Uses prime numbers to determine if you want RGB or not. And unfortunately I learned structs...from now on no more Hilbert's paradox of the Grand Hotel fueled enless prime number usage...
-- Now apperantly it got it's own windows branch which I'll provide with .exe file too since Win users don't know what a compiler is.
-- WindowsPORT has it's own branch called winPORTsux which I won't merge(and since I started to C 5 days ago. That port is possible thanks to Grok(taught me what IFNDEF is))
-- Now with a ASCII JUKEBOX in Genre Menu (fullscreen advised by me lol as developer yk I'd do as I say if I were you)
-- Now the V3 is untoby-fox'd (killed the switch you may wanna call it killswitch ;) pun intended...I mean I am makin shitty emo/nightcore jukebox for CLI don't expect good jokes)
-- winPORTsux won't get update in this repo anymore (you know why it is.)
-- AND **FRESH ASM NUDES** of the current version in the asmCNudes folder for low-level pervs.
 
 ### SHITTY JUKEBOX IS GOT IT'S OWN REPO
 - Due to my obssession overgrowing the 'basic' in the basic repo shitty jukebox will get it's own repo with new features and possible updated winSUXport.
