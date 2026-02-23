@@ -27,7 +27,7 @@ int main(void)
   
         if (countBits(i) % 2 == 0)
         {
-            line.delta;
+            line.delta++;
             printf("Moved straight\n");
 
         }
