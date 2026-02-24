@@ -31,7 +31,9 @@
 - Added a Function Pointer introduction Lecture (honestly it's not the best practice to use them this way but good for seeing syntax)
 - Added a fibonacci sequence function (with loops and recursion)
 - Added a basic enum101 lectureishy (yeah I started to make words up)
--
+- Added a struct intro 
+- Added a struct usage with pointers intro
+
  Added a subfolder for dynamic memory allocation
 > - Added introduction for malloc() 
 > - Added simple malloc usage with arrays 
