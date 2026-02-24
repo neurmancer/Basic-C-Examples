@@ -34,6 +34,14 @@
 - Added a struct intro 
 - Added a struct usage with pointers intro
 
+
+
+
+### Have less comment(more focused on syntax part)
+- - Added a struct with dynamic allocation intro
+- - Added a unions intro 
+
+
  Added a subfolder for dynamic memory allocation
 > - Added introduction for malloc() 
 > - Added simple malloc usage with arrays 
