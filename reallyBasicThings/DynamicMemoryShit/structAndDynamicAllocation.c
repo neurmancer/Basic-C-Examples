@@ -4,8 +4,8 @@
 
 typedef struct 
 {
-    char *name;
-    char *surname;
+    char name[30];
+    char surname[30];
     float GPA;
     int ID;
 }Student;
