@@ -15,6 +15,7 @@ int main(void)
     Student *student = NULL;
 
     student = (Student*) malloc(sizeof(Student));
+   
     
     strcpy(student->name,"John");
     strcpy(student->surname,"Doe");
