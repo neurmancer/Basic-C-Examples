@@ -45,6 +45,7 @@
  Added a subfolder for dynamic memory allocation
 > - Added introduction for malloc() 
 > - Added simple malloc usage with arrays 
+> - Added a realloc& calloc introduction
 
 ## Funny Things
 
