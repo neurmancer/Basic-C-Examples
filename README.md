@@ -35,6 +35,8 @@
 - Added a basic enum101 lectureishy (yeah I started to make words up)
 - Added a struct intro 
 - Added a struct usage with pointers intro
+- Added a array and pointer relation lecture
+- Added a funfact about language itself 
 - Added a C preprocessors subfolder with 2 lectures included 
 - - First, using define and macros
 - - Second, Conditional blocks (IFDEF,IFNDEF,ELIF)
