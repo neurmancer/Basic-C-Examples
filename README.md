@@ -29,6 +29,7 @@
 - Added a basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
 - Added a second pointer lecture and moved the pointer shit into a subfolder called Pointerhell
 - Added a pointer&function relation lecture
+- Added a pointer and array relation quickie
 - Added a Function Pointer introduction Lecture (honestly it's not the best practice to use them this way but good for seeing syntax)
 - Added a fibonacci sequence function (with loops and recursion)
 - Added a basic enum101 lectureishy (yeah I started to make words up)
