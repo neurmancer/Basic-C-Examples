@@ -22,6 +22,7 @@ int main(void)
         return(-13);
     }
     int byteSize = sizeof(int)*userInput; //too reduce confusion in malloc parameters
+	//You can check if malloc fails or not with a basic if-else chain. It returns NULL on fails but for the sake of simplicity and the trust I put in my Computer(It trusts me so I have to trust it too it's mutual) I am not gonna use it here
     ptr = (int *) malloc(byteSize); //int * for changing the malloc's (void *) return value to int *
     int *ptr2 = ptr;            //since I'll use the ptr to assign values with array decay it'll be useless without backup 
     while (userInput > 0)
