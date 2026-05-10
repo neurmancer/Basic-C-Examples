@@ -5,7 +5,7 @@
 * [Funny Things](#funny-things)
 * [Spicy C Nudes](#asm-disassemblies-of-files-for-those-low-level-gremlins-like-me-loves-spicy-c-nudes)
 * [Compiling & Running](#compile-and-run)
-
+* [Books & Learning Sources](#nerdy-part)
 
 # Basic Projects and Lectures
 
@@ -91,3 +91,17 @@ cc filename.c -o output #To compile
 #To run (but since all the files written for 
 #Linux and don't have Windows ports I presume you already know to do this because windows sux)
 ```
+
+
+
+## Nerdy Part
+
+> Those are the books I've digged and wanna read/ already read and saw helped
+
+- > Linux System Programming
+- > Writin Solid Code 
+- > Advanced Bash-Scripting (haven't started to read yet)
+- > Clean Archicture
+- > Grokking Algorithms (The classic)
+- > Linux Kernel Dev (Magnum opus at this point)
+
