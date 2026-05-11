@@ -40,7 +40,7 @@
 - Added a C preprocessors subfolder with 2 lectures included 
 - - First, using define and macros
 - - Second, Conditional blocks (IFDEF,IFNDEF,ELIF)
-
+- - Added a prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
 
 
 ### Have less comment(more focused on syntax part)
