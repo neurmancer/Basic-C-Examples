@@ -18,11 +18,11 @@ int main(void)
     printf("%ld\n",sizeof(p));              //Pointers are always 8 bytes independent of the data type came before them (unless you are using a toaster)
 
     printf("%d\n",a);
-    printf("%d\n",*p);                   //After declaration of pointer asterisk(*) is used to dereference the pointer which means show the VALUE in that memmory addres so it simply means *p = a = 5 in our case
+    printf("%d\n",*p);                   //After declaration of pointer asterisk(*) is used to dereference the pointer which means show the VALUE in that memmory addres so it simply means *p = a = 13 in our case
 
     //Pointers can change the value of the a without using a because they hold the same memory address
     *p = 53; //Notice that I derefed pointer and changed the value at the memory address
-    printf("%d\n",a); //Notice how a will be 20 without using a to change it 
+    printf("%d\n",a); //Notice how a will be 53 without using a to change it 
 
 
     //Yeah I know that's not my usual fuck around and find out style of commenting but that's meant to help people if encountered 
