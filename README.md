@@ -9,6 +9,8 @@
 
 # Basic Projects and Lectures
 
+> Hi Me from Future...Man...Sentient AIs are fucking with us now...nah I am just kidding it's just may instead of Feb but I must admit I gotta clean this scrapyard so tomorrow I'll organize this section (and the README in General)
+
 ### Projects
 - Added a hello, world script
 - Added a Basic FizzBuzz script
@@ -70,15 +72,6 @@
 
 
 
-
-### SHITTY JUKEBOX IS GOT IT'S OWN REPO
-- Due to my obssession overgrowing the 'basic' in the basic repo shitty jukebox will get it's own repo with new features and possible updated winSUXport.
-
-- Here it is: https://github.com/neurmancer/ShittyJukeBoxCLI 
-- - I do explain shit so much for someone doesn't have people to read right?
-
-
-
 ## Compile and Run
 ```bash
 
@@ -98,6 +91,7 @@ cc filename.c -o output #To compile
 
 > Those are the books I've digged and wanna read/ already read and saw helped
 
+- > The C Programming Language 2nd Edition by K&R (The Holy Bible...ehm acktually it's Old Testament)
 - > Linux System Programming
 - > Writin Solid Code 
 - > Advanced Bash-Scripting (haven't started to read yet)

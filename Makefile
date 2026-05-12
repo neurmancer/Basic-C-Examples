@@ -4,7 +4,7 @@
 SOURCES := $(wildcard *.c)
 
 # Replace .c with .asm for output files
-ASMS := $(SOURCES:.c=.asm)
+SS := $(SOURCES:.c=.s)
 
 # Default target: build all .asm files
 all: $(ASMS)
