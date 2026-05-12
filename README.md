@@ -27,9 +27,15 @@
 
 ## Projects 101
 
-- Added a hello, world script
-- Added a Basic FizzBuzz script
-
+- Hello, world script
+- %.*s format for printf 
+- Basic FizzBuzz script 
+- Basic enum101 lectureishy (yeah I started to make words up)
+- Struct intro 
+- Unions intro
+- Subfoldef for bitwise sorcery 
+> - A bitwise operations chart 
+> - and a cmpbits program
 
 ### PRNGForBeginners
 - >  Basic heads or tails program (with explanations)
@@ -37,8 +43,7 @@
 - >  D6 roller (Now go implement you D20 DND freaks)
 - >  Magic 8Ball thingy that roasts you
 - > Rock,Paper,Scissors game (but it's cursed AF)
-- > Bsic enum101 lectureishy (yeah I started to make words up)
-- > Struct intro 
+
 
 
 
@@ -56,13 +61,19 @@
 
 ### Unclassifed Math Fuckery
 - Fibonacci sequence function (with loops and recursion)
--  Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
--  Basic prime number counter with user input
+
+- Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
+
+- Basic prime number counter with user input
+
 - Koch Curve from Binary interpretation I made (not sure if it's accurate) 
+
 - Get time program experiment
+
 - Basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here(And So I Did)
+
 - Cmp popcount program
-- Unions intro 
+ 
 
 
 ### PointerHell 
@@ -141,11 +152,11 @@ cc filename.c -o output #To compile
 
 > Those are the books I've digged and wanna read/ already read and think would help anyones here's the ***PDFs*** for each
 
-> > **The C Programming Language 2nd Edition** by K&R (The Holy Bible...ehm acktually it's Old Testament)
-> > **Linux System Programming**
-> > **Writin Solid Code** 
-> > **Advanced Bash-Scripting** (haven't started to read yet)
-> > **Clean Archicture**
-> > **Grokking Algorithms** (The classic beginner friendly DSA book)
-> > **Linux Kernel Dev**(That's wher I wanna end at)
+> - **The C Programming Language 2nd Edition** by K&R (The Holy Bible...ehm acktually it's Old Testament)
+> - **Linux System Programming**
+> - **Writin Solid Code** 
+> - **Advanced Bash-Scripting** (haven't started to read yet)
+> - **Clean Archicture**
+> - **Grokking Algorithms** (The classic beginner friendly DSA book)
+> - **Linux Kernel Dev**(That's wher I wanna end at)
 
