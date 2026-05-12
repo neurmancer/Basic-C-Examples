@@ -1,9 +1,12 @@
 #include <stdio.h>
 
 
-/*      This lecture is a continuiation of arraysWithDifferentPOV.c*/
-
-
+/*      This lecture is a continuiation of arraysWithDifferentPOV.c
+        and I claim that this lecture will boost your confidence to the point where 
+        you can look at ph'nglui mglw'nafh cthulhu r'lyeh wgah'nagl fhtagn and say 'bet.' end of the lecture
+         
+ 
+*/
 int main(void)
 {
 

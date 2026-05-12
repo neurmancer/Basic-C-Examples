@@ -61,7 +61,13 @@ int main(void)
     }
 
     s[0] = 'a';
-    fprintf(stderr,"FUCK\n");
+    fprintf(stderr,"FUCK\n"); //Yeah that's a bit of gamble (like my taste in people) here is a joke for you
+    /*
+        Main:Knock Knock
+        Main:Race Condition
+        SIGSEGV_HANDLER:Who's there?
+    */
+
 
 
     return(0);
