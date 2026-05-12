@@ -2,7 +2,7 @@
 
 ### Notes To Myself If You Are Not Me You Shall Pass
 
-[x] ~~Hi Me from Future...Man...Sentient AIs are fucking with us now...nah I am just kidding it's just may instead of Feb but I must admit I gotta clean this scrapyard so tomorrow I'll organize this section (and the README in General)~~
+- [x] Hi Me from Future...Man...Sentient AIs are fucking with us now...nah I am just kidding it's just may instead of Feb but I must admit I gotta clean this scrapyard so tomorrow I'll organize this section (and the README in General) **DONE**
 
 
 
