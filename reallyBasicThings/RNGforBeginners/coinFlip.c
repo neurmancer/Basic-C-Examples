@@ -18,7 +18,6 @@ int main(void)
     printf("\n\n\n"); //This time takes input before result
     
     result = rand() % 2; //Roll again and update so get new result
-    printf("%d",result);
 
     char guess;
     printf("Heads or tails?(H/T) :");

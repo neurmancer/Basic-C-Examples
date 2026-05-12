@@ -1,4 +1,10 @@
-## A BASIC C SCRIPT FILE FOR BEGINNERS(ME lulz) 
+# A BASIC C CODING REPO FOR BEGINNERS(ME lulz) 
+
+### Notes To Myself If You Are Not Me You Shall Pass
+
+[x] ~~Hi Me from Future...Man...Sentient AIs are fucking with us now...nah I am just kidding it's just may instead of Feb but I must admit I gotta clean this scrapyard so tomorrow I'll organize this section (and the README in General)~~
+
+
 
 ## Table of Contents
 * [Basic Projects and Lectures](#basic-projects-and-lectures)
@@ -9,51 +15,93 @@
 
 # Basic Projects and Lectures
 
-> Hi Me from Future...Man...Sentient AIs are fucking with us now...nah I am just kidding it's just may instead of Feb but I must admit I gotta clean this scrapyard so tomorrow I'll organize this section (and the README in General)
+* [Projects 101](#projects-101)
 
-### Projects
+* [May RNGSUS Bless Us With sran()](#prngforbeginners)
+
+* [Experimenting(Madman's Diary)](#experimenting)
+
+* [LECTURES(KINDA BORING but lowkey enjoyable PART)](#lectureish-boring-part)
+
+
+
+## Projects 101
+
 - Added a hello, world script
 - Added a Basic FizzBuzz script
-- Added a basic prime number counter with user input
-- Added a Koch Curve from Binary interpretation I made (not sure if it's accurate) 
-- Added a get time program experiment
-- Added a basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here
-- Added a cmp popcount program
-
-- Added a subfolder named RNG for basic rand() applications
-- - Added a basic heads or tails program (with explanations)
-- - Added a guess game
-- - Added a D6 roller (Now go implement you D20 DND freaks)
-- - Added a Magic 8Ball thingy that roasts you
-- - Added a Rock,Paper,Scissors game (but it's cursed AF)
-
-### Lectureish (boring part)
-- Added a basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
-- Added a second pointer lecture and moved the pointer shit into a subfolder called Pointerhell
-- Added a pointer&function relation lecture
-- Added a pointer and array relation quickie
-- Added a Function Pointer introduction Lecture (honestly it's not the best practice to use them this way but good for seeing syntax)
-- Added a fibonacci sequence function (with loops and recursion)
-- Added a basic enum101 lectureishy (yeah I started to make words up)
-- Added a struct intro 
-- Added a struct usage with pointers intro
-- Added a array and pointer relation lecture
-- Added a funfact about language itself 
-- Added a C preprocessors subfolder with 2 lectures included 
-- - First, using define and macros
-- - Second, Conditional blocks (IFDEF,IFNDEF,ELIF)
-- - Added a prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
 
 
-### Have less comment(more focused on syntax part)
-- - Added a struct with dynamic allocation intro
-- - Added a unions intro 
+### PRNGForBeginners
+- >  Basic heads or tails program (with explanations)
+- >  guess game
+- >  D6 roller (Now go implement you D20 DND freaks)
+- >  Magic 8Ball thingy that roasts you
+- > Rock,Paper,Scissors game (but it's cursed AF)
+- > Bsic enum101 lectureishy (yeah I started to make words up)
+- > Struct intro 
 
 
- Added a subfolder for dynamic memory allocation
-> - Added introduction for malloc() 
-> - Added simple malloc usage with arrays 
-> - Added a realloc& calloc introduction
+
+## Lectureish (boring part)
+
+
+* [UNCLASSIFED](#unclassifed-math-fuckery)
+
+* [Pointer Inferno](#pointerhell)
+
+* [DynamicMemoryShit](#dynamicmemoryshit)
+
+* [Preprocessors](#_ifnwin32-yippie-part)
+
+
+### Unclassifed Math Fuckery
+- Fibonacci sequence function (with loops and recursion)
+-  Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
+-  Basic prime number counter with user input
+- Koch Curve from Binary interpretation I made (not sure if it's accurate) 
+- Get time program experiment
+- Basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here(And So I Did)
+- Cmp popcount program
+- Unions intro 
+
+
+### PointerHell 
+
+> - Basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
+>
+> - Second pointer lecture about array navigation and fucking with .rodata 
+>
+> - Pointer&function relation lecture
+>
+> - Pointer and array relation quickie
+>
+> -  Function Pointer introduction Lecture (honestly it's not the best practice to use them this way but good for seeing syntax)
+>
+> - Struct usage with pointers intro
+>
+> - Array and pointer relation lecture
+>
+> - Funfact about language itself  
+
+
+### DynamicMemoryShit
+
+> - Subfolder for dynamic memory allocation
+> - Introduction for malloc() 
+> - Simple malloc usage with arrays 
+> - Realloc& calloc introduction
+> - Structs with dynamic allocation intro 
+
+
+### _IFNWIN32 "Yippie" Part
+
+> - First lecture using define and macros
+>
+> - Second lecture Conditional blocks (IFDEF,IFNDEF,ELIF)
+
+
+
+
 
 ## Funny Things
 
@@ -68,7 +116,8 @@
 
 - Basically Every script I'll put in the repo will get it's assembly file with the same name 
 - I may add -O2 flag to make it torturing to get what even the program was in the first place if I feel like it
-- Fresh C nudes came (17.02.2026 00.02AM)
+- Fresh C nudes came (17.02.2026 00.02AM) 
+- __*Been gone to get some cigs*__ New updated will be here once when I remember how to use the Makefile again
 
 
 
@@ -77,6 +126,7 @@
 
 #For the ones don't know how to compile and run 
 #if there is additional lib/flag for any specific file it will be commented within file itself.
+#Mostly used one being -lm to link math.h
 
 cc filename.c -o output #To compile
 
@@ -89,13 +139,13 @@ cc filename.c -o output #To compile
 
 ## Nerdy Part
 
-> Those are the books I've digged and wanna read/ already read and saw helped
+> Those are the books I've digged and wanna read/ already read and think would help anyones here's the ***PDFs*** for each
 
-- > The C Programming Language 2nd Edition by K&R (The Holy Bible...ehm acktually it's Old Testament)
-- > Linux System Programming
-- > Writin Solid Code 
-- > Advanced Bash-Scripting (haven't started to read yet)
-- > Clean Archicture
-- > Grokking Algorithms (The classic)
-- > Linux Kernel Dev (Magnum opus at this point)
+> > **The C Programming Language 2nd Edition** by K&R (The Holy Bible...ehm acktually it's Old Testament)
+> > **Linux System Programming**
+> > **Writin Solid Code** 
+> > **Advanced Bash-Scripting** (haven't started to read yet)
+> > **Clean Archicture**
+> > **Grokking Algorithms** (The classic beginner friendly DSA book)
+> > **Linux Kernel Dev**(That's wher I wanna end at)
 

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -17,10 +16,10 @@ int main(void)
     student = (Student*) malloc(sizeof(Student));
    
     
-    strcpy(student->name,"John");
-    strcpy(student->surname,"Doe");
-    student->ID = 1353689;
-    student->GPA = 4.54;
+    strcpy(student->name,"Thea"); //Bro I swear I don't have ancient Greek Goddess Fetishes
+    strcpy(student->surname,"Aurora");
+    student->ID = 1368953;
+    student->GPA = 4.26;
     //Like that not much different than yk allocating any other memory 
 
 

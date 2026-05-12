@@ -4,7 +4,7 @@
 /*
     Malloc() -> Memory allocation
     Realloc() -> Reallocation
-    Calloc() -> Cler allocation (assigns 0)
+    Calloc() -> Clean allocation (assigns 0)
 */
 
 

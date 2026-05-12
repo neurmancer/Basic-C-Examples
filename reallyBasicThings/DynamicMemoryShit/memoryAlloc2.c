@@ -17,7 +17,10 @@ int main(void)
     if(scanf(" %d",&userInput) != 1)
     {
         int c;
-        while ((c = getchar()) != '\n' && c != EOF) {c++;/*Nothing to see here just clearing input buffer*/ }
+        while ((c = getchar()) != '\n' && c != EOF) 
+        {c++; //Sisyphus of this program
+        /*Nothing to see here just clearing input buffer*/
+        }
         printf("Try again next time with actual nums yk\n.");
         return(-13);
     }
@@ -40,7 +43,7 @@ int main(void)
         userInput--;
     }
 
-    for (int *p = ptr2; p < ptr2+byteSize/sizeof(int);p++)
+    for (int *p = ptr2; p < ptr2 + byteSize/sizeof(int);p++)
     {
         printf("%d \n",*p);
     }
