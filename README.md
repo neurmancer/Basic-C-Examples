@@ -28,12 +28,21 @@
 ## Projects 101
 
 - Hello, world script
+
 - %.*s format for printf 
+
 - Basic FizzBuzz script 
+
+- Conditionals intro
+
 - Basic enum101 lectureishy (yeah I started to make words up)
+
 - Struct intro 
+
 - Unions intro
+
 - Subfoldef for bitwise sorcery 
+
 > - A bitwise operations chart 
 > - and a cmpbits program
 
