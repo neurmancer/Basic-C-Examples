@@ -10,12 +10,13 @@ int isPrime(int val);
 int main(void)
 {
 
-   for (int i = 0;i < 55;i++) {
+    for (int i = 5;i < 1000;i++) {
         if (isPrime(i)) {
-
             printf("%d is prime bruh\n",i);
+    
         }
-   }
+    }
+
 
 
 

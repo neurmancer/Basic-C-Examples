@@ -77,6 +77,8 @@
 
 - Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 
+- A Discreate Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
+
 - Get time program experiment
 
 - Basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here(And So I Did)
