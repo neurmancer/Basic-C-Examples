@@ -4,6 +4,8 @@
 
 #define SAMPLE_SIZE 128
 
+/*This is a intro for myself to remember (or learn) some math and get to the point where I can wield FFT efficently for future project ideas*/
+
 typedef struct {
     double re;
     double im; 
