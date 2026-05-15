@@ -36,6 +36,8 @@
 
 - Unions intro
 
+- A basic inverted array walk via pointers (with memory address laid out)
+
 - Subfoldef for bitwise sorcery 
 
 > - A bitwise operations chart 
