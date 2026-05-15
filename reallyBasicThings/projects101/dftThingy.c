@@ -3,7 +3,7 @@
 #include <math.h>
 
 #define SAMPLE_SIZE 128
-
+#define PI acos(-1.0)
 /*This is a intro for myself to remember (or learn) some math and get to the point where I can wield FFT efficently for future project ideas*/
 
 typedef struct {
@@ -26,8 +26,8 @@ int main(void)
     for (int k = 0;k < SAMPLE_SIZE;k++) {
         complexNum temp = { 0 }; //Zero-Init, isn't necessary but just an habit of mine to code defensive 
         for (int n = 0;n < SAMPLE_SIZE;n++) {
-            temp.re += x[n] * cos(2.0* M_PI * (double) k * (double) n/(double) SAMPLE_SIZE);
-            temp.im += x[n] * (-sin(2.0*M_PI * (double) k * (double) n/(double) SAMPLE_SIZE));
+            temp.re += x[n] * cos(2.0*PI * (double) k * (double) n/(double) SAMPLE_SIZE);
+            temp.im += x[n] * (-sin(2.0*PI * (double) k * (double) n/(double) SAMPLE_SIZE));
         }
         X[k] = temp;
     }
@@ -50,8 +50,7 @@ double *fill(int sampleSize)
     double *x = (double *)malloc(sampleSize*(sizeof(double)));
     if (x == NULL) {return(NULL);}
     for (int n = 0;n < sampleSize;n++) {
-        x[n] = cos(2.0 *M_PI*4.0* (double)n/(double)sampleSize); 
-       
+        x[n] = cos(2.0*PI * 4.0 * (double)n/(double)sampleSize); 
     }
 
     return(x);
