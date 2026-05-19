@@ -3,7 +3,13 @@
 #include <math.h>
 
 #define SAMPLE_SIZE 128
-#define PI acos(-1.0)
+
+
+static double inline defArccos(double val)
+{
+    return(acos(val));
+}
+#define PI defArccos(-1.0) /*Yeah the reason I did this is typing #define acos(-1) would make the program caluclate for PI over and over instead of giving the value on compile time(or first seconds of running lol)*/
 /*This is a intro for myself to remember (or learn) some math and get to the point where I can wield FFT efficently for future project ideas*/
 
 typedef struct {
@@ -41,6 +47,7 @@ int main(void)
 
     free(x);
     free(X);
+
     return(0);
 }
 
