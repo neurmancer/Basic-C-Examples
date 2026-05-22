@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <math.h>
-
-//This file requires -lm as you compile
 
 
 int isPrime(int val);
@@ -10,7 +7,7 @@ int isPrime(int val);
 int main(void)
 {
 
-    for (int i = 5;i < 1000;i++) {
+    for (int i = 10;i < 1000;i++) {
         if (isPrime(i)) {
             printf("%d is prime bruh\n",i);
     
@@ -33,19 +30,13 @@ int isPrime(int val)
         return(0);
     }
 
-    if (val <= 3) {
-        switch (val) {
-            case 2:
-                return(1);
-            case 3:
-                return(1);
-            default:
-                return(0);
-        }
-    }
+    if (val == 1){return(0);}
+
+    if (val == 2 || val == 3) {return(1);}
+
     if (val % 6 == 1 || val % 6 == 5) {
 
-        for (int i = 3; i <= (int )ceil(sqrt(val))+1; i += 2) 
+        for (int i = 5; (i*i) <= val; i += 2) 
         {   
             if (val % i == 0) {
                 return(0);
