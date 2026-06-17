@@ -36,6 +36,13 @@ int main(void)
             printf("User language is russian\n");
         #elif defined(FR)
             printf("User language is french\n") 
+
+            /*
+            'But Neuro you forgot the ';' after printf this won't gonna compile!'
+            congrats meatloaf you got good eyes...for someone diagnosed with compiler illiteratacy... 
+            I know it doesn't have the ';' but the point is it doesn't need it
+            RU is checked first so interpreter will get rid of this statement before compiling hence compiler will never see this.
+            I dare you to compile...go for it it fucking compiles */
         #endif
     #endif
 

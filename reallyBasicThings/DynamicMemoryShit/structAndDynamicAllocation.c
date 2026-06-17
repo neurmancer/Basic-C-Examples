@@ -16,7 +16,7 @@ int main(void)
     student = (Student*) malloc(sizeof(Student));
    
     
-    strcpy(student->name,"Thea"); //Bro I swear I don't have ancient Greek Goddess Fetishes
+    strcpy(student->name,"Thea"); //Bro I swear I don't have ancient Goddess Fetishes
     strcpy(student->surname,"Aurora");
     student->ID = 1368953;
     student->GPA = 4.26;

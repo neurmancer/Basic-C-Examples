@@ -3,7 +3,7 @@
 
 int isPrime(int val);
 
-
+/* May the Satan take the wheels, forgive me cc for what I've sinned -Wa(ll)men.*/
 int main(void)
 {
 

@@ -1,4 +1,3 @@
-#include <inttypes.h>
 #include <stdio.h>
 
 /* This file is the core idea of every conditional type, if-else chain*/

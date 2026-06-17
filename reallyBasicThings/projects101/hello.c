@@ -8,7 +8,7 @@ int main(void)
     Lol...
     */
 
-    for (int i = 0; i < strlen("Hello"); i++)
+    for (int i = 0; i < strlen("Hello"); i++) //I know using strlen on a const is stupid but I am not promising you that I am the best coder on Earth lol
     {
         printf("%.*s\n",i+1,"Hello");
     }

@@ -6,7 +6,7 @@
 
 
         //Please just see how input buffer gets handled and learn using tolower() and DO FUCKING NOT handle the logic like me it's 23.30 and my buffer is long overflown
-
+        //This program contains Eldrich Horrors and UB please don't fucking compare two memories like I did 
 int main(void)
 {
 

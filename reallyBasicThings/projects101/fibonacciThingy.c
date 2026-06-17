@@ -12,13 +12,13 @@ int main(void)
 
 
 int fibonacci(int n) {
-    if (n < 0){return(-1);}
+    if (n < 0){return(-13);}
     if (n == 0){return(0);}
     if (n == 1){return(1);}
 
     int first = 0, second = 1;
     for (int i = 2; i <= n; i++) {
-        if (second > INT_MAX - first) {return(-1);}  // will overflow on next add
+        if (second > INT_MAX - first) {return(-53);}  // will overflow on next add
         int sum = first + second;
         first = second;
         second = sum;
