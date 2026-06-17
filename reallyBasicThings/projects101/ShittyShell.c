@@ -1,4 +1,4 @@
-/*Sup? gotta build a shell as I promised so here we are... I am (kinda) following a tutorial but we'll divert ofc yk...me being me*/
+/*Sup? gotta build a shell as I promised in git commits so here we are... */
 
 
 /* WTF a shell does? 

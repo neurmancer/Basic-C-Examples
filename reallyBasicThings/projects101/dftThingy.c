@@ -9,13 +9,22 @@ static double inline defArccos(double val)
 {
     return(acos(val));
 }
-#define PI defArccos(-1.0) /*Yeah the reason I did this is typing #define acos(-1) would make the program caluclate for PI over and over instead of giving the value on compile time(or first seconds of running lol)*/
-/*This is a intro for myself to remember (or learn) some math and get to the point where I can wield FFT efficently for future project ideas*/
+#define PI defArccos(-1.0) /*Yeah the reason I did this is typing #define acos(-1) would make the program caluclate for
+             PI over and over instead of giving the value on compile time(or first seconds of running lol) if you don't forget -O2*/
+
+             /*This is a intro for myself to remember (or learn) some math and get to the point where I can wield FFT efficently for future project ideas
+                'But Neuro it's O(n^2) that's inefficient!'...First stfu you meatloaf I don't even know the Bachmann–Landau (Order) nation yet. Second so what? Can you implement a DFT tho? I think the same 
+                so shut up and learn mwah(affectionately or how tf u spell it). 
+             */
 
 typedef struct {
     double re;
     double im; 
-    //Basically a data type for az+bi (where a and b are multipliers) 
+    /*Basically a data type for az+bi (where a and b are multipliers) 
+    I do fucking now the correct notation for complex numbers is z = a+bi which a is the real part and bi is the imaginary but it's fucking too late for me to care about it. 
+    and yeah I am writing this of an essay to prove that I am qualified enough to do that rather than fixing it...Deal with it!
+
+    */
 }complexNum; //to prevent complex.h to conjure for fuck's sake VS Code let me code alone I don't ned your hand holding
 
 

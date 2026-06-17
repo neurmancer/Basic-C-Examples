@@ -27,6 +27,13 @@ int isPrime(int val)
     if(val < 0)
     {
         printf("Bro enter something positive\n");
+        /* 
+            Three things here...
+            1-I do fucking know that using a stdio function in a purely mathametical function is stupid but so is asking if a negative prime or not
+            2-I could've used abs() to make it positive then allow 
+            or made the func unsigned int to eleminate this if block entirely OR just could've done val*=-1 which obviously I didn't
+            3-EVEN IF I were to flip the negative to positive I would've done it like val = (~val+1) just for love of the game 
+        */
         return(0);
     }
 
