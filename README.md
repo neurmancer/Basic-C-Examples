@@ -38,6 +38,8 @@
 
 - A basic inverted array walk via pointers (with memory address laid out)
 
+- A mainless C file that you can run (for no apperant reason)
+
 - Subfoldef for bitwise sorcery 
 
 > - A bitwise operations chart 
