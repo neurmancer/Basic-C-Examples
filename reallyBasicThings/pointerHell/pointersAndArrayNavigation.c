@@ -23,9 +23,21 @@ int main(void)
 
     char *s = "Am I gay tho";           //Two notes here. First: Do not fucking try to mutate char constants they're .rodata (read-only) and it'll segfault your ass use char s[] = "" if you'll mutate
                                         //Second: Notice how memory address move byte by byte instead of 4bytes at a time with char
-    while (*s != '\0') //'\0' is an escape char C puts automatically end of a string to indicate it ended printf(%s) reads 'till '\0' if you don't have welcome to UB-land
+    while (*s != '\0') 
     {
-        printf("%c",*s);     //Basically prints the pointer value and goes to next char and it'll be buffered till '\n' if you don't want use fflush(stdout)
+        /*'\0' is an escape char C puts automatically end of a string to indicate it ended
+        printf(%s) reads 'till '\0' if you don't have welcome to UB-land and 
+        a few more things here:
+        first, '%s' formatter does this under the hood(probably better but idea is this) 
+        second strlen function from string.h regards this char and gives you the length without the null terminator
+         so if you need to add null you gotta add + 1 after it
+        and don't try to use sizeof on strings since it'll give you 8 always because
+        strings are gaslit pointers with a null at the end. 
+        and last if you need to dynmically allocate a string you gotta allocate string+1 bytes since C does not auto add '\0'
+        when you allocate manually
+        */
+         printf("%c",*s);     //Basically prints the pointer value and goes to next char and it'll be buffered till '\n' if you don't want use fflush(stdout)
+    
         s++;
     }
     printf("\n");
