@@ -80,6 +80,8 @@
 
 - A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the solo exception of math.h)
 
+- Doppler Effect Simulator (using raylib.h so you gotta have it too) 
+
 - Get time program experiment
 
 - Basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here(And So I Did)
