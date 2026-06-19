@@ -19,19 +19,21 @@
 
 /*              Sup? Got bored again and math fuckery wasn't enough...so here we are learning a 'framework' or lib I don't know what to call 
                 but I am using raylib as you can see...
+                
                 Important shit to know:
                 1- you need to have raylib.h in your system I used pacman -S raylib and it worked so I assume apt-get and dnf will work too... as always windows can suck mine
                 2- you gotta compile with -lraylib to link raylib (duh)
-                3- We're building a Doppler Effect Demonstrator/Simulator and I have no idea why the fuck I am doing this it's 00AM I ask questioning after 11PM
+                3- We're building a Doppler Effect Demonstrator/Simulator and I have no idea why the fuck I am doing this it's 00AM I stop questioning after 11PM
                 4- I am using this cheat sheet from raylib https://www.raylib.com/cheatsheet/cheatsheet.html for seeing shit and funny enough? 
-                They're explaining as if I am an idiot and I am a sucker for it 
+                They're explaining as if I am an idiot and I am a sucker for it.
+                I may know a little bit of C but libs and frameworks has their own rules which I am not familiar with 
                 (thx for making my job easy raylib...)
 
                 5- Since this is the first file in the repo requring external dependency (raylib) I am improvising the notation a little such as sectioning like defines,includes and shit
 
                 6- I am doing this purely with what I remember so it might not be correct. 
                 For instance....waves probably need a vector as the car moves due to Newtonian laws... 
-                or just due to common sense summing  the velocity of car and wave since the emmited wave starts at a speed relative to a stationary observer
+                or just due to common sense summing  the velocity of car and wave since the emmited wave starts at a speed relative to a stationary observer..or does it? I mean if you move in a train you'd move at speed of you+train do sounds do the same? waves? but they're physical too if not why the fuck even doppler occurs? it should be dependent on the medium (if that's the right term) right otherwise how raptors would go super...I mean if the vectors would summed sound would always act stationary relative to the source right? but shit goes mach1+ so IDK MAN IDK...
                 but I gotta check that to implement...
                 i think Newtonian motion is fine since we're working on soundwaves so no Lorenz factor or relative velocity fuckery yet..
                 but really tho I am not a physicist so this might be way off...
@@ -71,8 +73,8 @@
 
                 Btw since we're on astronomy...have you known that why there is no 'Green' stars? yeah I checked there is none...well they emmit 'green' 
                 but since all the stars have infrared or ultaviolet emmisons the peak of the visible color always hits somewhere closer to the edges such as red or violet 
-                and since green is in the middle of the visible spectrum the peak never becomes green and if it is they would simply emmit all the spectrum and we'd see it as white
-                and if you don't know how the spectrum goes it goes like infrared(invisible to human eye)-Red, Orange,Yellow, Green, Blue, Violet - Ultaviolet(invisible to human eye) simply ROYGBV
+                and since green is in the middle of the visible spectrum the peak never becomes green and if it is they would simply emmit all the spectrum and we'd see it as white due to blackbody radiation...damn I've yapped so much didn't I?
+                and if you don't know how the spectrum goes it goes like infrared(invisible to human eye)-Red, Orange,Yellow, Green, Blue, Indigo, Violet - Ultaviolet(invisible to human eye) simply ROYGBIV
                 
 */
 
