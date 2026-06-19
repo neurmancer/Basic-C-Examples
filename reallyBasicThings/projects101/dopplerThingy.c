@@ -140,8 +140,8 @@ int main(void)
     SetRandomSeed(time(NULL)); //I really dunno why I used this from raylib instead of rand() but I did...I NEED CHANGE TOO forgive me RNGsus for what I've sinned
     
 
-    observer.x = GetRandomValue(10,GetScreenWidth());
-    observer.y = GetRandomValue(10,GetScreenHeight());
+    observer.x = GetRandomValue((int)WIDTH/10,WIDTH-50);
+    observer.y = GetRandomValue((int)HEIGHT/10,HEIGHT-50);
     
     //Tweaks
     InitWindow(WIDTH, HEIGHT ,"Doppler Thingy");
@@ -196,6 +196,7 @@ int main(void)
         BeginDrawing();
         ClearBackground(BLACK);
         drawVehicle(car);
+        //drawObserver(observer); Works but no detection yet so it'll stay like this
         drawWaves();
         
         EndDrawing();
@@ -255,5 +256,6 @@ void drawWaves(void)
 
 void drawObserver(Observer obs)
 {
-    DrawRectangle(obs.x, obs.y, 5, 5,PURPLE);
+    DrawRectangle(obs.x, obs.y, 30, 30,PURPLE);
 }
+
