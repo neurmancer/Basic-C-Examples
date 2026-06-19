@@ -9,12 +9,16 @@
 
 #define FPS 60
 
-#define MAX_WAVES 32     // Old value: 1024 | Overkill? We'll see...
-#define WAVE_SPEED 50 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...
+#define MAX_WAVES 64    // Old value: 1024 | Overkill? We'll see...
+#define WAVE_SPEED 30 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...
                          // is that even a vector? I mean isn't a 'ring' is infinite set of points equally far from a point and propagating them is basically 
                          //moving all of the with different angles outwards? I'm confused and changing name from WAVE_VELOCITY to WAVE_SPEED since due to only storing magnitude
 
+#define FRICTION 0.5f
+#define ACCELERATION 25.0f
+
 #define COOL_RED (Color){70 , 0 , 2, 255}
+
 
 /*              Sup? Got bored again and math fuckery wasn't enough...so here we are learning a 'framework' or lib I don't know what to call 
                 but I am using raylib as you can see...
@@ -141,8 +145,8 @@ int main(void)
     car.x = WIDTH/2;
     car.y = HEIGHT/2;
     
-    car.vX = 10.0f;
-    car.vY = 10.0f;
+    car.vX = 0.0f;
+    car.vY = 0.0f;
 
     car.aX = 0.0f;
     car.aY = 0.0f;
@@ -159,16 +163,22 @@ int main(void)
             emmitWave();
             waveFreq = 0.0f; //I love explicitly casting types to see the data type of the var. 
         }
+
+        car.aX = 0.0f;
+        car.aY = 0.0f;
         
         // 'Gameplay' 
-        if (IsKeyDown(KEY_W)) {car.aY -= 5.00f; } //Attempt 1: Car yote itself out of fucking screen I floored the fucking gas car goes past mach god knows how much
-        if (IsKeyDown(KEY_S)) {car.aY += 5.00f; } //Attempt 2: Car yote self more affectionetly
-        if (IsKeyDown(KEY_D)) {car.aX += 5.00f; }
-        if (IsKeyDown(KEY_A)) {car.aX -= 5.00f; }
+        if (IsKeyDown(KEY_W)) {car.aY -= ACCELERATION; } //Attempt 1: Car yote itself out of fucking screen I floored the fucking gas car goes past mach god knows how much
+        if (IsKeyDown(KEY_S)) {car.aY += ACCELERATION; } //Attempt 2: Car yote self more affectionetly
+        if (IsKeyDown(KEY_D)) {car.aX += ACCELERATION; } //Attempt 3: I got blinded by the rings
+        if (IsKeyDown(KEY_A)) {car.aX -= ACCELERATION; }
 
         //Velocity updates
         car.vX += car.aX * dt; 
         car.vY += car.aY * dt;
+
+        car.vX -= car.vX * FRICTION * dt; //So you don't yeet into orbit after reaching escape velocity
+        car.vY -= car.vY * FRICTION * dt;
 
         //Position updates
         car.x += car.vX * dt;
