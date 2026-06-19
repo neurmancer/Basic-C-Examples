@@ -11,8 +11,8 @@
 
 #define FPS 60
 
-#define MAX_WAVES 32     // Old value: 1024 | Overkill? We'll see...
-#define WAVE_VELOCITY 20 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...
+#define MAX_WAVES 64     // Old value: 1024 | Overkill? We'll see...
+#define WAVE_VELOCITY 50 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...
                          // is that even a vector? I mean isn't a 'ring' is infinite set of points equally far from a point and propagating them is basically 
                          //moving all of the with different angles outwards? I'm confused 
 
@@ -138,10 +138,10 @@ int main(void)
         }
         
         // 'Gameplay' 
-        if (IsKeyDown(KEY_W)) {car.y -= 0.70f; }
-        if (IsKeyDown(KEY_S)) {car.y += 0.70f; }
-        if (IsKeyDown(KEY_D)) {car.x += 0.70f; }
-        if (IsKeyDown(KEY_A)) {car.x -= 0.70f; }
+        if (IsKeyDown(KEY_W)) {car.y -= 0.65f; }
+        if (IsKeyDown(KEY_S)) {car.y += 0.65f; }
+        if (IsKeyDown(KEY_D)) {car.x += 0.65f; }
+        if (IsKeyDown(KEY_A)) {car.x -= 0.65f; }
         
         expandWaves(dt);
 
