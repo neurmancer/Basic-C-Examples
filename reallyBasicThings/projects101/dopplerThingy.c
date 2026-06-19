@@ -1,7 +1,5 @@
 /*    Includes    */
 
-
-#include <limits.h> //I was thinking about a overflow protection but used ring buffer instead so not needed just a thropy here 
 #include <raylib.h> //Yeah now I am a pathetic lib dependent guy...
 
 
@@ -12,9 +10,9 @@
 #define FPS 60
 
 #define MAX_WAVES 32     // Old value: 1024 | Overkill? We'll see...
-#define WAVE_VELOCITY 50 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...
+#define WAVE_SPEED 50 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...
                          // is that even a vector? I mean isn't a 'ring' is infinite set of points equally far from a point and propagating them is basically 
-                         //moving all of the with different angles outwards? I'm confused 
+                         //moving all of the with different angles outwards? I'm confused and changing name from WAVE_VELOCITY to WAVE_SPEED since due to only storing magnitude
 
 #define COOL_RED (Color){70 , 0 , 2, 255}
 
@@ -61,7 +59,8 @@
                     6-or if I can figure out how to partially color a circle I may add 'blue-shift' 
                     for the positive vector and 'red-shift' for the negative as the vehicle goes visually ofc (maybe a little math for the fun too)  
                 
-                and before I dip (since it's fucking 2.30AM) doppler effect isn't a thing only applied to sound waves it applies to all waves...
+                
+                    and before I dip (since it's fucking 2.30AM) doppler effect isn't a thing only applied to sound waves it applies to all waves...
                 in fact we determine the relative positions of celestial bodies using doppler if you heard the term blueshift and redshift...
                 this is exactly doppler effect applied on electromagnetic waves
                 Redshift when the source getting further (lower frequency)
@@ -83,10 +82,27 @@
 /*      Objects(or Structs)     */
 
 typedef struct{
+    /*
+            Chart before I forget
+            x,y -> Position
+            aX,aY -> acceleration on the given axis
+            vX,vY -> velocity on the given axis
+    */
     float x;
     float y;
+
+    float aX;
+    float aY;
+    
+    float vX;
+    float vY; //Man that's fucking overwhelming....
     //Coordinates of the vehicle 
 }Vehicle;
+
+typedef struct{
+    int x;
+    int y;
+}Observer; //Is that even neccessary? anyways...too late I already typed it
 
 typedef struct{
     //first, Float because I want shit to move smooth. 
@@ -121,16 +137,23 @@ int main(void)
     InitWindow(WIDTH, HEIGHT ,"Doppler Thingy");
     SetTargetFPS(FPS);
 
+    //Car props
     car.x = WIDTH/2;
     car.y = HEIGHT/2;
+    
+    car.vX = 10.0f;
+    car.vY = 10.0f;
 
+    car.aX = 0.0f;
+    car.aY = 0.0f;
 
     float waveFreq = 0.0f;
     //Game loop or logic loop (I AM USING GRAPHS FOR THE FIRST TIME IDK WHAT TO CALL THIS)
     while (!WindowShouldClose()) {
         
 
-        float dt = GetFrameTime(); //Btw I love how raylib uses pascal case they're accurate with the shit so I am trying to use camel case to reduce confusion between funcs
+        float dt = GetFrameTime(); //Btw I love how raylib uses pascal case they're accurate with their shit 
+                                   // so I am trying to use camel case to reduce confusion between funcs
         waveFreq+=dt;
         if ((waveFreq) > 0.25f) {
             emmitWave();
@@ -138,11 +161,28 @@ int main(void)
         }
         
         // 'Gameplay' 
-        if (IsKeyDown(KEY_W)) {car.y -= 0.65f; }
-        if (IsKeyDown(KEY_S)) {car.y += 0.65f; }
-        if (IsKeyDown(KEY_D)) {car.x += 0.65f; }
-        if (IsKeyDown(KEY_A)) {car.x -= 0.65f; }
+        if (IsKeyDown(KEY_W)) {car.aY -= 5.00f; } //Attempt 1: Car yote itself out of fucking screen I floored the fucking gas car goes past mach god knows how much
+        if (IsKeyDown(KEY_S)) {car.aY += 5.00f; } //Attempt 2: Car yote self more affectionetly
+        if (IsKeyDown(KEY_D)) {car.aX += 5.00f; }
+        if (IsKeyDown(KEY_A)) {car.aX -= 5.00f; }
+
+        //Velocity updates
+        car.vX += car.aX * dt; 
+        car.vY += car.aY * dt;
+
+        //Position updates
+        car.x += car.vX * dt;
+        car.y += car.vY * dt;
+
+
+        /*
+                    In my thinking era...
+                    how the fuck I can implement an acceleration for the car a = dV /dT lim T -> 0 ? what the fuck does that give me...acceleration on a given moment?
+                    displacement = time*vel? vel = displacment/time = That gives velocity WHERE THE FUCK I CAN COME UP WITH ACCEL?
         
+        */
+
+
         expandWaves(dt);
 
         BeginDrawing();
@@ -186,7 +226,7 @@ void expandWaves(float dT)
 
     for (unsigned int i = 0; i < activeWaves; i++) {
         unsigned int idx = (startIdx + i) % MAX_WAVES;
-        waves[idx].dRadius += WAVE_VELOCITY * dT;
+        waves[idx].dRadius += WAVE_SPEED * dT;
     }
 }
 
