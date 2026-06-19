@@ -1,7 +1,7 @@
 /*    Includes    */
 
 #include <raylib.h> //Yeah now I am a pathetic lib dependent guy...
-
+#include <time.h>
 
 /*      Defines     */
 #define WIDTH 1280.0 //Since I am using floats everywhere for position .0 (or explicit casting is a better way to shut cc warnings)
@@ -10,14 +10,15 @@
 #define FPS 60
 
 #define MAX_WAVES 64    // Old value: 1024 | Overkill? We'll see...
-#define WAVE_SPEED 30 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...
+#define WAVE_SPEED 60 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...
                          // is that even a vector? I mean isn't a 'ring' is infinite set of points equally far from a point and propagating them is basically 
                          //moving all of the with different angles outwards? I'm confused and changing name from WAVE_VELOCITY to WAVE_SPEED since due to only storing magnitude
 
-#define FRICTION 0.5f
+#define FRICTION 0.42f //Yeah meaning of life
 #define ACCELERATION 25.0f
 
-#define COOL_RED (Color){70 , 0 , 2, 255}
+#define COOL_RED CLITERAL(Color){53, 0, 13, 255} //Get it? because it has a essance of blue in it?
+#define DA_BLUE CLITERAL(Color){0, 13, 53, 255}
 
 
 /*              Sup? Got bored again and math fuckery wasn't enough...so here we are learning a 'framework' or lib I don't know what to call 
@@ -55,12 +56,10 @@
                     But lowering part of the pitch (which is the part where rings gets further apart behind the ball is solid)
                 
                 I may add 
-                    1- A rectangle representing an observer on a random point 
-                    2- An acceleration element to the car
-                    3- Sprites for fun (but I wanna keep the basic repo a little pure and sprites requires a src/ subfolder and unrelated textures etc..so maybe I won't)  
-                    4- Adding sounds to demonstrate pitch shift (Probably gonna be a ear-fucker)
-                    5- Or turn this graph based thing into a CLI program for love of the game
-                    6-or if I can figure out how to partially color a circle I may add 'blue-shift' 
+                    1- A rectangle representing an observer on a random point *Started working On*
+                    2- An acceleration element to the car *Added* 
+                    3- Adding sounds to demonstrate pitch shift (Probably gonna be a ear-fucker)
+                    4-or if I can figure out how to partially color a circle I may add 'blue-shift' 
                     for the positive vector and 'red-shift' for the negative as the vehicle goes visually ofc (maybe a little math for the fun too)  
                 
                 
@@ -78,7 +77,7 @@
                 Btw since we're on astronomy...have you known that why there is no 'Green' stars? yeah I checked there is none...well they emmit 'green' 
                 but since all the stars have infrared or ultaviolet emmisons the peak of the visible color always hits somewhere closer to the edges such as red or violet 
                 and since green is in the middle of the visible spectrum the peak never becomes green and if it is they would simply emmit all the spectrum and we'd see it as white due to blackbody radiation...damn I've yapped so much didn't I?
-                and if you don't know how the spectrum goes it goes like infrared(invisible to human eye)-Red, Orange,Yellow, Green, Blue, Indigo, Violet - Ultaviolet(invisible to human eye) simply ROYGBIV
+                and if you don't know how the spectrum goes it goes like infrared(invisible to human eye)-Red, Orange,Yellow, Green, Blue, Indigo, Violet - Ultraviolet(invisible to human eye) simply ROYGBIV
                 
 */
 
@@ -120,14 +119,16 @@ typedef struct{
 /* Declarations */
 
 void drawVehicle(Vehicle vehc);
+void drawWaves(void);
+void drawObserver(Observer obs);
 
 void emmitWave(void);
-void drawWaves(void);
 void expandWaves(float dT);
 
 /* Global Vars  (I dunno how many I'll have but here it is)... */
 
 Vehicle car = { 0 };
+Observer observer = { 0 };
 /*This is not the best practice but I ended up having only 3 globabls and adding parameteres for only 3 globals seemed too much work tbh so deal with it pls*/
 
 unsigned int waveCount = 0; 
@@ -135,8 +136,13 @@ SoundWave waves[MAX_WAVES] = { 0 }; //Those are just empty array declaration... 
 
 int main(void)
 {
-    // CLITERAL(Color){ 0 }
 
+    SetRandomSeed(time(NULL)); //I really dunno why I used this from raylib instead of rand() but I did...I NEED CHANGE TOO forgive me RNGsus for what I've sinned
+    
+
+    observer.x = GetRandomValue(10,GetScreenWidth());
+    observer.y = GetRandomValue(10,GetScreenHeight());
+    
     //Tweaks
     InitWindow(WIDTH, HEIGHT ,"Doppler Thingy");
     SetTargetFPS(FPS);
@@ -159,7 +165,7 @@ int main(void)
         float dt = GetFrameTime(); //Btw I love how raylib uses pascal case they're accurate with their shit 
                                    // so I am trying to use camel case to reduce confusion between funcs
         waveFreq+=dt;
-        if ((waveFreq) > 0.25f) {
+        if ((waveFreq) > 0.20f) {
             emmitWave();
             waveFreq = 0.0f; //I love explicitly casting types to see the data type of the var. 
         }
@@ -183,14 +189,6 @@ int main(void)
         //Position updates
         car.x += car.vX * dt;
         car.y += car.vY * dt;
-
-
-        /*
-                    In my thinking era...
-                    how the fuck I can implement an acceleration for the car a = dV /dT lim T -> 0 ? what the fuck does that give me...acceleration on a given moment?
-                    displacement = time*vel? vel = displacment/time = That gives velocity WHERE THE FUCK I CAN COME UP WITH ACCEL?
-        
-        */
 
 
         expandWaves(dt);
@@ -220,7 +218,7 @@ void drawVehicle(Vehicle vehc)
 
 void emmitWave(void)
 {
-    SoundWave newWave = {car.x, car.y, 0.0f}; //soundwaves comes from a source point hence the radius starts with 0
+    SoundWave newWave = {car.x, car.y, 0.0f}; //soundwaves comes from a source point hence the radius starts with 0.
     waves[waveCount % MAX_WAVES] = newWave;
     waveCount++;
 }
@@ -250,6 +248,12 @@ void drawWaves(void)
     for (unsigned int i = 0; i < activeWaves; i++) {
         unsigned int idx = (startIdx + i) % MAX_WAVES;
         
-        DrawCircleLines(waves[idx].x, waves[idx].y, waves[idx].dRadius, VIOLET);
+        DrawCircleLines(waves[idx].x, waves[idx].y, waves[idx].dRadius, DA_BLUE);
     }
+}
+
+
+void drawObserver(Observer obs)
+{
+    DrawRectangle(obs.x, obs.y, 5, 5,PURPLE);
 }
