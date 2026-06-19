@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define SAMPLE_SIZE 128
+#define SAMPLE_SIZE 128 //Mandatory
 
 /*      Here we are implementing FFT out of blue as I promised... in the DFT file...first don't fucking expect descriptions 
         Even I don't even fucking know how tf I've achieved this but I did...
