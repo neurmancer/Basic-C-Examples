@@ -1,8 +1,8 @@
 /*    Includes    */
 
 
-#include <limits.h>
-#include <raylib.h>
+#include <limits.h> //I was thinking about a overflow protection but used ring buffer instead so not needed just a thropy here 
+#include <raylib.h> //Yeah now I am a pathetic lib dependent guy...
 
 
 /*      Defines     */
@@ -11,40 +11,69 @@
 
 #define FPS 60
 
-#define MAX_WAVES 32 //Overkill? We'll see...
-#define WAVE_VELOCITY 20 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...is that even a vector? 
+#define MAX_WAVES 32     // Old value: 1024 | Overkill? We'll see...
+#define WAVE_VELOCITY 20 //Should I use vel or speed? I mean... does a circle has vector? or just magnitude? it expands outwards...
+                         // is that even a vector? 
 
 #define COOL_RED (Color){70 , 0 , 2, 255}
 
 /*              Sup? Got bored again and math fuckery wasn't enough...so here we are learning a 'framework' or lib I don't know what to call 
                 but I am using raylib as you can see...
-                Important shit:
+                Important shit to know:
                 1- you need to have raylib.h in your system I used pacman -S raylib and it worked so I assume apt-get and dnf will work too... as always windows can suck mine
                 2- you gotta compile with -lraylib to link raylib (duh)
                 3- We're building a Doppler Effect Demonstrator/Simulator and I have no idea why the fuck I am doing this it's 00AM I ask questioning after 11PM
-                4- I am using this cheat sheet from raylib https://www.raylib.com/cheatsheet/cheatsheet.html for seeing shit and funny enough? They're explaining as if I am an idiot and I am a sucker for it
+                4- I am using this cheat sheet from raylib https://www.raylib.com/cheatsheet/cheatsheet.html for seeing shit and funny enough? 
+                They're explaining as if I am an idiot and I am a sucker for it 
                 (thx for making my job easy raylib...)
 
                 5- Since this is the first file in the repo requring external dependency (raylib) I am improvising the notation a little such as sectioning like defines,includes and shit
 
+                6- I am doing this purely with what I remember so it might not be correct. 
+                For instance....waves probably need a vector as the car moves due to Newtonian laws... 
+                or just due to common sense summing  the velocity of car and wave since the emmited wave starts at a speed relative to a stationary observer
+                but I gotta check that to implement...
+                i think Newtonian motion is fine since we're working on soundwaves so no Lorenz factor or relative velocity fuckery yet..
+                but really tho I am not a physicist so this might be way off...
+                as I said this file is from memory of mine not based on wikipedia so don't expect me to show you lambda = vel / freq at least for now  
 
-                Now the real tea...Wtf is doppler effect?
+                Now the real tea...Wtf is doppler effect? 
+                and here is the first name drop of the file: It is named after the physicist Christian Doppler, 
+                who described the phenomenon in 1842
+
                 It is the  change in the frequency or pitch of a wave in relation to an observer who is moving relative to the wave's source 
                 so if an ambulance is coming towards you you'll hear a higher pitch and if it's going further away the pitch will lower 
-                did I simulate it? Kinda visually but nah there is no frequency or wavelength detection in this program is there a math involved? Fuck yeah!
-                I basically made a ball that you can move with WASD and it creates rings around itself no acceleration no visible pitch change and shit 
-                But lowering part of the pitch (which is the part where rings gets further apart behind the ball is solid)
+                did I simulate it?
+                    -Kinda visually but nah there is no frequency or wavelength detection in this program is there a math involved? Fuck yeah!
+                
+                    I basically made a ball that you can move with WASD and it creates rings around itself no acceleration no visible pitch change and shit 
+                    But lowering part of the pitch (which is the part where rings gets further apart behind the ball is solid)
+                
                 I may add 
-                1- A rectangle representing an observer on a random point 
-                2- An acceleration element to the car
-                3- Sprites for fun 
-                4- Or turn this graph based thing into a CLI program for love of the game
-
+                    1- A rectangle representing an observer on a random point 
+                    2- An acceleration element to the car
+                    3- Sprites for fun (but I wanna keep the basic repo a little pure and sprites requires a src/ subfolder and unrelated textures etc..so maybe I won't)  
+                    4- Adding sounds to demonstrate pitch shift (Probably gonna be a ear-fucker)
+                    5- Or turn this graph based thing into a CLI program for love of the game
+                    6-or if I can figure out how to partially color a circle I may add 'blue-shift' 
+                    for the positive vector and 'red-shift' for the negative as the vehicle goes visually ofc (maybe a little math for the fun too)  
+                
                 and before I dip (since it's fucking 2.30AM) doppler effect isn't a thing only applied to sound waves it applies to all waves...
-                in fact we determine the relative positions of celestial bodies using doppler if you heard the term blueshift and redshift...this is exactly doppler effect applied on electromagnetic waves
+                in fact we determine the relative positions of celestial bodies using doppler if you heard the term blueshift and redshift...
+                this is exactly doppler effect applied on electromagnetic waves
                 Redshift when the source getting further (lower frequency)
-                Blueshift is when the source getting closer (higher frequency)
+                Blueshift is when the source getting closer (higher frequency) 
+                and that's how Edwin Hubble realized that shit is getting further from us using redshift
+                (yeah the dude we named a huge telescope after) and 
+                    -if you are saying 'shut up nerd' 
+                        First, Fuck off, 
+                        Second, Why the fuck you are looking for a doppler Thingy if you are NOT interested bruh? 
 
+                Btw since we're on astronomy...have you known that why there is no 'Green' stars? yeah I checked there is none...well they emmit 'green' 
+                but since all the stars have infrared or ultaviolet emmisons the peak of the visible color always hits somewhere closer to the edges such as red or violet 
+                and since green is in the middle of the visible spectrum the peak never becomes green and if it is they would simply emmit all the spectrum and we'd see it as white
+                and if you don't know how the spectrum goes it goes like infrared(invisible to human eye)-Red, Orange,Yellow, Green, Blue, Violet - Ultaviolet(invisible to human eye) simply ROYGBV
+                
 */
 
 
@@ -73,9 +102,10 @@ void emmitWave(void);
 void drawWaves(void);
 void expandWaves(float dT);
 
-/* Global Vars  (I dunno how many I'll have but here it is)*/
+/* Global Vars  (I dunno how many I'll have but here it is)... */
 
 Vehicle car = { 0 };
+/*This is not the best practice but I ended up having only 3 globabls and adding parameteres for only 3 globals seemed too much work tbh so deal with it pls*/
 
 unsigned int waveCount = 0; 
 SoundWave waves[MAX_WAVES] = { 0 }; //Those are just empty array declaration... a habit of mine, don't mind...
@@ -130,6 +160,8 @@ int main(void)
 void drawVehicle(Vehicle vehc)
 {
     DrawCircle(vehc.x, vehc.y, 25, COOL_RED); //Ok! I just figured out how to give custom colors and picked a cool red 
+    //#define PURPLE     CLITERAL(Color){ 200, 122, 255, 255 }  this line taken directly from raylib's header file they define colors like that RGB+transparency
+    //You can use this as a template to define your own colors (CLITERAL isn't necessary ig since I didn't use it for COOL_RED but they added as const ig...)
 }
 
 
@@ -140,12 +172,14 @@ void emmitWave(void)
     waveCount++;
 }
 
+
+//I searched internet for keeping track of buffer since it was causing UB and found what a ring buffer is and tried to implement (half mine, half copy-paste  )
 void expandWaves(float dT)
 {
     if (waveCount == 0) return;
 
     unsigned int activeWaves = (waveCount < MAX_WAVES) ? waveCount : MAX_WAVES;  //To keep track of the fucking waves
-    unsigned int startIdx = (waveCount < MAX_WAVES) ? 0 : (waveCount % MAX_WAVES);
+    unsigned int startIdx = (waveCount < MAX_WAVES) ? 0 : (waveCount % MAX_WAVES); //if the wave count is lower than MAX_VAVES start at 0 and if not start at where you left off 
 
     for (unsigned int i = 0; i < activeWaves; i++) {
         unsigned int idx = (startIdx + i) % MAX_WAVES;
@@ -157,7 +191,7 @@ void drawWaves(void)
 {
     if (waveCount == 0) return;
 
-    unsigned int activeWaves = (waveCount < MAX_WAVES) ? waveCount : MAX_WAVES;
+    unsigned int activeWaves = (waveCount < MAX_WAVES) ? waveCount : MAX_WAVES; //same logic
     unsigned int startIdx = (waveCount < MAX_WAVES) ? 0 : (waveCount % MAX_WAVES);
 
     for (unsigned int i = 0; i < activeWaves; i++) {
