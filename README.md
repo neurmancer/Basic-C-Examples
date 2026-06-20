@@ -40,6 +40,8 @@
 
 - A mainless C file that you can run (for no apperant reason)
 
+- Buffer oveflow for lulz. 
+
 - Subfoldef for bitwise sorcery 
 
 > - A bitwise operations chart 
