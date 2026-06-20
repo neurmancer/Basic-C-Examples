@@ -78,7 +78,7 @@ int main(void)
 
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawSplineLinear(instructions, instructionSize, 2.0f,WHITE); //If that works I'll cal it a night...it's 1.42 AM (lol Dough Adams reference yeah...)
+        DrawSplineLinear(instructions, instructionSize, 2.0f,WHITE); //If that works I'll cal it a night...it's 1.42 AM (lol Douglas Adams reference yeah...)
         EndDrawing(); 
     }
 
