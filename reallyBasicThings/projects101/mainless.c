@@ -1,4 +1,4 @@
-#include <stdio.h>
+// #include <stdio.h> nah 2 headers too much gotta ditch this one
 #include <unistd.h> // For getting _exit() 
 
 /*  
@@ -20,8 +20,11 @@
 
 int _start() {
 
-    printf("MAIN IS FOR THE WEAK\n");
-    printf("Here is a prime number for you before I dip: 13\n");
+    char lulz[] = "MAIN IS FOR THE WEAK\n";  //Mutable char array not (char *) since yk...sizeof() doesn't work with it...well it does but gives you 8 (unless you are using a toaster)
+    write(1,lulz, sizeof(lulz)); //Since we use write you don't need to worry about 
+    //printf("MAIN IS FOR THE WEAK\n"); why using stdio lol
+    char e[] = "Here is a prime number for you before I dip: 13\n";
+    write(1,e, sizeof(e));
     
     // Terminate the process immediately
     _exit(0); //Basically a magnum to the temple with an empty bottle o' jack on the table (or kill -9 if you know)
