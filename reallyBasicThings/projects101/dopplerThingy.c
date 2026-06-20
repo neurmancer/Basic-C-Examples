@@ -1,5 +1,6 @@
 /*    Includes    */
 
+#include <stdio.h>
 #include <raylib.h> //Yeah now I am a pathetic lib dependent guy...
 #include <time.h>
 
@@ -62,7 +63,12 @@
                     4-or if I can figure out how to partially color a circle I may add 'blue-shift' 
                     for the positive vector and 'red-shift' for the negative as the vehicle goes visually ofc (maybe a little math for the fun too)  
                 
-                
+                Known bugs: 
+                    -Frequency is twice for some FUCKING reason it emits waves twice as much in a given time...tried to use time(NULL), clock(),
+                    and I wanna get an accurate shit hence I don't just tune it to twice as much or /2 the result but now you can see the period in terminal as a counter 
+                    (if you don't now what is a period it is basically (freq)^-1 or wave count per unit of time (second)) 
+
+
                     and before I dip (since it's fucking 2.30AM) doppler effect isn't a thing only applied to sound waves it applies to all waves...
                 in fact we determine the relative positions of celestial bodies using doppler if you heard the term blueshift and redshift...
                 this is exactly doppler effect applied on electromagnetic waves
@@ -102,10 +108,7 @@ typedef struct{
     //Coordinates of the vehicle 
 }Vehicle;
 
-typedef struct{
-    int x;
-    int y;
-}Observer; //Is that even neccessary? anyways...too late I already typed it
+
 
 typedef struct{
     //first, Float because I want shit to move smooth. 
@@ -114,21 +117,25 @@ typedef struct{
     float y;
     float dRadius; 
 
+    int isDetected; //To flag collision
+
 }SoundWave; //I tried using Wave as var name but it conflicted with a raylib definition ig so we're going with soundwave 
 
 /* Declarations */
 
 void drawVehicle(Vehicle vehc);
 void drawWaves(void);
-void drawObserver(Observer obs);
+void drawObserver(Rectangle obs);
 
 void emmitWave(void);
 void expandWaves(float dT);
 
+unsigned int checkObserverCollisions(void);
+
 /* Global Vars  (I dunno how many I'll have but here it is)... */
 
 Vehicle car = { 0 };
-Observer observer = { 0 };
+Rectangle observer = { 0 };
 /*This is not the best practice but I ended up having only 3 globabls and adding parameteres for only 3 globals seemed too much work tbh so deal with it pls*/
 
 unsigned int waveCount = 0; 
@@ -140,8 +147,10 @@ int main(void)
     SetRandomSeed(time(NULL)); //I really dunno why I used this from raylib instead of rand() but I did...I NEED CHANGE TOO forgive me RNGsus for what I've sinned
     
 
-    observer.x = GetRandomValue((int)WIDTH/10,WIDTH-50);
-    observer.y = GetRandomValue((int)HEIGHT/10,HEIGHT-50);
+    observer.x = GetRandomValue((WIDTH/10),WIDTH-50);
+    observer.y = GetRandomValue((HEIGHT/10),HEIGHT-50);
+    observer.width = 30.0f; 
+    observer.height = 30.0f;
     
     //Tweaks
     InitWindow(WIDTH, HEIGHT ,"Doppler Thingy");
@@ -156,19 +165,24 @@ int main(void)
 
     car.aX = 0.0f;
     car.aY = 0.0f;
+    time_t start = time(NULL);
+    unsigned int waveCollisions = 0;
+    
+    double lastEmitTime = 0.0f;
 
-    float waveFreq = 0.0f;
     //Game loop or logic loop (I AM USING GRAPHS FOR THE FIRST TIME IDK WHAT TO CALL THIS)
     while (!WindowShouldClose()) {
         
 
         float dt = GetFrameTime(); //Btw I love how raylib uses pascal case they're accurate with their shit 
                                    // so I am trying to use camel case to reduce confusion between funcs
-        waveFreq+=dt;
-        if ((waveFreq) > 0.20f) {
-            emmitWave();
-            waveFreq = 0.0f; //I love explicitly casting types to see the data type of the var. 
-        }
+
+        double currentTime = GetTime();
+            
+            while(currentTime - lastEmitTime >= 5.0f) {
+                emmitWave();
+                lastEmitTime = currentTime;  // veya += 0.20 (catch-up için)
+            }
 
         car.aX = 0.0f;
         car.aY = 0.0f;
@@ -178,6 +192,8 @@ int main(void)
         if (IsKeyDown(KEY_S)) {car.aY += ACCELERATION; } //Attempt 2: Car yote self more affectionetly
         if (IsKeyDown(KEY_D)) {car.aX += ACCELERATION; } //Attempt 3: I got blinded by the rings
         if (IsKeyDown(KEY_A)) {car.aX -= ACCELERATION; }
+
+
 
         //Velocity updates
         car.vX += car.aX * dt; 
@@ -190,18 +206,29 @@ int main(void)
         car.x += car.vX * dt;
         car.y += car.vY * dt;
 
-
         expandWaves(dt);
+        waveCollisions += checkObserverCollisions();
+
+        if (difftime(time(NULL), start) > 1.0f) {
+            printf("%u\n",waveCollisions);
+            waveCollisions = 0;
+            start = time(NULL);
+        }
+
 
         BeginDrawing();
         ClearBackground(BLACK);
         drawVehicle(car);
-        //drawObserver(observer); Works but no detection yet so it'll stay like this
+        DrawFPS(10, 10);
+        drawObserver(observer); // Works but no detection yet so it'll stay like this
         drawWaves();
+ 
         
         EndDrawing();
     }
 
+
+    CloseWindow();
 
     return(0);
 }
@@ -216,10 +243,10 @@ void drawVehicle(Vehicle vehc)
     //You can use this as a template to define your own colors (CLITERAL isn't necessary ig since I didn't use it for COOL_RED but they added as const ig...)
 }
 
-
+ 
 void emmitWave(void)
 {
-    SoundWave newWave = {car.x, car.y, 0.0f}; //soundwaves comes from a source point hence the radius starts with 0.
+    SoundWave newWave = {car.x, car.y, 0.0f,0}; //soundwaves comes from a source point hence the radius starts with 0.
     waves[waveCount % MAX_WAVES] = newWave;
     waveCount++;
 }
@@ -254,8 +281,36 @@ void drawWaves(void)
 }
 
 
-void drawObserver(Observer obs)
+void drawObserver(Rectangle obs)
 {
-    DrawRectangle(obs.x, obs.y, 30, 30,PURPLE);
+    DrawRectangle(obs.x, obs.y, obs.width, obs.height,PURPLE);
 }
 
+
+unsigned int checkObserverCollisions(void)
+{
+    unsigned int collisionCount = 0;
+    if (waveCount == 0) { return(0); }
+
+    unsigned int activeWaves = (waveCount < MAX_WAVES) ? waveCount : MAX_WAVES;
+
+    unsigned int startIdx = (waveCount < MAX_WAVES) ? 0 : (waveCount % MAX_WAVES);
+
+
+    for (unsigned int i = 0; i < activeWaves; i++)
+    {
+        unsigned int idx = (startIdx + i) % MAX_WAVES;
+
+        Vector2 center = {
+            waves[idx].x,
+            waves[idx].y
+        };
+
+        if (!waves[idx].isDetected && CheckCollisionCircleRec(center,waves[idx].dRadius,observer))
+        {
+            waves[idx].isDetected = 1;
+            collisionCount++;
+        }
+    }
+    return(collisionCount);
+}
