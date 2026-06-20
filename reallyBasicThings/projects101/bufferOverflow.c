@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 
 /*
         Welcome to another file where I fuck with the computer's interals and today we're going overflow the buffer so you can protect this in your production ready code
@@ -33,9 +32,8 @@ int main(void)
     fflush(stdout); //Don't forget to flush
     scanf("%s", buffer);  //A desparete, unwrapped,deplorable scanf that will read anything from stdin without limitation and checks     
 
-    if (strcmp(buffer,"Neur") && overflow == 111) {
-        //first half of the if statement is checking the buffer's inside whether the first 4 letter of the password is correct or not then the second half is the other variable which is 0 right?
-        //Nah when you type Neuro and hit enter the last 'o' will overflow to the variable and change the value to 111 or 'o' on ASCII table
+    if (overflow == 111) {
+        //Lol I lied at the top there is no password and that's the fucking point basically if the fifth letter is 'o' you'll get in since yk it overflew to the next var
         printf("Welcome to the world of buffer fuckery!\n");
     } 
 
