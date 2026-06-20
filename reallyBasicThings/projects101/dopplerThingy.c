@@ -16,7 +16,7 @@
                          //moving all of the with different angles outwards? I'm confused and changing name from WAVE_VELOCITY to WAVE_SPEED since due to only storing magnitude
 
 #define FRICTION 0.42f //Yeah meaning of life
-#define ACCELERATION 25.0f
+#define ACCELERATION 30.0f
 
 #define COOL_RED CLITERAL(Color){53, 0, 13, 255} //Get it? because it has a essance of blue in it?
 #define DA_BLUE CLITERAL(Color){0, 13, 53, 255}
@@ -24,6 +24,9 @@
 
 /*              Sup? Got bored again and math fuckery wasn't enough...so here we are learning a 'framework' or lib I don't know what to call 
                 but I am using raylib as you can see...
+
+
+                And that's where I call it 'Eh close enough' and abonden the rest for a while probably I'll be buliding more janky physics simulators lol
                 
                 Important shit to know:
                 1- you need to have raylib.h in your system I used pacman -S raylib and it worked so I assume apt-get and dnf will work too... as always windows can suck mine
@@ -156,6 +159,8 @@ int main(void)
     InitWindow(WIDTH, HEIGHT ,"Doppler Thingy");
     SetTargetFPS(FPS);
 
+    if (!IsWindowReady()) { perror("Window got fucked up\n"); return(-1) ;}
+
     //Car props
     car.x = WIDTH/2;
     car.y = HEIGHT/2;
@@ -169,7 +174,6 @@ int main(void)
 
     double relativeFrequency = 0.0l;
 
-    time_t start = time(NULL);
     unsigned int waveCollisions = 0;
     
     double lastEmitTime = 0.0f;
@@ -183,9 +187,9 @@ int main(void)
 
         double currentTime = GetTime();
             
-            while(currentTime - lastEmitTime >= 5.0f) {
+            while(currentTime - lastEmitTime >= 0.50f) {
                 emmitWave();
-                lastEmitTime = currentTime;  // veya += 0.20 (catch-up için) lol I switched back to my native mid-coding and didn't even realize 
+                lastEmitTime = GetTime();  // veya += 0.20 (catch-up için) lol I switched back to my native mid-coding and didn't even realize 
             }
 
         car.aX = 0.0f;
@@ -196,8 +200,8 @@ int main(void)
         if (IsKeyDown(KEY_S)) {car.aY += ACCELERATION; } //Attempt 2: Car yote self more affectionetly
         if (IsKeyDown(KEY_D)) {car.aX += ACCELERATION; } //Attempt 3: I got blinded by the rings
         if (IsKeyDown(KEY_A)) {car.aX -= ACCELERATION; }
-
-
+        if (IsKeyPressed(KEY_SPACE)) {car.vX = 0; car.vY = 0;} //Yeah a fucking absolute hand-break
+        if (IsKeyPressed(KEY_ESCAPE)) {CloseWindow();} //And a yk...close the win button lol I use dwm and I was using Ctrl+C up until this point to terminate the program
 
         //Velocity updates
         car.vX += car.aX * dt; 
@@ -213,22 +217,17 @@ int main(void)
         expandWaves(dt);
         waveCollisions += checkObserverCollisions();
 
-        if (difftime(time(NULL), start) > 1.0f) {
-            printf("%u\n",waveCollisions);
-            relativeFrequency = (1.0l / waveCollisions);
-            waveCollisions = 0;
-            start = time(NULL);
-        }
-
 
         BeginDrawing();
         ClearBackground(BLACK);
         drawVehicle(car);
-        DrawFPS(10, 10);
         drawObserver(observer); // Works but no detection yet so it'll stay like this
         drawWaves();
- 
-        
+
+        if ((car.vX) > WAVE_SPEED || car.vY > WAVE_SPEED || car.vX < (WAVE_SPEED*-1) || car.vY < (WAVE_SPEED*-1)) 
+        {
+            DrawText("SUPER SONIC! BITCH!", (WIDTH/2)-5, 5, 25,(Color){13,53,15,150});
+        }
         EndDrawing();
     }
 
