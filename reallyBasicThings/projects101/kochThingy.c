@@ -12,7 +12,8 @@
 #define FPS 60
 
 #define MOVEMENT_UNIT 0.5f
-#define TURNED_POINT sqrt((array[i-1].x*array[i-1].x) + (array[i-1].y*array[i-1].y))
+
+
 /*              Sup? You know the tea...Got bored, thought something now I must implement...The usual fuck around and find out thing        
 
                 This is here as a template for now...  
