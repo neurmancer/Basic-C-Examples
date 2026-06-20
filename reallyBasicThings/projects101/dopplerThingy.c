@@ -165,6 +165,10 @@ int main(void)
 
     car.aX = 0.0f;
     car.aY = 0.0f;
+    //Shit I'll use and don't know how to sector 
+
+    double relativeFrequency = 0.0l;
+
     time_t start = time(NULL);
     unsigned int waveCollisions = 0;
     
@@ -181,7 +185,7 @@ int main(void)
             
             while(currentTime - lastEmitTime >= 5.0f) {
                 emmitWave();
-                lastEmitTime = currentTime;  // veya += 0.20 (catch-up için)
+                lastEmitTime = currentTime;  // veya += 0.20 (catch-up için) lol I switched back to my native mid-coding and didn't even realize 
             }
 
         car.aX = 0.0f;
@@ -211,6 +215,7 @@ int main(void)
 
         if (difftime(time(NULL), start) > 1.0f) {
             printf("%u\n",waveCollisions);
+            relativeFrequency = (1.0l / waveCollisions);
             waveCollisions = 0;
             start = time(NULL);
         }
