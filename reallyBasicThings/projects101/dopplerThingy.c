@@ -99,6 +99,8 @@ typedef struct{
             x,y -> Position
             aX,aY -> acceleration on the given axis
             vX,vY -> velocity on the given axis
+
+            speed for maginute 
     */
     float x;
     float y;
@@ -108,7 +110,8 @@ typedef struct{
     
     float vX;
     float vY; //Man that's fucking overwhelming....
-    //Coordinates of the vehicle 
+ 
+    float speed;
 }Vehicle;
 
 

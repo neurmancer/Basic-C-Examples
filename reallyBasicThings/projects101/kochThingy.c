@@ -1,14 +1,18 @@
 /*  Includes    */
 
-#include <raylib.h>
-#include <stdio.h>
+
+#include <stdlib.h> //For malloc and free
+#include <raylib.h> //For everything?
+#include <stdio.h> //For moral support
+#include <math.h> //For math...yk
 
 /*  Defines     */
-#define WIDTH 600.0f
-#define HEIGHT 400.0f
+#define WIDTH 1200.0f
+#define HEIGHT 800.0f
 #define FPS 60
 
-
+#define MOVEMENT_UNIT 0.5f
+#define TURNED_POINT sqrt((array[i-1].x*array[i-1].x) + (array[i-1].y*array[i-1].y))
 /*              Sup? You know the tea...Got bored, thought something now I must implement...The usual fuck around and find out thing        
 
                 This is here as a template for now...  
@@ -16,6 +20,7 @@
                 Except the visulization part since it was my 13th day of programming so here we are finishing the shit that I've started out of passion but problem is...I forgot the instructions
                 and refuse to check again lol...MY BRAIN GONNA GIVE IT BACK TO ME
 
+                And this file is where we split our ways with Beckett since this file is where Godot arrives...
 
                 Here is the video I encountered this at first : https://www.instagram.com/p/DTVXyKlDh0s/
                 And here is the wikipedia page for more : https://en.wikipedia.org/wiki/Thue–Morse_sequence (I haven't checked myself yet so...you are on your own in this one)
@@ -39,16 +44,30 @@
 */
 
 
-unsigned int popCount(unsigned int x); //This is mathematical part 
+unsigned int popCount(unsigned int x); //This is bitsy mathematical part 
+Vector2 *calculationShit(Vector2* array, unsigned int arrSize,unsigned int startIndex); //I'll definitely rename that...
+
 
 
 int main(void)
 {
 
-
+    /*Declaration*/
+    Vector2 *instructions = NULL; //Yup classic me being defensive yk
+    unsigned int instructionSize = 512;
+    
+    instructions = (Vector2 *)malloc(sizeof(Vector2)*instructionSize);
+    if (instructions == NULL) {perror("Allocation fuck up occured\n"); return(-1);}
+    instructions[0] = (Vector2){WIDTH/2,HEIGHT/2}; //Starting point
+    unsigned int start = 1;
+    
+    
+    //Setting up the window and OpenGL(at least that's what I heard from raylib) 
     InitWindow(WIDTH, HEIGHT, "Koch Thingy");
     if (!IsWindowReady()) {perror("Something bad occured\n"); return(-1);}
     SetTargetFPS(FPS);
+
+    instructions = calculationShit(instructions,instructionSize,1);
 
     while (!WindowShouldClose()) {
         
@@ -58,8 +77,8 @@ int main(void)
 
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawLine(5, 5, 9, 8, PURPLE); 
-        EndDrawing();
+        DrawSplineLinear(instructions, instructionSize, 2.0f,WHITE); //If that works I'll cal it a night...it's 1.42 AM (lol Dough Adams reference yeah...)
+        EndDrawing(); 
     }
 
     
@@ -79,3 +98,44 @@ unsigned int popCount(unsigned int x)
     return(upBits);
 }
  
+/*
+
+Vector2 *calculationShit(Vector2* array,unsigned int arrSize,unsigned int startIndex)
+{
+
+    for (int i = startIndex;i < arrSize;i++) {
+        int flag = 0;        
+        
+        if (popCount(i) % 2) {
+            if (flag) {
+                array[i].x = array[i-1].x+TURNED_POINT;
+            }
+            else {
+                array[i].x = array[i-1].x+MOVEMENT_UNIT;
+            }
+            flag = 0;
+        }
+        else {
+            int flag = 1;
+        }
+    }
+
+    return(array);
+}
+
+This function is indeed a crime against humanity...leaving a template for tomorrow's plan
+
+NOTE TO FUTURESELF: USE FUCKING TRIG FUNCS YOU IDIOT 
+
+if (t == 0) {
+            // MOVE
+            pos.x += cosf(angle) * STEP_SIZE;
+            pos.y += sinf(angle) * STEP_SIZE;
+            points[pointIndex++] = pos;
+        } else {
+            // TURN only
+            angle += TURN_ANGLE;
+        }
+    }
+
+*/ 
