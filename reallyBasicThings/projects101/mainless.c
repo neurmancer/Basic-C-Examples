@@ -1,5 +1,4 @@
 // #include <stdio.h> nah 2 headers too much gotta ditch this one
-#include <stdnoreturn.h>
 #include <unistd.h> // For getting _exit() 
 
 /*  
