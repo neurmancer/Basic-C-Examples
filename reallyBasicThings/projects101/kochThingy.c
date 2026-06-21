@@ -7,11 +7,12 @@
 #include <math.h> //For math...yk
 
 /*  Defines     */
-#define WIDTH 1200.0f
-#define HEIGHT 800.0f
-#define FPS 60
+#define WIDTH 1600.0f
+#define HEIGHT 1200.0f
+#define FPS 120 //I guess 120 is the sweet-spot or I can make this dynamic in the future for V-Sync type shit
 
-#define MOVEMENT_UNIT 0.5f
+#define TURN_ANGLE (M_PI/3)
+float STEP_SIZE = 5.3f;
 
 
 /*              Sup? You know the tea...Got bored, thought something now I must implement...The usual fuck around and find out thing        
@@ -42,47 +43,68 @@
 
                 I had failed math in highschool anyways lol... 
 
+                This is my experimenting part and where I pull funcs from raylib.h to dissect before I use
+
+                RLAPI bool IsWindowFullscreen(void);                              // Check if window is currently fullscreen
+                RLAPI void ToggleFullscreen(void);                                // Toggle window state: fullscreen/windowed, resizes monitor to match window resolution
+
 */
 
 
+/*   Function Declarations            */
+
 unsigned int popCount(unsigned int x); //This is bitsy mathematical part 
-Vector2 *calculationShit(Vector2* array, unsigned int arrSize,unsigned int startIndex); //I'll definitely rename that...
+Vector2 *instructor(Vector2 *arr, int *arrSize, int maxSteps);
 
+/*      Global Vars     */
 
+float angle = 0.0f;
+int pointIndex = 0;
 
 int main(void)
 {
 
     /*Declaration*/
     Vector2 *instructions = NULL; //Yup classic me being defensive yk
-    unsigned int instructionSize = 512;
+    
+    int instructionSize = 65540;
+
+
     
     instructions = (Vector2 *)malloc(sizeof(Vector2)*instructionSize);
     if (instructions == NULL) {perror("Allocation fuck up occured\n"); return(-1);}
-    instructions[0] = (Vector2){WIDTH/2,HEIGHT/2}; //Starting point
-    unsigned int start = 1;
+    Vector2 *root = instructions; //For a few reasons first... I may need reallocate that in the future so I don't wanna ditch the memory and I'll probably use the first pointer to walk instead of arr[i] notation
+    instructions[0] = (Vector2){(2*WIDTH)/3,HEIGHT/2}; //Starting point
     
+
+    int maxSteps = 65536*2; // crank this shit up
     
+    int iter = 1; //To iterate over the array to draw one more line each frame 
+
     //Setting up the window and OpenGL(at least that's what I heard from raylib) 
     InitWindow(WIDTH, HEIGHT, "Koch Thingy");
     if (!IsWindowReady()) {perror("Something bad occured\n"); return(-1);}
     SetTargetFPS(FPS);
+    if (!IsWindowFullscreen()) { ToggleBorderlessWindowed(); }
+    instructions = instructor(instructions, &instructionSize, maxSteps);
 
-    instructions = calculationShit(instructions,instructionSize,1);
 
     while (!WindowShouldClose()) {
         
-        if(IsKeyPressed(KEY_ESCAPE)){CloseWindow();}
-
+        if(IsKeyPressed(KEY_ESCAPE)){ CloseWindow(); }
 
 
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawSplineLinear(instructions, instructionSize, 2.0f,WHITE); //If that works I'll cal it a night...it's 1.42 AM (lol Douglas Adams reference yeah...)
+        DrawSplineLinear(instructions, iter, 2.50f,WHITE); //If that works I'll cal it a night...it's 1.42 AM (lol Douglas Adams reference yeah...)
         EndDrawing(); 
+        if (iter < pointIndex) {iter++;}
     }
 
     
+    free(root);
+    instructions = NULL;
+    root = NULL;
 
     return(0);
 }
@@ -99,44 +121,32 @@ unsigned int popCount(unsigned int x)
     return(upBits);
 }
  
-/*
 
-Vector2 *calculationShit(Vector2* array,unsigned int arrSize,unsigned int startIndex)
+
+
+
+Vector2 *instructor(Vector2 *arr, int *arrSize, int maxSteps)
 {
+    if (arr == NULL) { return(NULL); }
 
-    for (int i = startIndex;i < arrSize;i++) {
-        int flag = 0;        
+    Vector2 pos = arr[0];  // start position
+    pointIndex = 1;
+
+    for (unsigned int n = 0; n < (unsigned int)maxSteps && pointIndex < *arrSize; n++) {
+        unsigned int t = popCount(n);
         
-        if (popCount(i) % 2) {
-            if (flag) {
-                array[i].x = array[i-1].x+TURNED_POINT;
-            }
-            else {
-                array[i].x = array[i-1].x+MOVEMENT_UNIT;
-            }
-            flag = 0;
-        }
-        else {
-            int flag = 1;
-        }
-    }
-
-    return(array);
-}
-
-This function is indeed a crime against humanity...leaving a template for tomorrow's plan
-
-NOTE TO FUTURESELF: USE FUCKING TRIG FUNCS YOU IDIOT 
-
-if (t == 0) {
-            // MOVE
-            pos.x += cosf(angle) * STEP_SIZE;
+        if (t % 2 == 0) {
+            pos.x += cosf(angle) * STEP_SIZE; //Trigonometry...man even that confuses me
             pos.y += sinf(angle) * STEP_SIZE;
-            points[pointIndex++] = pos;
+            
+            if (pointIndex < *arrSize) {
+                arr[pointIndex] = pos;
+                pointIndex++;
+            }
         } else {
-            // TURN only
+            //CCW turn
             angle += TURN_ANGLE;
         }
     }
-
-*/ 
+    return(arr); 
+}
