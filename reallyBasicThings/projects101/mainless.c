@@ -1,4 +1,5 @@
 // #include <stdio.h> nah 2 headers too much gotta ditch this one
+
 #include <unistd.h> // For getting _exit() 
 
 /*  
@@ -23,6 +24,8 @@
     so...moral of the story:Marry your compiler (I love you cc mwah)
 */
 
+//void butler(void); that's a basic demo for you if you wanna use atexit() but since I didn't care enough to rewrite flushes in unistd func or from scratch you'll need <stdio.h> for functions in this
+
 void _start() {
 
     char lulz[] = "MAIN IS FOR THE WEAK\n";  //Mutable char array not (char *) since yk...sizeof() doesn't work with it...well it does but gives you 8(unless you are using a toaster) due to the decay 
@@ -32,6 +35,19 @@ void _start() {
     write(1,e, sizeof(e)-1); //Same reason here
     
     // Terminate the process immediately
+    //atexit(&cleanUP());
     _exit(0); //Basically a magnum to the temple with an empty bottle o' jack on the table (or kill -9 if you know)
     //return(0); would cause segfault (if not UB) since there is no crt0.o return TO...there is no return address on stack for _start 
 }
+
+/*
+void butler(void)
+{
+    
+    fflush(stdout);
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+        c++ One must imagine c++ happy...
+    }
+}
+*/
