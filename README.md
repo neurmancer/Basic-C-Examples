@@ -78,9 +78,11 @@
 
 - Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 
+- Koch Snowflake using Thue-Morse Sequence (same thing with Koch Curve file but with graphics and yeah still not sure if it's accurate)
+
 - A Discreate Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
 
-- A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the solo exception of math.h)
+- A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)
 
 - Doppler Effect Simulator (using raylib.h so you gotta have it too) 
 
