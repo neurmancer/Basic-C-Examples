@@ -12,7 +12,9 @@
 #define FPS 120 //I guess 120 is the sweet-spot or I can make this dynamic in the future for V-Sync type shit
 
 #define TURN_ANGLE (M_PI/3)
-float STEP_SIZE = 5.3f;
+#define BUFFER_COFACTOR 2
+
+float STEP_SIZE = 22.5f;
 
 
 /*              Sup? You know the tea...Got bored, thought something now I must implement...The usual fuck around and find out thing        
@@ -33,6 +35,16 @@ float STEP_SIZE = 5.3f;
                     3-Sum the up beats or 1 bits in the number 
                 the even move, odd rotate 60 degrees counter-clockwise(or towards positive for you trigo nerds)
 
+                As always Important Shit To Know:
+                    
+                    1- ESCAPE FOR...esacpe yk...
+                    2- This program is frame-rate dependent sicne there is no abstraction involved so you'll get 120 iterations a second at max you may tweak your FPS yourself 
+                    3- Math was correct since last time I've checked...
+                    4- *Probably* Memory safe since I couldn't run valgrind due to some problems I couldn't resolve UnU
+                    5- And this project is finished...thx for checking anyways  
+
+                    6-Controls are: ESC to close the window (hence end the program) And scroll up/down for zoom in/out
+
 
 
                 Now the question is how the fuck can I implement consecutive steps of the koch snowflake only with a DrawLine() and a dream? 
@@ -48,6 +60,20 @@ float STEP_SIZE = 5.3f;
                 RLAPI bool IsWindowFullscreen(void);                              // Check if window is currently fullscreen
                 RLAPI void ToggleFullscreen(void);                                // Toggle window state: fullscreen/windowed, resizes monitor to match window resolution
 
+
+                For resizing the size of drawing I stole this from rcore.c from their srcs lol 
+
+                float GetMouseWheelMove(void)
+                    {
+                        float result = 0.0f;
+
+                        if (fabsf(CORE.Input.Mouse.currentWheelMove.x) > fabsf(CORE.Input.Mouse.currentWheelMove.y)) result = (float)CORE.Input.Mouse.currentWheelMove.x;
+                        else result = (float)CORE.Input.Mouse.currentWheelMove.y;
+
+                        return result;
+                    }
+
+
 */
 
 
@@ -55,11 +81,14 @@ float STEP_SIZE = 5.3f;
 
 unsigned int popCount(unsigned int x); //This is bitsy mathematical part 
 Vector2 *instructor(Vector2 *arr, int *arrSize, int maxSteps);
+Vector2 *reallocator(Vector2 *arr,int *currentSize);
+
 
 /*      Global Vars     */
 
 float angle = 0.0f;
 int pointIndex = 0;
+int resizeCount = 0;
 
 int main(void)
 {
@@ -67,8 +96,9 @@ int main(void)
     /*Declaration*/
     Vector2 *instructions = NULL; //Yup classic me being defensive yk
     
-    int instructionSize = 65540;
-
+    int instructionSize = 256;
+    int maxSteps = 512; // crank this shit up
+    
 
     
     instructions = (Vector2 *)malloc(sizeof(Vector2)*instructionSize);
@@ -77,8 +107,6 @@ int main(void)
     instructions[0] = (Vector2){(2*WIDTH)/3,HEIGHT/2}; //Starting point
     
 
-    int maxSteps = 65536*2; // crank this shit up
-    
     int iter = 1; //To iterate over the array to draw one more line each frame 
 
     //Setting up the window and OpenGL(at least that's what I heard from raylib) 
@@ -87,16 +115,58 @@ int main(void)
     SetTargetFPS(FPS);
     if (!IsWindowFullscreen()) { ToggleBorderlessWindowed(); }
     instructions = instructor(instructions, &instructionSize, maxSteps);
-
-
+    
     while (!WindowShouldClose()) {
         
         if(IsKeyPressed(KEY_ESCAPE)){ CloseWindow(); }
+        if(IsKeyPressed(KEY_SPACE))
+        {   
+            iter = 0;
+            angle = 0.0f;
+            maxSteps *= BUFFER_COFACTOR;
+            if (STEP_SIZE > 0.5f) {
+                STEP_SIZE -= 0.75;
+            }
 
+            instructions = reallocator(instructions,&instructionSize);
+            
+            if(instructions == NULL){ perror("reallocation fucked up so I close the window\n") ; CloseWindow(); } //And this is the exact reason for keeping root in a separete var for me 
+            
+            root = instructions;
+            instructions = instructor(instructions, &instructionSize, maxSteps);
+            resizeCount++;
+            WaitTime(0.25); //Wait for quarter of a second with each space so you don't fuck your heap spamming SPACE 
+        }
+        float resizeFactor = GetMouseWheelMove();  //Nice! it returns 1 for upscroll and -1 for downscroll
 
         BeginDrawing();
-        ClearBackground(BLACK);
-        DrawSplineLinear(instructions, iter, 2.50f,WHITE); //If that works I'll cal it a night...it's 1.42 AM (lol Douglas Adams reference yeah...)
+        ClearBackground(BLACK); //Damn all of the if else chain occured in a flow-state I didn't even comment on anything so this is meta-narration
+        if (resizeFactor > 0.0f && STEP_SIZE < 250.0f) {
+            
+            STEP_SIZE += 1.5f;
+            
+            resizeFactor = 0;
+            
+            angle = 0;
+            instructions = instructor(instructions, &instructionSize, maxSteps);
+        }
+
+        else if(resizeFactor < 0.0f && STEP_SIZE > 0.5f)
+        {
+            
+            STEP_SIZE -= 1.5f;   
+            if (STEP_SIZE < 0.0f) {
+                break;
+            }
+
+            resizeFactor = 0;
+            
+            angle = 0;    
+            instructions = instructor(instructions, &instructionSize, maxSteps);
+        }
+        else {
+            DrawSplineLinear(instructions, iter, 2.25f,WHITE); //If that works I'll cal it a night...it's 1.42 AM (lol Douglas Adams reference yeah...)
+        }
         EndDrawing(); 
         if (iter < pointIndex) {iter++;}
     }
@@ -104,8 +174,7 @@ int main(void)
     
     free(root);
     instructions = NULL;
-    root = NULL;
-
+    root = NULL; //it reaches here if you terminate window via using ESC so it SHOULD clear everything before dipping out 
     return(0);
 }
 
@@ -149,4 +218,20 @@ Vector2 *instructor(Vector2 *arr, int *arrSize, int maxSteps)
         }
     }
     return(arr); 
+}
+
+
+Vector2 *reallocator(Vector2 *arr,int *currentSize)
+{
+    if (arr == NULL) {
+        arr = malloc(BUFSIZ*sizeof(Vector2));
+        if (arr == NULL) {perror("Allocation error\n"); return(NULL); }    
+        return(arr);
+    }
+    (*currentSize) *= BUFFER_COFACTOR;
+    Vector2 *temp = realloc(arr,sizeof(Vector2)*(*currentSize));
+    if (temp == NULL){perror("You don't have enough RAM TnT\n"); return(NULL);}
+    arr = temp;
+
+    return(arr);
 }
