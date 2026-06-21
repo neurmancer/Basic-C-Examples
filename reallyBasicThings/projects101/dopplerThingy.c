@@ -1,5 +1,6 @@
 /*    Includes    */
 
+#include <math.h>
 #include <stdio.h>
 #include <raylib.h> //Yeah now I am a pathetic lib dependent guy...
 #include <time.h>
@@ -173,6 +174,8 @@ int main(void)
 
     car.aX = 0.0f;
     car.aY = 0.0f;
+
+    car.speed = 0.0f;
     //Shit I'll use and don't know how to sector 
 
     double relativeFrequency = 0.0l;
@@ -217,6 +220,8 @@ int main(void)
         car.x += car.vX * dt;
         car.y += car.vY * dt;
 
+        //Speed (magnitude update )
+        car.speed = sqrt((car.vX*car.vX)+(car.vY*car.vX));
         expandWaves(dt);
         waveCollisions += checkObserverCollisions();
 
@@ -227,7 +232,8 @@ int main(void)
         drawObserver(observer); // Works but no detection yet so it'll stay like this
         drawWaves();
 
-        if ((car.vX) > WAVE_SPEED || car.vY > WAVE_SPEED || car.vX < (WAVE_SPEED*-1) || car.vY < (WAVE_SPEED*-1)) 
+
+        if (car.speed > WAVE_SPEED) 
         {
             DrawText("SUPER SONIC! BITCH!", (WIDTH/2)-5, 5, 25,(Color){13,53,15,150});
         }
