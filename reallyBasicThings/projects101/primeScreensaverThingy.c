@@ -66,21 +66,71 @@ typedef struct n node;
 
 node *sortedAdd(node *root,int value); //Both returns (node *) in case of a new root assignment (even tho add function wouldn't use it as much as delete)
 node *delete(node *root, int value);
-int fillLinkedList(node *root,int value); //Just to keep main as minimal as possible this is probably gonna be just a loop
+int fillLinkedList(node *root,int targetIters); //Just to keep main as minimal as possible this is probably gonna be just a loop
 
 
 int main(void)
 {
+
+    /*
+            Lol debug time even before typing any shit
+
+    ==224880== Conditional jump or move depends on uninitialised value(s)
+    ==224880==    at 0x40011DC: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880==  Uninitialised value was created by a heap allocation
+    ==224880==    at 0x484F8A8: malloc (vg_replace_malloc.c:446)
+    ==224880==    by 0x400142C: fillLinkedList (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880==    by 0x4001198: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880== 
+    --224880-- REDIR: 0x492c080 (libc.so.6:free) redirected to 0x4852980 (free)
+    ==224880== Conditional jump or move depends on uninitialised value(s)
+    ==224880==    at 0x4001357: delete (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880==    by 0x40011FB: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880==  Uninitialised value was created by a heap allocation
+    ==224880==    at 0x484F8A8: malloc (vg_replace_malloc.c:446)
+    ==224880==    by 0x400142C: fillLinkedList (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880==    by 0x4001198: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880== 
+    ==224880== Conditional jump or move depends on uninitialised value(s)
+    ==224880==    at 0x4001205: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880==  Uninitialised value was created by a heap allocation
+    ==224880==    at 0x484F8A8: malloc (vg_replace_malloc.c:446)
+    ==224880==    by 0x400142C: fillLinkedList (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880==    by 0x4001198: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
+    ==224880== 
+    ==224880== 
+    ==224880== HEAP SUMMARY:
+    ==224880==     in use at exit: 0 bytes in 0 blocks
+    ==224880==   total heap usage: 7 allocs, 7 frees, 1,120 bytes allocated
+    ==224880== 
+    ==224880== All heap blocks were freed -- no leaks are possible
+
+    
+    
+    */
     node *root = (node *)malloc(sizeof(node));
     if (root == NULL) { return(-1); }
 
     node *iter = root;
     //IDK how long this file gonna be so I don't wanna risk touching root directly (for the DSA illiterates like me: if you loose a node the linked list from that point on becomes inaccessible)
+    int check = fillLinkedList(iter,5);
+    if (check) {
+        return(1);
+    }
+    while(iter->next != NULL) {
+        printf("%d\n",iter->x);
+        iter = iter->next;
+    } //Nah it works nice
+
+    iter = root; //Reassign the iter to where it belongs
+    while (iter != NULL) {
+        iter = delete(iter, iter->x);
+    }
+    
 
 
-
-    free(root);
     root = NULL; //Yeah...even my boilerplates include memory hygeine first lol
+    iter = NULL;
 
     return(0);
 }
@@ -152,12 +202,27 @@ node *delete(node *root, int value)
     return(root); 
 }
 
-int fillLinkedList(node *root, int value)
+int fillLinkedList(node *root, int targetIters)
 {
-    for (int i = 0; i < value;i++) 
+    if (root == NULL){ return(-53); }
+
+    node *iter = root;
+
+    for (int i = 0; i < targetIters; i++)
     {
-        root = sortedAdd(root,i); //I know this won't change the root but why not be cautious?
-        if (root == NULL) { return(-13); }
+        iter->x = i;
+
+        if (i == targetIters - 1)
+        {
+            iter->next = NULL;
+        }
+        else
+        {
+            iter->next = malloc(sizeof(node));
+            if (iter->next == NULL){ return(-13); }
+            iter = iter->next;
+        }
     }
+
     return(0);
 }
