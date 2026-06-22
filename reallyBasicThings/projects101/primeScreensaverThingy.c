@@ -108,11 +108,10 @@ unsigned int primeCount = 0;
 int main(void)
 {
 
+    srand(time(NULL));
+    int printablePrimes = 0;
 
     //  Graphical User Interface thingies (yeah saying GUI feels weird)
-
-
-    int printablePrimes = 0;
 
     InitWindow(1600,1200,"Prime Thingy");
     int monitor = GetCurrentMonitor();
@@ -127,7 +126,8 @@ int main(void)
 
     ToggleBorderlessWindowed();
 
-
+/*  ################################################################################    */
+    
     flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(flaggedInts)*WIDTH));
     
     if (xValues == NULL) { return(-1); }
@@ -146,7 +146,7 @@ int main(void)
     
     //Works until this point
     int target = HEIGHT*WIDTH; //Why tf am I getting segfault?..hmmm
-    printf("%d\n",target);
+
     unsigned int *primes = (unsigned int *)malloc(sizeof(unsigned int)*target); //And I abonden the idea of primes UP TO UINT_MAX which is pointless since we don't have that many pixels on screen
     if (primes == NULL) { return(1); } //I'll probably add perror() later for each check but not now...
     
@@ -157,12 +157,17 @@ int main(void)
  
     Vector2 *pixelIter = pixels;    //Yeah I am trying to use iters as much as possible...paranoia? Nope never heard of her...
 
+    int posX = 0, posY = 0;
 
-    double lastPrint = 0.0f;
+    double dLastPrint = 0.0f;
+
+    BeginDrawing();
+    ClearBackground(BLACK);
+    EndDrawing();
 
     while (!WindowShouldClose()) {
         
-        double now = GetTime();
+        dLastPrint += GetFrameTime();
         
         //Keyboard conditions
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
@@ -176,10 +181,21 @@ int main(void)
         //Incrementation (or how tf u spell it)
         iter++;
         primeCount++;
-        printablePrimes++;
         
         BeginDrawing();
-        ClearBackground(BLACK);
+
+        if (dLastPrint > 0.1f) {
+            posX = dontOverthinkTheNames(xValues,WIDTH);
+            posY = dontOverthinkTheNames(yValues,HEIGHT);
+            pixelIter->x = posX;
+            pixelIter->y = posY;
+            printablePrimes++;
+            dLastPrint -= 0.1f;
+
+            DrawPixelV(*pixelIter,PURPLE);        
+            pixelIter++;
+        }
+
         
         EndDrawing();
     }
@@ -207,13 +223,12 @@ void fillFlaggeds(flaggedInts *arr,int elements)
         arr[i].value = i;
         arr[i].isUsed = 0;
     }
-    printf("Finished\n");
 }
 
 
 int isPrime(unsigned  int *arr,unsigned int val) //I thought using my old prime func but improving something new...
 {
-    /*  Base Cases    */
+    /*  Base Cases   */
     if (val == 0 || val == 1) {
         return(0);
     }
@@ -221,7 +236,7 @@ int isPrime(unsigned  int *arr,unsigned int val) //I thought using my old prime 
     if (val == 2 || val == 3) {
         return(1);
     }
-
+    //Drive-by sieve lmfao
     unsigned  int *iter = arr;
     if (val % 6 == 1 || val % 6 == 5) {
         for (;(*iter)*(*iter) <= val;iter++) { 
@@ -244,19 +259,12 @@ int isPrime(unsigned  int *arr,unsigned int val) //I thought using my old prime 
 int dontOverthinkTheNames(flaggedInts *arr,int arrSize)
 {
     int point = 0;
-    srand(time(NULL));
 
     do {
         point = rand() % arrSize;
     }while (arr[point].isUsed); //As far as I know (I only now do..while loops in theory) this SHOULD run at least once and goes on as the condition is provided
                                 //(provided isn't the best word but my vocabulary is halved right now...lol)
 
-    /*     point = rand() % arrSize; 
-    while(arr[point].isUsed) {
-        point = rand() % arrSize;
-    } 
-    I'll keep this in a command block since I wanna try using do...while at least for fucking once    
-    */
     arr[point].isUsed = 1;
     
     return(point);
@@ -269,7 +277,7 @@ void drawPrimePixels(Vector2* vector,int size)
     for (int i = 0;i < size;i++) {
         DrawPixelV(vector[i],CLITERAL(Color){0,13,53,255});
     }
-
+//That's gonna be very inefficient isn't it? Pew... I FUCKING SOLVED IT
 }
 
 
