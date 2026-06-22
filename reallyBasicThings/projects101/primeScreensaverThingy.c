@@ -69,8 +69,8 @@
 
 /*      #Defines#       */
 
-#define PRIME_BUFFER 256
 
+#define FPS 120
 
 
 /*     Declarations      */
@@ -88,18 +88,18 @@ int isPrime(unsigned int *arr,unsigned int val);
 
 
 int WIDTH = 1200;
-int HEIGHT = 900; //Like CRT monitors 4:3
+int HEIGHT = 900; //Like CRT monitors 4:3 Now this is a fallback in case of monitor fuck upery
 
 unsigned int primeCount = 0;
 
 
 int main(void)
 {
-
-    unsigned int *primes = malloc(sizeof(*primes)*PRIME_BUFFER);
+    int monitor = GetCurrentMonitor();
     
-    if (primes == NULL) { return(1); } //I'll probably add perror() later for each check but not now...
-    unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem
+
+
+
 
 
     flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(*xValues)*WIDTH));
@@ -112,25 +112,68 @@ int main(void)
     fillFlaggeds(xValues,WIDTH);
     fillFlaggeds(yValues,HEIGHT);
 
+     unsigned int i = 0;
+
+
+
+
+    //  Graphical User Interface thingies (yeah saying GUI feels weird)
+
+    InitWindow(WIDTH,HEIGHT,"Prime Thingy");
+    if(!IsWindowReady()) { return(-1); }
+    SetTargetFPS(FPS);
+
+
+    WIDTH = GetMonitorWidth(monitor);
+    HEIGHT = GetMonitorHeight(monitor);
+
+    ToggleBorderlessWindowed();
+
+
+    unsigned int target = HEIGHT*WIDTH;
+    unsigned int *primes = malloc(sizeof(int)*target); //And I abonden the idea of primes UP TO UINT_MAX which is pointless since we don't have that many pixels on screen
     
-    for (unsigned int i = 0;i < 10000000;i++) {
-        int val = isPrime(primes,i);
-        if (val) {
-            *iter = i;
-            iter++;
+    if (primes == NULL) { return(1); } //I'll probably add perror() later for each check but not now...
+    
+    unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem
+
+
+    float dt = 0.0f;
+    Vector2 vec = { 0 };
+
+    while (!WindowShouldClose()) {
+    
+
+        if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
+
+        while (isPrime(primes,primeCount) == 0 && primeCount < target+10) {
             primeCount++;
-            printf("Found %dth prime\n",primeCount);
-            
         }
+        *iter = primeCount;
+
+        vec.x = (float) (*iter);            //Everything in my testing era I'll clear the mess don't you worry bruh...
+        //I know that every frame rate will be a little janky since yk...we force the program to calculate 1 prime each frame before moving on
+        vec.y = (float)(*iter)*3;
+
+        iter++;
+        primeCount++; 
+
+
+        
+        BeginDrawing();
+        ClearBackground(BLACK);
+        DrawCircleV(vec, 12, (Color){53,0,13,255});
+        EndDrawing();
+
+
     }
 
-    for (unsigned int *i = primes;i < primes+primeCount;i++) {
-        printf("%u is prime bruh NEAT!\n",*i);
-    }
 
 
     free(primes);
+
     primes = NULL;
+    printf("If you can see this after pressing ESC we're memory safe\n");
 
     return(0);
 }
