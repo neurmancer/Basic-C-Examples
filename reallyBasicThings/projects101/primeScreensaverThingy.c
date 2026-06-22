@@ -5,6 +5,7 @@
 #include <stdio.h> //For I/O duh...
 #include <stdlib.h> //For Dynamic Shit
 #include <raylib.h> // For Graphs
+#include <limits.h> //For UINT_MAX (yeah I ain't still gonna remember how much 2^32-1 or shit)
 
 
 /*
@@ -61,7 +62,9 @@
 
 /*      #Defines#       */
 
-#define PRIME_BUFFER 256 //If I get first 256 primes the possible outcome of multiplication is (2^256)-1 right? due to sigma notation version of sum of C(n,1) to C(n,n) it's a good start lol 
+#define PRIME_BUFFER 256
+
+
 
 /*     Declarations      */
 
@@ -85,31 +88,40 @@ unsigned int primeCount = 0;
 
 int main(void)
 {
-    flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(*xValues)*WIDTH));
-    if (xValues == NULL) { return(-1); }
-    flaggedInts *yValues = (flaggedInts *)(malloc(sizeof(*yValues)*HEIGHT));
-    if (yValues == NULL) { return(-1); }
+
+
 
     unsigned int *primes = malloc(sizeof(*primes)*PRIME_BUFFER);
     
     if (primes == NULL) { return(1); } //I'll probably add perror() later for each check but not now...
     unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem
 
+    flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(*xValues)*WIDTH));
+    
+    if (xValues == NULL) { return(-1); }
+    
+    flaggedInts *yValues = (flaggedInts *)(malloc(sizeof(*yValues)*HEIGHT));
+    if (yValues == NULL) { return(-1); }
+
     fillFlaggeds(xValues,WIDTH);
     fillFlaggeds(yValues,HEIGHT);
 
-    for (int i = 0;i < 100;i++) {
+    
+    for (unsigned int i = 0;i < 10000000;i++) {
         int val = isPrime(primes,i);
         if (val) {
             *iter = i;
             iter++;
             primeCount++;
+            printf("Found %dth prime\n",primeCount);
+            
         }
     }
-    iter = primes;
-    for (unsigned int *i = iter;i < primes+primeCount;i++) {
-        printf("%d is Prime bruh...NEAT!\n",*i);
+
+    for (unsigned int *i = primes;i < primes+primeCount;i++) {
+        printf("%u is prime bruh NEAT!\n",*i);
     }
+
 
     free(primes);
     primes = NULL;
