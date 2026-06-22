@@ -6,7 +6,8 @@
 #include <stdlib.h> //For Dynamic Shit
 #include <raylib.h> // For Graphs
 #include <limits.h> //For UINT_MAX (yeah I ain't still gonna remember how much 2^32-1 or shit)
-
+#include <time.h>   //Yeah Include army getting bigger and bigger...I miss the glorious days only me, unistd and math...
+ 
 
 /*
                     FULL NERDY YAP MOD (if you don't feel like it second and third paragraph is the key part rest is upon your decision)
@@ -87,7 +88,11 @@ typedef struct{
 }flaggedInts; //Yeah even my var names are too long but point is I am a dumb guy...I forget shit...
 
 void fillFlaggeds(flaggedInts *arr,int elements);
+
+int dontOverthinkTheNames(flaggedInts *arr,int element);
 int isPrime(unsigned int *arr,unsigned int val);
+
+//I realized something I usually tend to factorize those function prototypes based on their return type (unless they are serving the same bigger meaning...That feels neat!) 
 
 /*      Global Vars...   (yeah I am cheesing my way out with globals)*/
 
@@ -139,30 +144,40 @@ int main(void)
     unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem
 
 
-    float dt = 0.0f;
     Vector2 vec = { 0 };
+    
+    double lastPrint = 0.0f;
 
     while (!WindowShouldClose()) {
-    
-
+        
+        lastPrint+=GetTime();
+        
+        //Keyboard conditions
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
 
+        //Logic
         while (isPrime(primes,primeCount) == 0 && primeCount < target+10) {
             primeCount++;
         }
         *iter = primeCount;
 
+        //I don't even now why I left this here 
         vec.x = (float) (*iter);            //Everything in my testing era I'll clear the mess don't you worry bruh...
         //I know that every frame rate will be a little janky since yk...we force the program to calculate 1 prime each frame before moving on
         vec.y = (float)(*iter)*3;
 
+        //Incrementation (or how tf u spell it)
         iter++;
         primeCount++; 
-
-
         
         BeginDrawing();
         ClearBackground(BLACK);
+
+        if (lastPrint > 0.5f) {
+            //Do shit then:
+            lastPrint = GetTime();
+        }
+
         DrawCircleV(vec, 12, (Color){53,0,13,255});
         EndDrawing();
 
@@ -212,4 +227,26 @@ int isPrime(unsigned  int *arr,unsigned int val) //I thought using my old prime 
     }
 
     return(0);
+}
+
+
+int dontOverthinkTheNames(flaggedInts *arr,int arrSize)
+{
+    int point = 0;
+    srand(time(NULL));
+
+    do {
+        point = rand() % arrSize;
+    }while (arr[point].isUsed); //As far as I know (I only now do..while loops in theory) this SHOULD run at least once and goes on as the condition is provided
+                                //(provided isn't the best word but my vocabulary is halved right now...lol)
+
+    /*     point = rand() % arrSize; 
+    while(arr[point].isUsed) {
+        point = rand() % arrSize;
+    } 
+    I'll keep this in a command block since I wanna try using do...while at least for fucking once    
+    */
+    arr[point].isUsed = 1;
+    
+    return(point);
 }
