@@ -65,6 +65,12 @@
             But don't you worry I am a zombie/orphan free guy like my memory hygeine OwO tho I'll probably use a pipe and a fd (file descriptor) to communicate between processes but
             I think that's a shit for tomorrow
 
+
+            Controls (at least for now):
+                1- ESC to quit duh...
+                Possible in the future one
+                    Hotkeys for each subbullet point for the coloring as option...
+
 */
 
 /*      #Defines#       */
@@ -95,11 +101,17 @@ unsigned int primeCount = 0;
 
 int main(void)
 {
+
+
+    //  Graphical User Interface thingies (yeah saying GUI feels weird)
     int monitor = GetCurrentMonitor();
     
 
+    InitWindow(WIDTH,HEIGHT,"Prime Thingy");
+    if(!IsWindowReady()) { return(-1); }
+    SetTargetFPS(FPS);
 
-
+    ToggleBorderlessWindowed();
 
 
     flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(*xValues)*WIDTH));
@@ -109,25 +121,14 @@ int main(void)
     flaggedInts *yValues = (flaggedInts *)(malloc(sizeof(*yValues)*HEIGHT));
     if (yValues == NULL) { return(-1); }
 
-    fillFlaggeds(xValues,WIDTH);
-    fillFlaggeds(yValues,HEIGHT);
-
-     unsigned int i = 0;
-
-
-
-
-    //  Graphical User Interface thingies (yeah saying GUI feels weird)
-
-    InitWindow(WIDTH,HEIGHT,"Prime Thingy");
-    if(!IsWindowReady()) { return(-1); }
-    SetTargetFPS(FPS);
 
 
     WIDTH = GetMonitorWidth(monitor);
     HEIGHT = GetMonitorHeight(monitor);
 
-    ToggleBorderlessWindowed();
+
+    fillFlaggeds(xValues,WIDTH);
+    fillFlaggeds(yValues,HEIGHT);
 
 
     unsigned int target = HEIGHT*WIDTH;
