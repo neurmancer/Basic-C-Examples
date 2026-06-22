@@ -89,12 +89,11 @@ unsigned int primeCount = 0;
 int main(void)
 {
 
-
-
     unsigned int *primes = malloc(sizeof(*primes)*PRIME_BUFFER);
     
     if (primes == NULL) { return(1); } //I'll probably add perror() later for each check but not now...
     unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem
+
 
     flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(*xValues)*WIDTH));
     
