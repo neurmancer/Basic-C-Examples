@@ -28,9 +28,11 @@
                 1- A monochrome screen paint for satisfaction with only one color and watch screen change skin
                 2- Random selection of color from a predetermined array (that feels tempting since maybe it'll be mona lisa on the 13th run? yk...the infinite time/monkey and hamlet type shit)
                 3- Changing values over time for each RGB hex so you can see guess 'warmth' of primes on the screen by just looking
-                4- Or for n we can switch colors where n is the 10^n so primes upto 10 would be a color and then (10,100)would another etc.. (basically log10 and every +1 will be new color till the next +1...yeah I explain shit harder than it should be...) 
+                4- Or for n we can switch colors where n is the 10^n so primes upto 10 would be a color and then (10,100)would another etc.. 
+                (basically log10 and every +1 will be new color till the next +1...yeah I explain shit harder than it should be...) 
  
-        And I am changing my doctrine(said the 3 weeks old coder as if he's  Kant publishing the Critique of Pure Reason and explaining a paradigm shift) in this file usually I start with a printf() or InitWindow to stimulate myself with a dopamine hit but this time we're building toolkit first so here are what we need
+        And I am changing my doctrine(said the 3 weeks old coder as if he's  Kant publishing the Critique of Pure Reason and explaining a paradigm shift) in this file usually I start with a printf()
+        or InitWindow to stimulate myself with a dopamine hit but this time we're building toolkit first so here are what we need
        
             1- A dynamic array (that's why stlib's here)
                 1- A base array with let's say size of 256 elements and increase it accordingly as we go
@@ -39,6 +41,7 @@
             2- A prime founder that won't take eternity to reach UINT_MAX but here is the twist I'll implement something myself lol...no handholding or algorithm lectures I am a rouge-dev(yeah Red in french and misspelled Rogue both suits me) and the 'no hand holding' rule means that Imma be Terry Davis'ing my way through this file too lol(and yeah I use 'Terry Davis' as verb) 
             3- Two arrays for filling with resolution values (one for Width one for Height...yeah I can use a Vector2 or typedef a struct myself (I used typedef as a verb lol) but we'll see as we roll)
             4- A PRNG thing for selecting an element from the said arrays for x,y coordinates and then a function to delete the point from the array so we don't override a painted pixel
+            
             and since I don't know how to ditch an element from an formal array of C I'll probably use two seperate exactly same linked list struct...
             probably an overkill but that what occured in mind that I can handle first...
             
@@ -57,6 +60,10 @@
 
             Well...SECOND DOCTRINE CHANGE ABORTING THE LINKED LISTS for faster results... new idea well...that's gonna be a RAM fucker but 2 arrays for each x and y coordinates and 2 for same sized full init zero'd ones as a 'used' flag.
             access will be O(1) but as I said memory will double but keeping track of an linked list (12 byte 8 from pointer(for x86_64 my rig) 4 from the value + padding would be roughly worse anyways...and I wasted my time on linked lists lol) 
+
+            Well... NOW OUT OF BLUE I realized that UINT_MAX is a little big number...so we have to lowkey go multiple processes at the same time...Time to reap what we sow...
+            But don't you worry I am a zombie/orphan free guy like my memory hygeine OwO tho I'll probably use a pipe and a fd (file descriptor) to communicate between processes but
+            I think that's a shit for tomorrow
 
 */
 
