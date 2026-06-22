@@ -6,6 +6,7 @@
 #include <stdlib.h> //For Dynamic Shit
 #include <raylib.h> // For Graphs
 
+
 /*
                     FULL NERDY YAP MOD (if you don't feel like it second and third paragraph is the key part rest is upon your decision)
 
@@ -52,176 +53,100 @@
             We humans do...And that comes with its struggles and the banter within files what makes them precious imo like have you read man page of ffplay? I read for 3 hours for some flag hunt for ShittyJukeBox project due to buffer latency of ffplay and saw people'd written things like '360p shitty buffer' '720p cool buffering' etc. that's how programming was or the original source code of doom has cusses in it because WE ARE HUMAN...I mean that's why I've chosen C it is messy, it resembles humanity there is no 'spacing' like python nor abstraction behind abstraction.. for example I can write 010<:arr:> and compiler just accepts (which means arr[8] btw more on that later)
          
 
+
+            Well...SECOND DOCTRINE CHANGE ABORTING THE LINKED LISTS for faster results... new idea well...that's gonna be a RAM fucker but 2 arrays for each x and y coordinates and 2 for same sized full init zero'd ones as a 'used' flag.
+            access will be O(1) but as I said memory will double but keeping track of an linked list (12 byte 8 from pointer(for x86_64 my rig) 4 from the value + padding would be roughly worse anyways...and I wasted my time on linked lists lol) 
+
 */
 
 /*      #Defines#       */
 
+#define PRIME_BUFFER 256 //If I get first 256 primes the possible outcome of multiplication is (2^256)-1 right? due to sigma notation version of sum of C(n,1) to C(n,n) it's a good start lol 
+
 /*     Declarations      */
-struct n{
-    int x; //I'll use the same struct for both for height and width twice so I selected an neutral var name
-    struct n *next; //Yeah I am improvising DSA too lmfao
-};
 
-typedef struct n node; 
+typedef struct{
+    int value;
+    int isUsed;
+}flaggedInts; //Yeah even my var names are too long but point is I am a dumb guy...I forget shit...
 
-node *sortedAdd(node *root,int value); //Both returns (node *) in case of a new root assignment (even tho add function wouldn't use it as much as delete)
-node *delete(node *root, int value);
-int fillLinkedList(node *root,int targetIters); //Just to keep main as minimal as possible this is probably gonna be just a loop
+void fillFlaggeds(flaggedInts *arr,int elements);
+int isPrime(unsigned int *arr,unsigned int val);
+
+/*      Global Vars...   (yeah I am cheesing my way out with globals)*/
+
+
+
+int WIDTH = 1200;
+int HEIGHT = 900; //Like CRT monitors 4:3
+
+unsigned int primeCount = 0;
 
 
 int main(void)
 {
+    flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(*xValues)*WIDTH));
+    if (xValues == NULL) { return(-1); }
+    flaggedInts *yValues = (flaggedInts *)(malloc(sizeof(*yValues)*HEIGHT));
+    if (yValues == NULL) { return(-1); }
 
-    /*
-            Lol debug time even before typing any shit
-
-    ==224880== Conditional jump or move depends on uninitialised value(s)
-    ==224880==    at 0x40011DC: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880==  Uninitialised value was created by a heap allocation
-    ==224880==    at 0x484F8A8: malloc (vg_replace_malloc.c:446)
-    ==224880==    by 0x400142C: fillLinkedList (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880==    by 0x4001198: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880== 
-    --224880-- REDIR: 0x492c080 (libc.so.6:free) redirected to 0x4852980 (free)
-    ==224880== Conditional jump or move depends on uninitialised value(s)
-    ==224880==    at 0x4001357: delete (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880==    by 0x40011FB: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880==  Uninitialised value was created by a heap allocation
-    ==224880==    at 0x484F8A8: malloc (vg_replace_malloc.c:446)
-    ==224880==    by 0x400142C: fillLinkedList (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880==    by 0x4001198: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880== 
-    ==224880== Conditional jump or move depends on uninitialised value(s)
-    ==224880==    at 0x4001205: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880==  Uninitialised value was created by a heap allocation
-    ==224880==    at 0x484F8A8: malloc (vg_replace_malloc.c:446)
-    ==224880==    by 0x400142C: fillLinkedList (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880==    by 0x4001198: main (in /home/neuromancer/realHome/C/Projects/Basic-C-Examples/reallyBasicThings/projects101/a.out)
-    ==224880== 
-    ==224880== 
-    ==224880== HEAP SUMMARY:
-    ==224880==     in use at exit: 0 bytes in 0 blocks
-    ==224880==   total heap usage: 7 allocs, 7 frees, 1,120 bytes allocated
-    ==224880== 
-    ==224880== All heap blocks were freed -- no leaks are possible
-
+    unsigned int *primes = malloc(sizeof(*primes)*PRIME_BUFFER);
     
-    
-    */
-    node *root = (node *)malloc(sizeof(node));
-    if (root == NULL) { return(-1); }
+    if (primes == NULL) { return(1); } //I'll probably add perror() later for each check but not now...
+    unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem
 
-    node *iter = root;
-    //IDK how long this file gonna be so I don't wanna risk touching root directly (for the DSA illiterates like me: if you loose a node the linked list from that point on becomes inaccessible)
-    int check = fillLinkedList(iter,5);
-    if (check) {
-        return(1);
+    fillFlaggeds(xValues,WIDTH);
+    fillFlaggeds(yValues,HEIGHT);
+
+    for (int i = 0;i < 100;i++) {
+        int val = isPrime(primes,i);
+        if (val) {
+            *iter = i;
+            iter++;
+            primeCount++;
+        }
     }
-    while(iter->next != NULL) {
-        printf("%d\n",iter->x);
-        iter = iter->next;
-    } //Nah it works nice
-
-    iter = root; //Reassign the iter to where it belongs
-    while (iter != NULL) {
-        iter = delete(iter, iter->x);
+    iter = primes;
+    for (unsigned int *i = iter;i < primes+primeCount;i++) {
+        printf("%d is Prime bruh...NEAT!\n",*i);
     }
-    
 
-
-    root = NULL; //Yeah...even my boilerplates include memory hygeine first lol
-    iter = NULL;
+    free(primes);
+    primes = NULL;
 
     return(0);
 }
 
-node *sortedAdd(node *root,int value) //I'll probably WILL NOT use since I'll only fill the list with 1-WIDTH and 1-HEIGHT and iterating the linked list over and over will inefficent but I am coding anyawys 
+void fillFlaggeds(flaggedInts *arr,int elements)
 {
-    if (root == NULL) { 
-        //This block is basically an edge-case...if the function gets called for the first element in the linked list
-        root = (node *) (malloc(sizeof(node)));
-        if (root == NULL) { return(NULL); }
-        
-        root->next = NULL;
-        root->x = value;
-
-        return(root);
+    for (int i = 0; i < elements;i++) {
+        arr[i].value = i;
+        arr[i].isUsed = 0;
     }
-
-    if (root->x > value) { //Second edge case 
-        node *temp = (node *)malloc(sizeof(node));
-        if (temp == NULL) {return(NULL);}
-        temp->x = value;
-        temp->next = root;
-        
-        return(temp);
-    }
-
-    node *iter = root;
-    while (iter->next != NULL && iter->next->x < value) 
-    {
-        iter = iter->next; //That is the part where my optimization concerns begin... putting this in a loop from 1-x will cause something like O(n^2) right?
-    }
-
-    node *temp = (node *)malloc(sizeof(node));
-    
-    if (temp == NULL) {return(NULL);}
-    
-    temp->x = value;
-    
-    temp->next = iter->next; //putting the node in between
-    iter->next = temp;
-    
-    return(root);
 }
 
-node *delete(node *root, int value)
+
+int isPrime(unsigned  int *arr,unsigned int val) //I thought using my old prime func but improving something new...
 {
-    node *temp = NULL;
-    node *iter = root;
-    
-    if (root->x == value) { 
-        temp = root;
-        root = root->next;
-        free(temp);
-        return(root);
+    /*  Base Cases    */
+    if (val == 0 || val == 1) {
+        return(0);
     }
 
-    while (iter->next != NULL && iter->next->x != value) {
-        //pretty self-explanatory but me being me: while the next node after iter is not null and not the value we seek, move on
-        iter = iter->next; 
+    if (val == 2 || val == 3) {
+        return(1);
     }
 
-    if (iter->next == NULL) {
-        return(root);
-    }
-    temp = iter->next;
-    iter->next =iter->next->next; 
-    free(temp);
-
-    return(root); 
-}
-
-int fillLinkedList(node *root, int targetIters)
-{
-    if (root == NULL){ return(-53); }
-
-    node *iter = root;
-
-    for (int i = 0; i < targetIters; i++)
-    {
-        iter->x = i;
-
-        if (i == targetIters - 1)
-        {
-            iter->next = NULL;
+    unsigned  int *iter = arr;
+    if (val % 6 == 1 || val % 6 == 5) {
+        for (;(*iter)*(*iter) <= val;iter++) { 
+            //I usally don't explain the math but instead of incremanting two by two we're checking if it can be divided by the primes before that number up to it's square root 
+            //and sice this project's gonna use -lraylib I don't wanna deal with -lm too so we're flipping the script and checking if iter's square is less or equal to target val
+            if (val % *iter == 0) {
+                return(0);
+            }
         }
-        else
-        {
-            iter->next = malloc(sizeof(node));
-            if (iter->next == NULL){ return(-13); }
-            iter = iter->next;
-        }
+        return(1);
     }
 
     return(0);
