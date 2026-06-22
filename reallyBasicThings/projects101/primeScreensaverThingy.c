@@ -66,12 +66,98 @@ typedef struct n node;
 
 node *sortedAdd(node *root,int value); //Both returns (node *) in case of a new root assignment (even tho add function wouldn't use it as much as delete)
 node *delete(node *root, int value);
-
+int fillLinkedList(node *root,int value); //Just to keep main as minimal as possible this is probably gonna be just a loop
 
 
 int main(void)
 {
+    node *root = (node *)malloc(sizeof(node));
+    if (root == NULL) { return(-1); }
+
+    node *iter = root;
+    //IDK how long this file gonna be so I don't wanna risk touching root directly (for the DSA illiterates like me: if you loose a node the linked list from that point on becomes inaccessible)
 
 
+
+    free(root);
+    root = NULL; //Yeah...even my boilerplates include memory hygeine first lol
+
+    return(0);
+}
+
+node *sortedAdd(node *root,int value) //I'll probably WILL NOT use since I'll only fill the list with 1-WIDTH and 1-HEIGHT and iterating the linked list over and over will inefficent but I am coding anyawys 
+{
+    if (root == NULL) { 
+        //This block is basically an edge-case...if the function gets called for the first element in the linked list
+        root = (node *) (malloc(sizeof(node)));
+        if (root == NULL) { return(NULL); }
+        
+        root->next = NULL;
+        root->x = value;
+
+        return(root);
+    }
+
+    if (root->x > value) { //Second edge case 
+        node *temp = (node *)malloc(sizeof(node));
+        if (temp == NULL) {return(NULL);}
+        temp->x = value;
+        temp->next = root;
+        
+        return(temp);
+    }
+
+    node *iter = root;
+    while (iter->next != NULL && iter->next->x < value) 
+    {
+        iter = iter->next; //That is the part where my optimization concerns begin... putting this in a loop from 1-x will cause something like O(n^2) right?
+    }
+
+    node *temp = (node *)malloc(sizeof(node));
+    
+    if (temp == NULL) {return(NULL);}
+    
+    temp->x = value;
+    
+    temp->next = iter->next; //putting the node in between
+    iter->next = temp;
+    
+    return(root);
+}
+
+node *delete(node *root, int value)
+{
+    node *temp = NULL;
+    node *iter = root;
+    
+    if (root->x == value) { 
+        temp = root;
+        root = root->next;
+        free(temp);
+        return(root);
+    }
+
+    while (iter->next != NULL && iter->next->x != value) {
+        //pretty self-explanatory but me being me: while the next node after iter is not null and not the value we seek, move on
+        iter = iter->next; 
+    }
+
+    if (iter->next == NULL) {
+        return(root);
+    }
+    temp = iter->next;
+    iter->next =iter->next->next; 
+    free(temp);
+
+    return(root); 
+}
+
+int fillLinkedList(node *root, int value)
+{
+    for (int i = 0; i < value;i++) 
+    {
+        root = sortedAdd(root,i); //I know this won't change the root but why not be cautious?
+        if (root == NULL) { return(-13); }
+    }
     return(0);
 }
