@@ -88,6 +88,9 @@ typedef struct{
 }flaggedInts; //Yeah even my var names are too long but point is I am a dumb guy...I forget shit...
 
 void fillFlaggeds(flaggedInts *arr,int elements);
+void drawPrimePixels(Vector2* vector,int size); //I'll use Vector2 array instead of seperate x,y arrays to avoid array parallelling and keeping up with it... and probably I'll need another (Color) array for...yk keeping the colors of the each pixel
+//That feels inefficient...is there another way? Another struct for this?Eh we'll see
+
 
 int dontOverthinkTheNames(flaggedInts *arr,int element);
 int isPrime(unsigned int *arr,unsigned int val);
@@ -98,8 +101,6 @@ int isPrime(unsigned int *arr,unsigned int val);
 
 
 
-int WIDTH = 1200;
-int HEIGHT = 900; //Like CRT monitors 4:3 Now this is a fallback in case of monitor fuck upery
 
 unsigned int primeCount = 0;
 
@@ -109,48 +110,59 @@ int main(void)
 
 
     //  Graphical User Interface thingies (yeah saying GUI feels weird)
-    int monitor = GetCurrentMonitor();
-    
 
-    InitWindow(WIDTH,HEIGHT,"Prime Thingy");
+
+    int printablePrimes = 0;
+
+    InitWindow(1600,1200,"Prime Thingy");
+    int monitor = GetCurrentMonitor();
+    int WIDTH = GetMonitorWidth(monitor);
+    int HEIGHT = GetMonitorHeight(monitor);
+    if (WIDTH <= 0) { WIDTH = 1200; }
+    if (HEIGHT <= 0) { HEIGHT = 900; }
+
+
     if(!IsWindowReady()) { return(-1); }
     SetTargetFPS(FPS);
 
     ToggleBorderlessWindowed();
 
 
-    flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(*xValues)*WIDTH));
+    flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(flaggedInts)*WIDTH));
     
     if (xValues == NULL) { return(-1); }
     
-    flaggedInts *yValues = (flaggedInts *)(malloc(sizeof(*yValues)*HEIGHT));
+    flaggedInts *yValues = (flaggedInts *)(malloc(sizeof(flaggedInts)*HEIGHT));
     if (yValues == NULL) { return(-1); }
 
 
 
-    WIDTH = GetMonitorWidth(monitor);
-    HEIGHT = GetMonitorHeight(monitor);
+    WIDTH = GetMonitorWidth(monitor); //I learned that on error this returns 0 (same for Height too...)
 
+    HEIGHT = GetMonitorHeight(monitor);
 
     fillFlaggeds(xValues,WIDTH);
     fillFlaggeds(yValues,HEIGHT);
-
-
-    unsigned int target = HEIGHT*WIDTH;
-    unsigned int *primes = malloc(sizeof(int)*target); //And I abonden the idea of primes UP TO UINT_MAX which is pointless since we don't have that many pixels on screen
     
+    //Works until this point
+    int target = HEIGHT*WIDTH; //Why tf am I getting segfault?..hmmm
+    printf("%d\n",target);
+    unsigned int *primes = (unsigned int *)malloc(sizeof(unsigned int)*target); //And I abonden the idea of primes UP TO UINT_MAX which is pointless since we don't have that many pixels on screen
     if (primes == NULL) { return(1); } //I'll probably add perror() later for each check but not now...
     
     unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem
 
+    Vector2 *pixels = (Vector2 *)malloc(sizeof(Vector2)*target);
+    if (pixels == NULL) { return(-1); }
+ 
+    Vector2 *pixelIter = pixels;    //Yeah I am trying to use iters as much as possible...paranoia? Nope never heard of her...
 
-    Vector2 vec = { 0 };
-    
+
     double lastPrint = 0.0f;
 
     while (!WindowShouldClose()) {
         
-        lastPrint+=GetTime();
+        double now = GetTime();
         
         //Keyboard conditions
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
@@ -161,34 +173,29 @@ int main(void)
         }
         *iter = primeCount;
 
-        //I don't even now why I left this here 
-        vec.x = (float) (*iter);            //Everything in my testing era I'll clear the mess don't you worry bruh...
-        //I know that every frame rate will be a little janky since yk...we force the program to calculate 1 prime each frame before moving on
-        vec.y = (float)(*iter)*3;
-
         //Incrementation (or how tf u spell it)
         iter++;
-        primeCount++; 
+        primeCount++;
+        printablePrimes++;
         
         BeginDrawing();
         ClearBackground(BLACK);
-
-        if (lastPrint > 0.5f) {
-            //Do shit then:
-            lastPrint = GetTime();
-        }
-
-        DrawCircleV(vec, 12, (Color){53,0,13,255});
+        
         EndDrawing();
-
-
     }
 
 
 
     free(primes);
+    free(xValues);
+    free(yValues);
+    free(pixels);
 
     primes = NULL;
+    xValues = NULL;
+    yValues = NULL;
+    pixels = NULL;
+
     printf("If you can see this after pressing ESC we're memory safe\n");
 
     return(0);
@@ -200,6 +207,7 @@ void fillFlaggeds(flaggedInts *arr,int elements)
         arr[i].value = i;
         arr[i].isUsed = 0;
     }
+    printf("Finished\n");
 }
 
 
@@ -222,6 +230,9 @@ int isPrime(unsigned  int *arr,unsigned int val) //I thought using my old prime 
             if (val % *iter == 0) {
                 return(0);
             }
+            /*Well I could've done this skipping 2 and 3 entirely (since 6k+1 elimnates those and iterating 2+ times for each candidate is suboptimal) 
+            but I wanna create the array on the go too so it'll stay like that but that's the reason people are obsessed with 'abstraction' Ig...
+            */
         }
         return(1);
     }
@@ -250,3 +261,18 @@ int dontOverthinkTheNames(flaggedInts *arr,int arrSize)
     
     return(point);
 }
+
+
+
+void drawPrimePixels(Vector2* vector,int size)
+{
+    for (int i = 0;i < size;i++) {
+        DrawPixelV(vector[i],CLITERAL(Color){0,13,53,255});
+    }
+
+}
+
+
+/*
+    Malloc counter : 4 (I have more than a few so I gotta keep track of each allocation to free easier later)
+*/
