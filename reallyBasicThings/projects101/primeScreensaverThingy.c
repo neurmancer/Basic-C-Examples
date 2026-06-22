@@ -72,6 +72,12 @@
                 Possible in the future one
                     Hotkeys for each subbullet point for the coloring as option...
 
+
+            I was going to sleep but before I dip I gotta add an 'Known bugs' section so here you go...
+                1- fillFlagged gonna stuck in the while loop after all the pixels are colored 
+                2- a weird/twist logic on prime consturction in the while loop (I'll fix it)
+                3- It does the monochrome change for now as a placeholder
+
 */
 
 /*      #Defines#       */
@@ -277,10 +283,11 @@ void drawPrimePixels(Vector2* vector,int size)
     for (int i = 0;i < size;i++) {
         DrawPixelV(vector[i],CLITERAL(Color){0,13,53,255});
     }
-//That's gonna be very inefficient isn't it? Pew... I FUCKING SOLVED IT
+//That's gonna be very inefficient isn't it? Pew... I FUCKING SOLVED IT and I can ditch this function fully I DON'T FUCKING NEED TO ITERATE OVER AND OVER AGAIN! FUCK YEAH! Terry Davising babyyyyyy
 }
 
 
 /*
     Malloc counter : 4 (I have more than a few so I gotta keep track of each allocation to free easier later)
 */
+
