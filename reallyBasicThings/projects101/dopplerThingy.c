@@ -221,7 +221,7 @@ int main(void)
         car.y += car.vY * dt;
 
         //Speed (magnitude update )
-        car.speed = sqrt((car.vX*car.vX)+(car.vY*car.vX));
+        car.speed = sqrt((car.vX*car.vX)+(car.vY*car.vY));
         expandWaves(dt);
         waveCollisions += checkObserverCollisions();
 
