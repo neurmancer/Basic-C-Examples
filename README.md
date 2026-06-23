@@ -167,6 +167,13 @@ cc filename.c -o output #To compile
 ```
 
 
+## Future Adds
+
+- **CLI** version for prime screensaver (Cuz yk...being a low-level gremlin requires to do so)
+- A baby's first kernel driver (this gonna require so many flags probably...I may fuck up) 
+ 
+
+
 
 ## Nerdy Part
 
