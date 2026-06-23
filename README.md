@@ -22,6 +22,8 @@
 
 ## Projects 101
 
+- **Now projects101 got a renewed folder tree for math fuckery and low-level stuff**
+
 - Hello, world script
 
 - %.*s format for printf 
