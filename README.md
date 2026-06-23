@@ -86,7 +86,7 @@
 
 - Doppler Effect Simulator (using raylib.h so you gotta have it too) 
 
-- Screensaver that paints screen from scratch using primes(not visually it just acts based on them) with raylib ***Still in Progress*** 
+- Screensaver that paints screen from scratch using primes(not visually it just acts based on them) with raylib 
 
 - Get time program experiment
 
@@ -178,5 +178,5 @@ cc filename.c -o output #To compile
 > - **Advanced Bash-Scripting** (haven't started to read yet)
 > - **Clean Archicture**
 > - **Grokking Algorithms** (The classic beginner friendly DSA book)
-> - **Linux Kernel Dev**(That's wher I wanna end at)
+> - **Linux Kernel Dev**(That's where I wanna end at)
 

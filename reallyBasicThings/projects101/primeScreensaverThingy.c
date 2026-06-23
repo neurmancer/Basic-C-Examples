@@ -85,6 +85,9 @@
             Known Weaknesses:
                 1- dontOverthinkTheNames function try harder and harder to land on a non-used coordinate with each iteration but honestly?
                     That's not a bug...it's a feature since you know...it gets harder and harder after you push yourself to your limit each time that's how art happens...
+
+
+            Other coloring ideas will be implemented too in the future just...well...when I get bored ig...it works beautifully for now 
 */
 
 /*      #Defines#       */
