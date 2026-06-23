@@ -74,6 +74,10 @@ float STEP_SIZE = 22.5f;
                     }
 
 
+                    Known Weaknesses:
+                        1-Calculates the fractions from ground-up with each space(resize) instead of storing it 
+
+
 */
 
 

@@ -73,11 +73,18 @@
                     Hotkeys for each subbullet point for the coloring as option...
 
 
-            I was going to sleep but before I dip I gotta add an 'Known bugs' section so here you go...
-                1- fillFlagged gonna stuck in the while loop after all the pixels are colored 
-                2- a weird/twist logic on prime consturction in the while loop (I'll fix it)
-                3- It does the monochrome change for now as a placeholder
+            And best thing about this program? it'll eventually draw:
+                1- Portrait of you
+                2- Mona Lisa
+                3- Your future partner 
+                4- A scence from monty python sketchs
+                5- The source code you are seeing right now
 
+                Eventually... with given enough time and runs...so life's like that just keep giving one more shot every time
+
+            Known Weaknesses:
+                1- dontOverthinkTheNames function try harder and harder to land on a non-used coordinate with each iteration but honestly?
+                    That's not a bug...it's a feature since you know...it gets harder and harder after you push yourself to your limit each time that's how art happens...
 */
 
 /*      #Defines#       */
@@ -98,7 +105,7 @@ void drawPrimePixels(Vector2* vector,int size); //I'll use Vector2 array instead
 //That feels inefficient...is there another way? Another struct for this?Eh we'll see
 
 
-int dontOverthinkTheNames(flaggedInts *arr,int element);
+int dontOverthinkTheNames(flaggedInts *arr,int element,int *max);
 int isPrime(unsigned int *arr,unsigned int val);
 
 //I realized something I usually tend to factorize those function prototypes based on their return type (unless they are serving the same bigger meaning...That feels neat!) 
@@ -117,6 +124,10 @@ int main(void)
     srand(time(NULL));
     int printablePrimes = 0;
 
+    int xCount = 0; //To prevent the function to do do...while infintely
+    int yCount = 0;
+
+
     //  Graphical User Interface thingies (yeah saying GUI feels weird)
 
     InitWindow(1600,1200,"Prime Thingy");
@@ -126,7 +137,7 @@ int main(void)
     if (WIDTH <= 0) { WIDTH = 1200; }
     if (HEIGHT <= 0) { HEIGHT = 900; }
 
-
+    
     if(!IsWindowReady()) { return(-1); }
     SetTargetFPS(FPS);
 
@@ -165,6 +176,8 @@ int main(void)
 
     int posX = 0, posY = 0;
 
+    
+
     double dLastPrint = 0.0f;
 
     BeginDrawing();
@@ -190,15 +203,16 @@ int main(void)
         
         BeginDrawing();
 
-        if (dLastPrint > 0.1f) {
-            posX = dontOverthinkTheNames(xValues,WIDTH);
-            posY = dontOverthinkTheNames(yValues,HEIGHT);
+        if (dLastPrint > 0.5f) {
+            posX = dontOverthinkTheNames(xValues,WIDTH,&xCount);
+            posY = dontOverthinkTheNames(yValues,HEIGHT,&yCount);
             pixelIter->x = posX;
             pixelIter->y = posY;
+            printf("Printed the prime : %u\ton x,y: %3d,%3d\n",primes[printablePrimes],posX,posY);
             printablePrimes++;
             dLastPrint -= 0.1f;
 
-            DrawPixelV(*pixelIter,PURPLE);        
+            DrawPixelV(*pixelIter,(Color){rand() % 256,rand() % 256,rand() % 256,255});        
             pixelIter++;
         }
 
@@ -262,32 +276,17 @@ int isPrime(unsigned  int *arr,unsigned int val) //I thought using my old prime 
 }
 
 
-int dontOverthinkTheNames(flaggedInts *arr,int arrSize)
+int dontOverthinkTheNames(flaggedInts *arr,int arrSize,int *max)
 {
     int point = 0;
 
     do {
         point = rand() % arrSize;
-    }while (arr[point].isUsed); //As far as I know (I only now do..while loops in theory) this SHOULD run at least once and goes on as the condition is provided
+    }while (arr[point].isUsed && *max != arrSize); //As far as I know (I only now do..while loops in theory) this SHOULD run at least once and goes on as the condition is provided
                                 //(provided isn't the best word but my vocabulary is halved right now...lol)
 
     arr[point].isUsed = 1;
-    
+    (*max)++;
+
     return(point);
 }
-
-
-
-void drawPrimePixels(Vector2* vector,int size)
-{
-    for (int i = 0;i < size;i++) {
-        DrawPixelV(vector[i],CLITERAL(Color){0,13,53,255});
-    }
-//That's gonna be very inefficient isn't it? Pew... I FUCKING SOLVED IT and I can ditch this function fully I DON'T FUCKING NEED TO ITERATE OVER AND OVER AGAIN! FUCK YEAH! Terry Davising babyyyyyy
-}
-
-
-/*
-    Malloc counter : 4 (I have more than a few so I gotta keep track of each allocation to free easier later)
-*/
-
