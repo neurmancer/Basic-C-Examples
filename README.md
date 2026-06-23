@@ -70,6 +70,9 @@
 
 
 ### Unclassifed Math Fuckery
+
+- All math fuckery files moved into a subfolder in projects101 folder called mathFuckery
+
 - Fibonacci sequence function (with loops and recursion)
 
 - Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
