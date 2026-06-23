@@ -50,22 +50,21 @@
 
                 Now the real tea...Wtf is doppler effect? 
                 and here is the first name drop of the file: It is named after the physicist Christian Doppler, 
-                who described the phenomenon in 1842
+                who described the phenomenon in 1842 and it's the "AAAAAAAAEEEEEEEEEEEEEEEEUUUUUUUU" you hear when someone snitches on a dealer on the block
 
                 It is the  change in the frequency or pitch of a wave in relation to an observer who is moving relative to the wave's source 
                 so if an ambulance is coming towards you you'll hear a higher pitch and if it's going further away the pitch will lower 
                 did I simulate it?
                     -Kinda visually but nah there is no frequency or wavelength detection in this program is there a math involved? Fuck yeah!
                 
-                    I basically made a ball that you can move with WASD and it creates rings around itself no acceleration no visible pitch change and shit 
-                    But lowering part of the pitch (which is the part where rings gets further apart behind the ball is solid)
+                    I basically made a ball that you can move with WASD and it creates rings around itself...
                 
                 I may add 
-                    1- A rectangle representing an observer on a random point *Started working On*
+                    1- A rectangle representing an observer on a random point *Added*
                     2- An acceleration element to the car *Added* 
                     3- Adding sounds to demonstrate pitch shift (Probably gonna be a ear-fucker)
                     4-or if I can figure out how to partially color a circle I may add 'blue-shift' 
-                    for the positive vector and 'red-shift' for the negative as the vehicle goes visually ofc (maybe a little math for the fun too)  
+                    for the positive vector and 'red-shift' for the negative as the vehicle goes visually ofc (maybe a little math for the fun too)   
                 
                 Known bugs: 
                     -Frequency is twice for some FUCKING reason it emits waves twice as much in a given time...tried to use time(NULL), clock(),
@@ -88,7 +87,8 @@
                 but since all the stars have infrared or ultaviolet emmisons the peak of the visible color always hits somewhere closer to the edges such as red or violet 
                 and since green is in the middle of the visible spectrum the peak never becomes green and if it is they would simply emmit all the spectrum and we'd see it as white due to blackbody radiation...damn I've yapped so much didn't I?
                 and if you don't know how the spectrum goes it goes like infrared(invisible to human eye)-Red, Orange,Yellow, Green, Blue, Indigo, Violet - Ultraviolet(invisible to human eye) simply ROYGBIV
-                
+  
+                And when I say 'No green stars' it's based on human perception... ironic enough... the Sun's peak falls on green on the spectrum and we see it white (well...more yellow'ish due to atmosphere but you got the thing bruh)
 */
 
 
