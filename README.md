@@ -162,7 +162,7 @@
 
 #For the ones don't know how to compile and run 
 #if there is additional lib/flag for any specific file it will be commented within file itself.
-#Mostly used one being -lm to link math.h
+#Mostly used one being -lm to link math.h (future update some of them requires raylib for graphs so you gotta use -lraylib too for said files
 
 cc filename.c -o output #To compile
 
@@ -191,4 +191,6 @@ cc filename.c -o output #To compile
 > - **Clean Archicture**
 > - **Grokking Algorithms** (The classic beginner friendly DSA book)
 > - **Linux Kernel Dev**(That's where I wanna end at)
+
+
 
