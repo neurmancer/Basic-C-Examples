@@ -91,7 +91,7 @@
 
 - Doppler Effect Simulator (using raylib.h so you gotta have it too) 
 
-- Screensaver that paints screen from scratch using primes(not visually it just acts based on them) with raylib 
+- Screensaver that paints screen from scratch using primes  with raylib 
 
 - Get time program experiment
 

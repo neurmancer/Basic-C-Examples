@@ -57,7 +57,7 @@
 
             We humans do...And that comes with its struggles and the banter within files what makes them precious imo like have you read man page of ffplay? I read for 3 hours for some flag hunt for ShittyJukeBox project due to buffer latency of ffplay and saw people'd written things like '360p shitty buffer' '720p cool buffering' etc. that's how programming was or the original source code of doom has cusses in it because WE ARE HUMAN...I mean that's why I've chosen C it is messy, it resembles humanity there is no 'spacing' like python nor abstraction behind abstraction.. for example I can write 010<:arr:> and compiler just accepts (which means arr[8] btw more on that later)
          
-
+            Now colors are determinstic every pixel will be colored with a prime's value mutliplied by a number than modded % 255 for RGB values 
 
             Well...SECOND DOCTRINE CHANGE ABORTING THE LINKED LISTS for faster results... new idea well...that's gonna be a RAM fucker but 2 arrays for each x and y coordinates and 2 for same sized full init zero'd ones as a 'used' flag.
             access will be O(1) but as I said memory will double but keeping track of an linked list (12 byte 8 from pointer(for x86_64 my rig) 4 from the value + padding would be roughly worse anyways...and I wasted my time on linked lists lol) 
@@ -215,7 +215,7 @@ int main(void)
             printablePrimes++;
             dLastPrint -= 0.1f;
 
-            DrawPixelV(*pixelIter,(Color){rand() % 256,rand() % 256,rand() % 256,255});        
+            DrawPixelV(*pixelIter,(Color){(primes[printablePrimes]*13) % 255, (primes[printablePrimes]*53) % 255,(primes[printablePrimes]*13) % 255,255});        
             pixelIter++;
         }
 
