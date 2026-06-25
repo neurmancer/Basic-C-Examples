@@ -40,10 +40,6 @@
 
 - A basic inverted array walk via pointers (with memory address laid out)
 
-- A mainless C file that you can run (for no apperant reason)
-
-- Buffer oveflow for lulz. 
-
 - Subfoldef for bitwise sorcery 
 
 > - A bitwise operations chart 
@@ -62,7 +58,9 @@
 ## Lectureish (boring part)
 
 
-* [UNCLASSIFED](#unclassifed-math-fuckery)
+* [UNCLASSIFED](#unclassified-math-fuckery)
+
+* [Low-Level Stuff](#low-level-stuff)
 
 * [Pointer Inferno](#pointerhell)
 
@@ -81,6 +79,12 @@
 
 - Basic prime number counter with user input
 
+- Get time program experiment
+
+- Basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here(And So I Did)
+
+- Cmp popcount program
+
 - Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 
 - Koch Snowflake using Thue-Morse Sequence (same thing with Koch Curve file but with graphics(raylib required) and yeah still not sure if it's accurate)
@@ -95,12 +99,20 @@
 
 - Screensaver that paints screen from scratch using primes  with ANSI for CLI 
 
-- Get time program experiment
 
-- Basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here(And So I Did)
 
-- Cmp popcount program
- 
+### Low-Level Stuff
+
+> Baby's Kernel Drivers (We'll learn together)
+> 
+> - First failed attempt added(using TLDP's old sources)
+> - New file is sitting empty for tomorrow
+>
+>
+> Other low-level stuff
+> 
+> - A mainless C file that you can run (for no apperant reason)
+> - Buffer oveflow for lulz. 
 
 
 ### PointerHell 
@@ -174,9 +186,7 @@ cc filename.c -o output #To compile
 ```
 
 
-## Future Adds
-
-- A baby's first kernel driver (this gonna require so many flags probably...I may fuck up) 
+## Future Adds 
 - **More** Janky physics simulators and _Math Fuckery_ such as :
 > - Doppler effect simulator for celestial bodies (redshifting/blueshifting)
 > - A basic pendulum 
@@ -193,11 +203,10 @@ cc filename.c -o output #To compile
 
 > - **The C Programming Language 2nd Edition** by K&R (The Holy Bible...ehm acktually it's Old Testament)
 > - **Linux System Programming**
-> - **Writin Solid Code** 
+> - **Writing Solid Code** 
 > - **Advanced Bash-Scripting** (haven't started to read yet)
 > - **Clean Archicture**
 > - **Grokking Algorithms** (The classic beginner friendly DSA book)
 > - **Linux Kernel Dev**(That's where I wanna end at)
-
 
 
