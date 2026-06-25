@@ -35,17 +35,21 @@
 typedef struct{
     int x; 
     int isUsed;
-}flaggedNums; //Yup as I said using the same logic as before
+}flaggedNum; //Yup as I said using the same logic as before
 
 
 
 int isPrime(unsigned int *arr,unsigned int val);
-flaggedNums *fillTheArray(flaggedNums *root,int size);
+int posGen(flaggedNum *arr,int size,int *usedOnes);
+
+flaggedNum *fillTheArray(flaggedNum *root,int size);
 
 
 
 int main(void)
 {
+    srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
+
     struct winsize window;
 
     ioctl(STDOUT_FILENO, TIOCGWINSZ,&window);
@@ -63,11 +67,14 @@ int main(void)
     
     unsigned int *iter = primes; //To not to loose the root again...
 
-    flaggedNums *xValues = (flaggedNums *) calloc(width,sizeof(flaggedNums));
+    flaggedNum *xValues = (flaggedNum *) calloc(width,sizeof(flaggedNum));
     if (xValues == NULL) { return(-1); }
     
-    flaggedNums *yValues = (flaggedNums *)calloc(height,sizeof(flaggedNums));
+    flaggedNum *yValues = (flaggedNum *)calloc(height,sizeof(flaggedNum));
     if(yValues == NULL) { return(-1); }
+
+    int usedXs = 0;
+    int usedYs = 0;
 
     fillTheArray(xValues,width);
     fillTheArray(yValues,height);
@@ -132,7 +139,7 @@ int isPrime(unsigned  int *arr,unsigned int val)
 }
 
 
-flaggedNums *fillTheArray(flaggedNums *root,int size)
+flaggedNum *fillTheArray(flaggedNum *root,int size)
 {
     if (root == NULL){ return(NULL); }
 
@@ -141,4 +148,20 @@ flaggedNums *fillTheArray(flaggedNums *root,int size)
         root[i].isUsed = 0;
     }
     return(root);
+}
+
+int posGen(flaggedNum *arr,int size,int *usedOnes)
+{
+    if (*usedOnes == size) {
+        return(-1); //To prevent infinte loop    
+    }
+
+    int x = 0;
+    do {
+        x = (rand() % size-1)+1; //Never trust a computer to compute use bracelets  -Sun Tzu (or Linus Torvalds IDK)    
+    }while (!arr[x].isUsed);
+    
+    arr[x].isUsed = 1;
+
+    return(x);
 }
