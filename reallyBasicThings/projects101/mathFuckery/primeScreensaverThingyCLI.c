@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <sys/ioctl.h> //For ioctl() and getting winsize and shit
 #include <time.h>
+#include <signal.h>
+
 
 /*ANSI DEFINES */
 #define HIDE_CURSOR "\033[?25l"
@@ -17,6 +19,10 @@
 #define SECOND 1000000
 
 /*
+
+                                **This project is finished**
+
+
     This is gonna be as same as primeScreensaverThingy but for low-level gremlins (like me OwO)(and I use emoticons so much so what?Don't act like you didn't use mySpace)
     'Sup? it's almost 11PM so...you know...I flipped the questioning switch off and started coding
     
@@ -34,9 +40,7 @@
 
     and for the record: This program will be using Ctrl+C for exit with a custom handler...
 
-    This is the Stable Beta version
-        Cons:
-            -Still haven't implemented the sig handler out of laziness
+
 
 */
 
@@ -52,19 +56,19 @@ int posGen(flaggedNum *arr,int size,int *usedOnes);
 
 flaggedNum *fillTheArray(flaggedNum *root,int size);
 
+void handleSIGINT(int sig);
 
-/*
-What shit are missing (A recap quickie)
-    1-Visualization duh...
-    2- The IPC pipe I yapped and promised about
-    3-
 
-*/
+
 
 int main(void)
 {
     setvbuf(stdout,NULL, _IONBF,0); //The prayer of a classical CLI tool... turning line buffering off
+    printf(HIDE_CURSOR);
 
+    struct sigaction sa = { 0 };
+    sa.sa_handler = &handleSIGINT;
+    sigaction(SIGINT,&sa,NULL); //I use sigaction because linux man page suggests this over signal() due to compability issues https://man7.org/linux/man-pages/man2/signal.2.html <- Here is why nerds
         
     srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
     int arePrimesDone = 0;
@@ -93,11 +97,11 @@ int main(void)
     int usedXs = 0;
     int usedYs = 0;
 
-    fillTheArray(xValues,width);
-    fillTheArray(yValues,height);
+    if(fillTheArray(xValues,width) == NULL) { return(-1); }
+    if(fillTheArray(yValues,height) == NULL) { return(-1); }
 
 
-    
+
     for (int i = 0;i < targetCount;i++) {
         int primey = isPrime(primes,i);
         if(primey){
@@ -109,9 +113,8 @@ int main(void)
 
     arePrimesDone = 1;
 
-    
-    printf("Now ready!\n");
-
+    printf("Press Ctrl+C to exit\nHave FUN!\n");
+    usleep(SECOND*1.3f);
 
     printf(WIPE_SCREEN);
     for(int j = 0;j < targetCount;j++) {
@@ -125,21 +128,18 @@ int main(void)
         printf(PAINT,rValue,gValue,bValue,WALL_STRING);
         usedXs++;
         usedYs++;
-        usleep(SECOND*0.2);
+        usleep(SECOND*0.25);
     }
 
 
+    free(primes);
+    free(xValues);
+    free(yValues);
 
-        free(primes);
-        free(xValues);
-        free(yValues);
+    primes = NULL;
+    xValues = NULL;
+    yValues = NULL;
 
-        primes = NULL;
-        xValues = NULL;
-        yValues = NULL;
-
-    
-    
     return(0);
 }
 
@@ -202,4 +202,10 @@ int posGen(flaggedNum *arr,int size,int *usedOnes)
     arr[x-1].isUsed = 1;
 
     return(x);
+}
+
+void handleSIGINT(int sig)
+{
+    printf(WIPE_SCREEN RESET_COLOR RETURN_CURSOR);
+    exit(0);
 }
