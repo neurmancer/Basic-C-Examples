@@ -18,7 +18,7 @@
     'Sup? it's almost 11PM so...you know...I flipped the questioning switch off and started coding
     
     We'll 'reimplement the primeScreensaverThingy for CLI interafaces so you can enjoy it without thinking about graphic libs... and let me get this clear...
-    I don't wanna waste so much time on this file since it's lowkey against my don't do same thing twice philosphy (tho in Softwere Engineering it's called D.R.Y..Don't repeat yourself )
+    I don't wanna waste so much time on this file since it's lowkey against my don't do same thing twice philosphy (tho in Software Engineering it's called D.R.Y..Don't repeat yourself )
     I'll use ioctl for getting terminal size (yeah I am planning this shit on the way too so I don't even typed int main yet...) but I won't bother to resize the array for resizing the terminal
     since it'll require me to keep track of the already filled pixels, already filled array for flagged points on the screen etc. 
     So here is the deal: 
@@ -31,6 +31,8 @@
 
     and for the record: This program will be using Ctrl+C for exit with a custom handler...
 
+    Coming improv: Add a flag for primeCheck status then pipe it to child to end the loading bar instead of hardcoded time 
+    (yeah I know some of you guys still use IBM notebooks from stone age...I got you bruh)
 */
 
 typedef struct{
@@ -68,6 +70,7 @@ int main(void)
         return(0);
     }
 
+    
     srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
 
     struct winsize window;
