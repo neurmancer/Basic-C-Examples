@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <sys/ioctl.h> //For ioctl() and getting winsize and shit
 #include <time.h>
@@ -7,7 +8,7 @@
 /*ANSI DEFINES */
 #define HIDE_CURSOR "\033[?25l"
 #define RETURN_CURSOR "\033[?25h"      //Basic ANSI escape codes for hiding/showing cursor (l means low and h means high as you can guess)
-#define WIPE_SCREEN "\033[2J"
+#define WIPE_SCREEN "\033[H\033[J"
 #define WALL_STRING "█" //That's not ANSI but you got the idea
 #define RESET_COLOR   "\033[0m"
 #define PAINT "\033[38;2;%d;%d;%dm%s" //Gets the RGB values and a string as parameters 
@@ -48,14 +49,31 @@ flaggedNum *fillTheArray(flaggedNum *root,int size);
 
 int main(void)
 {
+    setvbuf(stdout,NULL, _IONBF,0); //The prayer of a classical CLI tool... turning line buffering off
+
+    int pid = fork();
+    if (pid == -1) {perror("Forking got spooned\n"); return(-13);}
+    if (pid == 0) {
+        printf("I am calculating primes upto your terminal size so please be patient for a few seconds\n");
+        time_t start = time(NULL);
+        const char *bar = "|/-\\";
+        int spinner = 0;
+        while (difftime(time(NULL),start) < 5.0f) {
+            printf(HIDE_CURSOR);
+            printf("\r%c Calculating some primes",bar[spinner%4]);
+            usleep(135315);
+            spinner++;
+        } 
+        printf(WIPE_SCREEN);
+        return(0);
+    }
+
     srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
 
     struct winsize window;
 
     ioctl(STDOUT_FILENO, TIOCGWINSZ,&window);
-    printf(WIPE_SCREEN "Lines %d\tCols:%d\n",window.ws_row,window.ws_col); //Okkie it works 
-    printf(PAINT RESET_COLOR,53,12,255,WALL_STRING);
-    printf("\n");
+
 
     const int width = window.ws_col;
     const int height = window.ws_row;
@@ -87,12 +105,9 @@ int main(void)
             primeCount++;
         }
     }
-
-
-    for (int i = 0;i < primeCount;i++) {
-        printf("%d is prime bruh\n",primes[i]);
-    }//Yup drive-by sieve still working like a charm
-
+    
+    wait(NULL);
+    printf("Now ready!\n");
     
     free(primes);
     free(xValues);
