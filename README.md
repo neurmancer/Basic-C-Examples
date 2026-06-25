@@ -210,3 +210,9 @@ cc filename.c -o output #To compile
 > - **Linux Kernel Dev**(That's where I wanna end at)
 
 
+
+
+
+### P.S. 
+
+> If you think 'Beginner apps' are to-do lists and CLI calculators and those are advanced stuff...You are missing the part that I value.Hence, this repo is not suitable for you or on the other hand I am glad you are here if you are reading this.
