@@ -158,7 +158,7 @@ int posGen(flaggedNum *arr,int size,int *usedOnes)
 
     int x = 0;
     do {
-        x = (rand() % size-1)+1; //Never trust a computer to compute use bracelets  -Sun Tzu (or Linus Torvalds IDK)    
+        x = (rand() % size)+1; //Never trust a computer to compute use bracelets  -Sun Tzu (or Linus Torvalds IDK)    
     }while (!arr[x].isUsed);
     
     arr[x].isUsed = 1;
