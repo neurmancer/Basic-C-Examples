@@ -40,6 +40,8 @@
 
     and for the record: This program will be using Ctrl+C for exit with a custom handler...
 
+    
+
 
 
 */
@@ -57,6 +59,14 @@ int posGen(flaggedNum *arr,int size,int *usedOnes);
 flaggedNum *fillTheArray(flaggedNum *root,int size);
 
 void handleSIGINT(int sig);
+void cleanUp(void);
+
+/*Global vars cuz needed*/
+
+
+unsigned int *primes = NULL;
+flaggedNum   *xValues = NULL;
+flaggedNum   *yValues = NULL;
 
 
 
@@ -66,10 +76,13 @@ int main(void)
     setvbuf(stdout,NULL, _IONBF,0); //The prayer of a classical CLI tool... turning line buffering off
     printf(HIDE_CURSOR);
 
+
     struct sigaction sa = { 0 };
     sa.sa_handler = &handleSIGINT;
     sigaction(SIGINT,&sa,NULL); //I use sigaction because linux man page suggests this over signal() due to compability issues https://man7.org/linux/man-pages/man2/signal.2.html <- Here is why nerds
-        
+
+    if (atexit(cleanUp) != 0) { perror("At exit failed...you're probably leaking some memory TnT\n");return(-1); };
+
     srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
     int arePrimesDone = 0;
 
@@ -130,15 +143,6 @@ int main(void)
         usedYs++;
         usleep(SECOND*0.25);
     }
-
-
-    free(primes);
-    free(xValues);
-    free(yValues);
-
-    primes = NULL;
-    xValues = NULL;
-    yValues = NULL;
 
     return(0);
 }
@@ -203,6 +207,16 @@ int posGen(flaggedNum *arr,int size,int *usedOnes)
 
     return(x);
 }
+
+
+void cleanUp(void) {
+    free(primes);
+    free(xValues);
+    free(yValues);
+    primes = NULL;
+    xValues = yValues = NULL; //Trying new things lol
+}
+
 
 void handleSIGINT(int sig)
 {
