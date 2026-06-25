@@ -12,6 +12,9 @@
 #define WALL_STRING "█" //That's not ANSI but you got the idea
 #define RESET_COLOR   "\033[0m"
 #define PAINT "\033[38;2;%d;%d;%dm%s" //Gets the RGB values and a string as parameters 
+#define MOVE_CURSOR "\033[%d;%dH"
+
+#define SECOND 1000000
 
 /*
     This is gonna be as same as primeScreensaverThingy but for low-level gremlins (like me OwO)(and I use emoticons so much so what?Don't act like you didn't use mySpace)
@@ -48,78 +51,129 @@ int posGen(flaggedNum *arr,int size,int *usedOnes);
 flaggedNum *fillTheArray(flaggedNum *root,int size);
 
 
+/*
+What shit are missing (A recap quickie)
+    1-Visualization duh...
+    2- The IPC pipe I yapped and promised about
+    3-
+
+*/
 
 int main(void)
 {
     setvbuf(stdout,NULL, _IONBF,0); //The prayer of a classical CLI tool... turning line buffering off
+    /*fd[0] reading end
+      fd[1] writing end (yeah I am leaving bread crumbs for myself)
+    */
+
+    int fd[2] = { 0 }; //File descriptor int array which I'll use for pipe
+
+    if (pipe(fd) == -1) {perror("Piping error(yeah it's a vauge error but still better than window fix tools\n"); return(-1); }
+
 
     int pid = fork();
     if (pid == -1) {perror("Forking got spooned\n"); return(-13);}
     if (pid == 0) {
+        close(fd[1]);
         printf("I am calculating primes upto your terminal size so please be patient for a few seconds\n");
-        time_t start = time(NULL);
+
         const char *bar = "|/-\\";
         int spinner = 0;
-        while (difftime(time(NULL),start) < 5.0f) {
+        int done = 0;
+        while (!done) {
             printf(HIDE_CURSOR);
             printf("\r%c Calculating some primes",bar[spinner%4]);
             usleep(135315);
             spinner++;
+            if((read(fd[0],&done,sizeof(done))) == -1) { perror("Illiteracy error\n"); return(-1368953); } 
         } 
+        close(fd[0]);
         printf(WIPE_SCREEN);
         return(0);
     }
 
-    
-    srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
 
-    struct winsize window;
+    else {
+        
+        close(fd[0]); //I wont be rading shit from child process
+        srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
+        int arePrimesDone = 0;
 
-    ioctl(STDOUT_FILENO, TIOCGWINSZ,&window);
+        struct winsize window;
+
+        ioctl(STDOUT_FILENO, TIOCGWINSZ,&window);
 
 
-    const int width = window.ws_col;
-    const int height = window.ws_row;
+        const int width = window.ws_col;
+        const int height = window.ws_row;
 
-    int primeCount = 0;
+        int primeCount = 0;
+        int targetCount = width*height*100;
+        unsigned int *primes = (unsigned int *) calloc(targetCount+1,sizeof(unsigned int));
+        if (primes == NULL) { return(-1) ; }
+        
+        unsigned int *iter = primes; //To not to loose the root again...
 
-    unsigned int *primes = (unsigned int *) calloc(width*height,sizeof(unsigned int));
-    if (primes == NULL) { return(-1) ; }
-    
-    unsigned int *iter = primes; //To not to loose the root again...
+        flaggedNum *xValues = (flaggedNum *) calloc(width,sizeof(flaggedNum));
+        if (xValues == NULL) { return(-1); }
+        
+        flaggedNum *yValues = (flaggedNum *)calloc(height,sizeof(flaggedNum));
+        if(yValues == NULL) { return(-1); }
 
-    flaggedNum *xValues = (flaggedNum *) calloc(width,sizeof(flaggedNum));
-    if (xValues == NULL) { return(-1); }
-    
-    flaggedNum *yValues = (flaggedNum *)calloc(height,sizeof(flaggedNum));
-    if(yValues == NULL) { return(-1); }
+        int usedXs = 0;
+        int usedYs = 0;
 
-    int usedXs = 0;
-    int usedYs = 0;
+        fillTheArray(xValues,width);
+        fillTheArray(yValues,height);
 
-    fillTheArray(xValues,width);
-    fillTheArray(yValues,height);
-
-    for (int i = 0;i <= 100;i++) {
-        unsigned int primey = isPrime(primes,i);
-        if (primey) {
-            *iter = i;
-            iter++;
-            primeCount++;
+        
+         
+        for (int i = 0;i < targetCount;i++) {
+            int primey = isPrime(primes,i);
+            if(primey){
+                *iter = i;
+                iter++;
+                primeCount++;
+            }
         }
+
+        arePrimesDone = 1;
+        
+        if(write(fd[1], &arePrimesDone,sizeof(arePrimesDone)) == -1) {perror("Eloquence error\n"); return(-689);} //Yk...cuz it couldn't writ?lulz
+        close(fd[1]);
+        wait(NULL); //I won't be bothered to check for a specific child since I only have one
+
+        printf("Now ready!\n");
+
+        
+        printf(WIPE_SCREEN);
+        for(int j = 0;j < targetCount;j++) {
+            
+            int posX = posGen(xValues,width,&usedXs);
+            int posY = posGen(yValues,height,&usedYs);
+            int rValue = ((primes[j]*13) % 256); 
+            int gValue = ((primes[j]*53) % 256);
+            int bValue = ((primes[j]*689) % 256);
+            printf(MOVE_CURSOR,posY,posX);
+            printf(PAINT,rValue,gValue,bValue,WALL_STRING);
+            usedXs++;
+            usedYs++;
+
+            usleep(SECOND*0.2);
+        }
+        
+
+        
+        free(primes);
+        free(xValues);
+        free(yValues);
+
+        primes = NULL;
+        xValues = NULL;
+        yValues = NULL;
+
     }
     
-    wait(NULL);
-    printf("Now ready!\n");
-    
-    free(primes);
-    free(xValues);
-    free(yValues);
-
-    primes = NULL;
-    xValues = NULL;
-    yValues = NULL;
-
     return(0);
 }
 
@@ -177,7 +231,7 @@ int posGen(flaggedNum *arr,int size,int *usedOnes)
     int x = 0;
     do {
         x = (rand() % size)+1; //Never trust a computer to compute use bracelets  -Sun Tzu (or Linus Torvalds IDK)    
-    }while (!arr[x].isUsed);
+    }while (arr[x].isUsed);
     
     arr[x].isUsed = 1;
 

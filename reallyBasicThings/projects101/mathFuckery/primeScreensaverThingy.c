@@ -195,7 +195,7 @@ int main(void)
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
 
         //Logic
-        while (isPrime(primes,primeCount) == 0 && primeCount < target+10) {
+        while (isPrime(primes,primeCount) == 0 && primeCount < target) {
             primeCount++;
         }
         *iter = primeCount;
