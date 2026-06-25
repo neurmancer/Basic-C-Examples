@@ -71,7 +71,7 @@
 * [Preprocessors](#_ifnwin32-yippie-part)
 
 
-### Unclassifed Math Fuckery
+### Unclassified Math Fuckery
 
 - All math fuckery files moved into a subfolder in projects101 folder called mathFuckery
 
@@ -92,6 +92,8 @@
 - Doppler Effect Simulator (using raylib.h so you gotta have it too) 
 
 - Screensaver that paints screen from scratch using primes  with raylib 
+
+- Screensaver that paints screen from scratch using primes  with ANSI for CLI 
 
 - Get time program experiment
 
@@ -174,9 +176,14 @@ cc filename.c -o output #To compile
 
 ## Future Adds
 
-- **CLI** version for prime screensaver (Cuz yk...being a low-level gremlin requires to do so)
 - A baby's first kernel driver (this gonna require so many flags probably...I may fuck up) 
- 
+- **More** Janky physics simulators and _Math Fuckery_ such as :
+> - Doppler effect simulator for celestial bodies (redshifting/blueshifting)
+> - A basic pendulum 
+> - Maybe a function visualizer 
+> - Tupper's self-referntial graph (possible but no promises)
+> - Sierpinski's triangle (if I can reverse engineer the math lol)
+> -  Sierpinski's tetrahedron (if I learn cameras & movements on raylib)
 
 
 
