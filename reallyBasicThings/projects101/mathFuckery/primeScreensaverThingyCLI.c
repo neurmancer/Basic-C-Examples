@@ -21,7 +21,7 @@
     I'll use ioctl for getting terminal size (yeah I am planning this shit on the way too so I don't even typed int main yet...) but I won't bother to resize the array for resizing the terminal
     since it'll require me to keep track of the already filled pixels, already filled array for flagged points on the screen etc. 
     So here is the deal: 
-        Pls do not resize the window after starting the program UnU
+        Pls do not resize the window after starting the program UnU ...and for the record if you wanna use this I presume you want to see what's on screen...hence why resizing to break it?Right?
           
     and I intend to do the coloring with full ANSI fuckery so no external libs...no ncurse, no window just a colored 24-bit coloring with primes 
 
@@ -58,15 +58,15 @@ int main(void)
 
     int primeCount = 0;
 
-    unsigned int *primes = calloc(width*height,sizeof(unsigned int));
+    unsigned int *primes = (unsigned int *) calloc(width*height,sizeof(unsigned int));
     if (primes == NULL) { return(-1) ; }
     
     unsigned int *iter = primes; //To not to loose the root again...
 
-    flaggedNums *xValues = calloc(width,sizeof(flaggedNums));
+    flaggedNums *xValues = (flaggedNums *) calloc(width,sizeof(flaggedNums));
     if (xValues == NULL) { return(-1); }
     
-    flaggedNums *yValues = calloc(height,sizeof(flaggedNums));
+    flaggedNums *yValues = (flaggedNums *)calloc(height,sizeof(flaggedNums));
     if(yValues == NULL) { return(-1); }
 
     fillTheArray(xValues,width);
@@ -136,8 +136,8 @@ flaggedNums *fillTheArray(flaggedNums *root,int size)
 {
     if (root == NULL){ return(NULL); }
 
-    for (int i = 1;i <= size;i++) { //CLI interface starts at index 1,1 not 0,0 (yeah that fucks me up each time)
-        root[i].x = i;
+    for (int i = 0;i < size;i++) { //CLI interface starts at index 1,1 not 0,0 (yeah that fucks me up each time)
+        root[i].x = i+1; //As I said I need to reach size but not seg-assulting my own ass 
         root[i].isUsed = 0;
     }
     return(root);
