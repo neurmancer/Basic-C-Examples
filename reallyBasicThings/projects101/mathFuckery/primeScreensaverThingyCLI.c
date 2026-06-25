@@ -34,8 +34,10 @@
 
     and for the record: This program will be using Ctrl+C for exit with a custom handler...
 
-    Coming improv: Add a flag for primeCheck status then pipe it to child to end the loading bar instead of hardcoded time 
-    (yeah I know some of you guys still use IBM notebooks from stone age...I got you bruh)
+    This is the Stable Beta version
+        Cons:
+            -Still haven't implemented the sig handler out of laziness
+
 */
 
 typedef struct{
@@ -62,108 +64,72 @@ What shit are missing (A recap quickie)
 int main(void)
 {
     setvbuf(stdout,NULL, _IONBF,0); //The prayer of a classical CLI tool... turning line buffering off
-    /*fd[0] reading end
-      fd[1] writing end (yeah I am leaving bread crumbs for myself)
-    */
 
-    int fd[2] = { 0 }; //File descriptor int array which I'll use for pipe
+        
+    srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
+    int arePrimesDone = 0;
 
-    if (pipe(fd) == -1) {perror("Piping error(yeah it's a vauge error but still better than window fix tools\n"); return(-1); }
+    struct winsize window;
+
+    ioctl(STDOUT_FILENO, TIOCGWINSZ,&window);
 
 
-    int pid = fork();
-    if (pid == -1) {perror("Forking got spooned\n"); return(-13);}
-    if (pid == 0) {
-        close(fd[1]);
-        printf("I am calculating primes upto your terminal size so please be patient for a few seconds\n");
+    const int width = window.ws_col;
+    const int height = window.ws_row;
 
-        const char *bar = "|/-\\";
-        int spinner = 0;
-        int done = 0;
-        while (!done) {
-            printf(HIDE_CURSOR);
-            printf("\r%c Calculating some primes",bar[spinner%4]);
-            usleep(135315);
-            spinner++;
-            if((read(fd[0],&done,sizeof(done))) == -1) { perror("Illiteracy error\n"); return(-1368953); } 
-        } 
-        close(fd[0]);
-        printf(WIPE_SCREEN);
-        return(0);
+    int primeCount = 0;
+    int targetCount = width*height;
+    unsigned int *primes = (unsigned int *) calloc(targetCount+1,sizeof(unsigned int));
+    if (primes == NULL) { return(-1) ; }
+
+    unsigned int *iter = primes; //To not to loose the root again...
+
+    flaggedNum *xValues = (flaggedNum *) calloc(width,sizeof(flaggedNum));
+    if (xValues == NULL) { return(-1); }
+
+    flaggedNum *yValues = (flaggedNum *)calloc(height,sizeof(flaggedNum));
+    if(yValues == NULL) { return(-1); }
+
+    int usedXs = 0;
+    int usedYs = 0;
+
+    fillTheArray(xValues,width);
+    fillTheArray(yValues,height);
+
+
+    
+    for (int i = 0;i < targetCount;i++) {
+        int primey = isPrime(primes,i);
+        if(primey){
+            *iter = i;
+            iter++;
+            primeCount++;
+        }
+    }
+
+    arePrimesDone = 1;
+
+    
+    printf("Now ready!\n");
+
+
+    printf(WIPE_SCREEN);
+    for(int j = 0;j < targetCount;j++) {
+
+        int posX = posGen(xValues,width,&usedXs);
+        int posY = posGen(yValues,height,&usedYs);
+        int rValue = ((primes[j]*13) % 256); 
+        int gValue = ((primes[j]*53) % 256);
+        int bValue = ((primes[j]*689) % 256);
+        printf(MOVE_CURSOR,posY,posX);
+        printf(PAINT,rValue,gValue,bValue,WALL_STRING);
+        usedXs++;
+        usedYs++;
+        usleep(SECOND*0.2);
     }
 
 
-    else {
-        
-        close(fd[0]); //I wont be rading shit from child process
-        srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
-        int arePrimesDone = 0;
 
-        struct winsize window;
-
-        ioctl(STDOUT_FILENO, TIOCGWINSZ,&window);
-
-
-        const int width = window.ws_col;
-        const int height = window.ws_row;
-
-        int primeCount = 0;
-        int targetCount = width*height*100;
-        unsigned int *primes = (unsigned int *) calloc(targetCount+1,sizeof(unsigned int));
-        if (primes == NULL) { return(-1) ; }
-        
-        unsigned int *iter = primes; //To not to loose the root again...
-
-        flaggedNum *xValues = (flaggedNum *) calloc(width,sizeof(flaggedNum));
-        if (xValues == NULL) { return(-1); }
-        
-        flaggedNum *yValues = (flaggedNum *)calloc(height,sizeof(flaggedNum));
-        if(yValues == NULL) { return(-1); }
-
-        int usedXs = 0;
-        int usedYs = 0;
-
-        fillTheArray(xValues,width);
-        fillTheArray(yValues,height);
-
-        
-         
-        for (int i = 0;i < targetCount;i++) {
-            int primey = isPrime(primes,i);
-            if(primey){
-                *iter = i;
-                iter++;
-                primeCount++;
-            }
-        }
-
-        arePrimesDone = 1;
-        
-        if(write(fd[1], &arePrimesDone,sizeof(arePrimesDone)) == -1) {perror("Eloquence error\n"); return(-689);} //Yk...cuz it couldn't writ?lulz
-        close(fd[1]);
-        wait(NULL); //I won't be bothered to check for a specific child since I only have one
-
-        printf("Now ready!\n");
-
-        
-        printf(WIPE_SCREEN);
-        for(int j = 0;j < targetCount;j++) {
-            
-            int posX = posGen(xValues,width,&usedXs);
-            int posY = posGen(yValues,height,&usedYs);
-            int rValue = ((primes[j]*13) % 256); 
-            int gValue = ((primes[j]*53) % 256);
-            int bValue = ((primes[j]*689) % 256);
-            printf(MOVE_CURSOR,posY,posX);
-            printf(PAINT,rValue,gValue,bValue,WALL_STRING);
-            usedXs++;
-            usedYs++;
-
-            usleep(SECOND*0.2);
-        }
-        
-
-        
         free(primes);
         free(xValues);
         free(yValues);
@@ -172,7 +138,7 @@ int main(void)
         xValues = NULL;
         yValues = NULL;
 
-    }
+    
     
     return(0);
 }
@@ -233,7 +199,7 @@ int posGen(flaggedNum *arr,int size,int *usedOnes)
         x = (rand() % size)+1; //Never trust a computer to compute use bracelets  -Sun Tzu (or Linus Torvalds IDK)    
     }while (arr[x].isUsed);
     
-    arr[x].isUsed = 1;
+    arr[x-1].isUsed = 1;
 
     return(x);
 }
