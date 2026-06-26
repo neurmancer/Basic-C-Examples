@@ -9,7 +9,8 @@
 
 #define BACKLOG 10 //this is not an overkill right?
 #define PORT "8080"
-#define HTTP_BUFFER 1024
+#define RECV_BUFFER 1024
+#define SEND_BUFFER 4096 //Yup a page worth of bytes 
 
 /*
     And here we are...I am diving head-first into networking as I code a fucking HTTP server...no idea what a HTTP server is for now...but I'll eventually learn on the way lol
@@ -103,7 +104,7 @@ int main(void)
     
     
     */
-    char httpRequest[HTTP_BUFFER] = { 0 };
+    char httpRequest[RECV_BUFFER] = { 0 };
     int recievedBytes = recv(clientFD,httpRequest,sizeof(httpRequest),0); //These calls return the number of bytes received, or -1 if an error occurred.  In the event of an error, errno is set to indicate the error.
     if (recievedBytes == -1) { perror("I couldn't find a joke to suit recv lol\n"); return(-1); }
     
@@ -112,9 +113,22 @@ int main(void)
 
     if (!strncmp(httpRequest,"GET",3*sizeof(char))) {
         printf("IT'S A GET REQUEST\n"); //I fucking doubt that's correct way to check the request but I regret nothing(and yeah this is a postal reference)
+        
+        //Now I gotta give the index.html to page somehow...
+        const char *statusInfo = "HTTP/1.1 200 OK\r\n";
+
+        int sendHeader = send(clientFD,statusInfo,strlen(statusInfo),0);  //CRLF Carriage return line feed is needed for this to count as a actual response 
+        // (dunno how I learned but i did and miscalculations about it is an open invitation to HTTP Response Splitting and XSS attacks)
+        
+        const char *header = "Content-Type: text/html\r\n"
+                             "Content-Length: 10\r\n";
+        
     }
 
-    send(clientFD,"Yet were I flame, Still...I'd be lighting your cigs on an abyss",sizeof("Yet were I flame, Still...I'd be lighting your cigs on an abyss"),0); 
+    else {
+        printf("Bruh...I don't even know how I got GET request what can I do with a non-GET request\n");
+    }
+
     //That doesn't go to page, neither does appear in console...so...it goes to backrooms...or to her...I mean I wish it's going to backrooms or my texting my ex joke won't be a joke anymore
     
     
@@ -126,6 +140,8 @@ int main(void)
 
     }
 
+    close(fd);
+    close(clientFD);
 
 
     return(0);
