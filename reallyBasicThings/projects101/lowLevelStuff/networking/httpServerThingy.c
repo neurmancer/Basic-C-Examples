@@ -13,6 +13,9 @@
 #define SEND_BUFFER 4096 //Yup a page worth of bytes 
 
 /*
+        This project will continue...and I'll add at least 2 more pages and reroutes and shit but for now that's...enough
+
+
     And here we are...I am diving head-first into networking as I code a fucking HTTP server...no idea what a HTTP server is for now...but I'll eventually learn on the way lol
     Yk...it's the whole fucking point of trying to code a HTTP server. where this idea came from you might ask...I was wandering on wikipedia and stumbled across HTTP page at 4AM...then I decided to text my ex
     lmfao nah I just decided to build one after saving the link (here it is btw)  https://en.wikipedia.org/wiki/HTTP for the nerds...and decided to build one myself to see if I get what it does and doesn't
@@ -25,6 +28,12 @@
 
         Btw since I am on the topic I am using man pages as primary source to get intel on the libs I am using and if you don't know how, here is how to use man: man <lib_name> works most of the time if you have 
         man-pages on your system (pacman -S man-pages for Arch but dunno for others)
+
+        Known Weaknesses...
+            1- Meme based error handling
+            2- getchar loop is unnecessary
+            3- while loop is basically here for the moral support
+            4- And I am still half confused
 
 */
 
@@ -63,6 +72,9 @@ int main(void)
 
     int fd = socket(AF_INET,SOCK_STREAM,0 ); //fd's short for file descriptor  0 and IPPROTO_TCP for tcp(7) stream sockets that explains why I have 0 as protocol it is TCP as I want
     if(fd == -1) {perror("Socket, sucked it"); return(-1); }
+
+    int option = 1;
+    setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 
     int bindStatus = bind(fd, result->ai_addr,result->ai_addrlen); //   Upon successful completion, bind() shall return 0; otherwise, -1 shall be returned and errno set to indicate the error. (man bind page)
     if (bindStatus == -1) {perror("Avoidant attachment issue, see a therapist ASAP\n"); return(-1); }
@@ -115,14 +127,22 @@ int main(void)
         printf("IT'S A GET REQUEST\n"); //I fucking doubt that's correct way to check the request but I regret nothing(and yeah this is a postal reference)
         
         //Now I gotta give the index.html to page somehow...
-        const char *statusInfo = "HTTP/1.1 200 OK\r\n";
+        const char http_response[]  = "HTTP/1.1 200 OK\r\n"
+                                    "Content-Type: text/html; charset=utf-8\r\n"
+                                    "Content-Length: 3020\r\n"
+                                    "Connection: close\r\n"
+                                    "Server: Cyberspace\r\n"
+                                    "\r\n";
+        send(clientFD,http_response,strlen(http_response),0);
+        printf("Works till here\n");
+        FILE *indexFD = fopen("frontEnd/index.html","r");
+        char c = 0;
+        while ((c = getc(indexFD)) != EOF) {
+            int sentData = send(clientFD,&c,sizeof(c), 0);
+     
+        }
 
-        int sendHeader = send(clientFD,statusInfo,strlen(statusInfo),0);  //CRLF Carriage return line feed is needed for this to count as a actual response 
-        // (dunno how I learned but i did and miscalculations about it is an open invitation to HTTP Response Splitting and XSS attacks)
-        
-        const char *header = "Content-Type: text/html\r\n"
-                             "Content-Length: 10\r\n";
-        
+                                       
     }
 
     else {
