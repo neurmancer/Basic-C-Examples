@@ -112,7 +112,7 @@
 > Baby's Kernel Drivers (We'll learn together)
 > 
 > - First failed attempt added(using TLDP's old sources)
-> - New file is sitting empty for future
+> - Non-failed second modern-attempt (_working_) with no tutorial (I'll add shit in the future let me learn first TnT) 
 >
 >
 > Networking

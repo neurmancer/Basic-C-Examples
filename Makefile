@@ -11,12 +11,12 @@ all: $(ASMS)
 
 # Rule: how to turn one .c into .asm
 %.asm: %.c
-	cc -S $< -o $@ -masm=intel   # -masm=intel gives nicer Intel syntax (optional but recommended)
-	@echo "Assembled $@ from $< 🔥"
+	cc -S $< -o $@ -masm=intel   # 
+	@echo "Assembled $@ from $<"
 
-# Clean up all generated .asm files
+
 clean:
 	rm -f *.asm
-	@echo "Cleaned all .asm files, fresh start brö"
+	@echo "Cleaned all .asm files, fresh start bro"
 
 .PHONY: all clean
