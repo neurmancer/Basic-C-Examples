@@ -152,6 +152,7 @@ void drawVehicle(Vehicle vehc);
 void drawWaves(void);
 void drawObserver(Rectangle obs);
 
+void updateAudioPanAndVolume(AudioStream stream, const Vehicle* car, const Rectangle* observer);
 void emmitWave(void);
 void expandWaves(float dT);
 
@@ -194,7 +195,8 @@ int main(void)
     SetAudioStreamBufferSizeDefault(BUFFER_SIZE);
     
     AudioStream stream = LoadAudioStream(SAMPLE_RATE, 32, 1);
-    SetAudioStreamVolume(stream, 0.4f);   
+    float volume = 0.4f;
+    SetAudioStreamVolume(stream, volume);   
 
     float pan = 0.0f;
     SetAudioStreamPan(stream, pan);
@@ -259,7 +261,20 @@ int main(void)
             if (IsAudioStreamPlaying(stream)) { PauseAudioStream(stream); } //You'll thank me after 10 seconds trust me lmfao
             else { ResumeAudioStream(stream); }
         }
-
+        if (IsKeyPressed(KEY_UP)) {
+                if (volume >= 1.0f) {/*Litearally nothing*/}
+                else {
+                    volume+=0.1f;
+                    SetMasterVolume(volume);
+                }
+            }
+        if (IsKeyPressed(KEY_DOWN)) {
+                if (volume <= 0.0f) {/*Yup still nothing...*/}
+                else {
+                    volume-=0.1f;
+                    SetMasterVolume(volume);
+                }
+            }
 
         //Velocity updates
         car.vX += car.aX * dt; 
@@ -280,6 +295,7 @@ int main(void)
         float calculatedFreq = updateDopplerFrequency(&car, &observer);
         newSineFrequency = (int)calculatedFreq;   // boom, now your audio uses it
 
+        updateAudioPanAndVolume(stream, &car, &observer);
 
         if (IsAudioStreamProcessed(stream))
         {
@@ -344,7 +360,6 @@ void emmitWave(void)
 //I searched internet for keeping track of buffer since it was causing UB and found what a ring buffer is and tried to implement (half mine, half copy-paste  )
 void expandWaves(float dT)
 {
-    if (waveCount == 0) return;
 
     unsigned int activeWaves = (waveCount < MAX_WAVES) ? waveCount : MAX_WAVES;  //To keep track of the fucking waves
     unsigned int startIdx = (waveCount < MAX_WAVES) ? 0 : (waveCount % MAX_WAVES); //if the wave count is lower than MAX_VAVES start at 0 and if not start at where you left off 
@@ -451,4 +466,37 @@ float updateDopplerFrequency(const Vehicle* car, const Rectangle* observer) //Th
     if (observed > 1200.0f) observed = 1200.0f;
     
     return(observed);
+}
+
+
+void updateAudioPanAndVolume(AudioStream stream, const Vehicle* car, const Rectangle* observer)
+{
+    if (car == NULL || observer == NULL) return;
+
+    Vector2 carPos = { car->x, car->y };
+    Vector2 obsPos = { 
+        observer->x + observer->width / 2.0f, 
+        observer->y + observer->height / 2.0f 
+    };
+
+    float xDiff = carPos.x - obsPos.x;
+
+    float dist = sqrtf((carPos.x - obsPos.x)*(carPos.x - obsPos.x) + 
+                       (carPos.y - obsPos.y)*(carPos.y - obsPos.y));
+
+
+    float pan = 0.5f + (xDiff / (WIDTH * 0.6f));   // 0.6 is a tuning factor
+
+    if (pan < -1.0f) pan = -1.0f;
+    if (pan > 1.0f) pan = 1.0f;
+
+    SetAudioStreamPan(stream, pan);
+
+    float maxHearDistance = WIDTH * 1.2f;   
+    float volume = 1.0f - (dist / maxHearDistance);
+    
+    if (volume < 0.05f) volume = 0.05f;     
+    if (volume > 1.0f) volume = 1.0f;
+
+    SetAudioStreamVolume(stream, volume);
 }
