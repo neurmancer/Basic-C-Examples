@@ -19,6 +19,12 @@
 * [LECTURES(KINDA BORING but lowkey enjoyable PART)](#lectureish-boring-part)
 
 
+### Note to myself
+
+> First if you are not me you shall pass
+>
+> - Handle subfoldering better shit is growing so fast...
+> - Maybe...just maybe *slow down turbo*  **NAH** go for it
 
 ## Projects 101
 
@@ -109,8 +115,12 @@
 > - New file is sitting empty for future
 >
 >
-> Other low-level stuff
+> Networking
 > 
+> A basic HTTP TCP server using sockets (pure C...no external libs) **Will be Developed Further**
+>
+> Other Low-Level Stuff
+>
 > - A mainless C file that you can run (for no apperant reason)
 > - Buffer oveflow for lulz. 
 
