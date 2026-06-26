@@ -8,6 +8,7 @@
 
 #define BACKLOG 10 //this is not an overkill right?
 #define PORT "8080"
+#define HTTP_BUFFER 1024
 
 /*
     And here we are...I am diving head-first into networking as I code a fucking HTTP server...no idea what a HTTP server is for now...but I'll eventually learn on the way lol
@@ -101,9 +102,15 @@ int main(void)
     
     
     */
+    char httpRequest[HTTP_BUFFER] = { 0 };
+    int recievedBytes = recv(clientFD,httpRequest,sizeof(httpRequest),0); //These calls return the number of bytes received, or -1 if an error occurred.  In the event of an error, errno is set to indicate the error.
+    if (recievedBytes == -1) { perror("I couldn't find a joke to suit recv lol\n"); return(-1); }
+    
+    printf("%d\n",recievedBytes); //Recieved 692 bytes on first run lol 
+    printf("%.*s",recievedBytes,httpRequest);  //now I wonder if I go further and read exact amount of written data 
 
     send(clientFD,"Yet were I flame, Still...I'd be lighting your cigs on an abyss",sizeof("Yet were I flame, Still...I'd be lighting your cigs on an abyss"),0); 
-    //That doesn't go to page, neither does appear in console...so...it goes to backrooms...
+    //That doesn't go to page, neither does appear in console...so...it goes to backrooms...or to her...I mean I wish it's going to backrooms or my texting my ex joke won't be a joke anymore
     
     
     //since almost every server runs repeatetly 
