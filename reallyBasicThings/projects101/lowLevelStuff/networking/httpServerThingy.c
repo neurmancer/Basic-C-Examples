@@ -7,12 +7,12 @@
 #include <sys/types.h>
 
 #define BACKLOG 10 //this is not an overkill right?
+#define PORT "8080"
 
 /*
     And here we are...I am diving head-first into networking as I code a fucking HTTP server...no idea what a HTTP server is for now...but I'll eventually learn on the way lol
-    Yk...it's the whole fucking point of trying to code a HTTP server. where this idea came from you might ask...I was wandering on wikipedia and stumbled across HTTP page at 4AM then I saved the link
-    (here it is btw)  https://en.wikipedia.org/wiki/HTTP for the nerds...and decided to build one myself to see if I get what it does and doesn't
-    
+    Yk...it's the whole fucking point of trying to code a HTTP server. where this idea came from you might ask...I was wandering on wikipedia and stumbled across HTTP page at 4AM...then I decided to text my ex
+    lmfao nah I just decided to build one after saving the link (here it is btw)  https://en.wikipedia.org/wiki/HTTP for the nerds...and decided to build one myself to see if I get what it does and doesn't
     I'll be satisfied when this program will be able to hand an html file to a client from a port on a localhost probably...
 
         First, resources I use:
@@ -50,7 +50,13 @@ int main(void)
     hint.ai_flags = AI_PASSIVE;     //Beej says this is for 'fill my IP for me' 
 
     // bind(fd, const struct sockaddr *addr, socklen_t len) no clue what it does for now lol... 
-    int res = getaddrinfo(NULL,"8080", &hint,&result); //8080 for non-administrive port (is non-administrive a word? I dunno you got the idea...I don't need to be admin to access basically )
+    int res = getaddrinfo(NULL, PORT, &hint,&result); //8080 for non-administrive port (is non-administrive a word? I dunno you got the idea...I don't need to be admin to access basically )
+    /*
+            RETURN VALUE
+                getaddrinfo() returns 0 if it succeeds, or one of the following nonzero error codes:
+            so I can't blindly check for -1
+    */
+    if (res) { perror("You got ghosted\n"); return(-1); } //I mean you'd probably know that if you are looking at a http server but C returns true for each non-zero value
 
     int fd = socket(AF_INET,SOCK_STREAM,0 ); //fd's short for file descriptor  0 and IPPROTO_TCP for tcp(7) stream sockets that explains why I have 0 as protocol it is TCP as I want
     if(fd == -1) {perror("Socket, sucked it"); return(-1); }
@@ -70,12 +76,12 @@ int main(void)
 
 
     */
-    if (listenStatus == -1) {perror("Port is like Beethoven after 1817 rn fr\n"); return(-1);}
+    if (listenStatus == -1) {perror("Port is like Beethoven after 1817 you know what I am saying?\n"); return(-1);}
 
     struct sockaddr_storage clientAddr = { 0 };
     socklen_t clientAddrSize = sizeof(clientAddr);
 
-    int clientFD = accept(fd, (struct sockaddr *)&clientAddr,&clientAddrSize); //As I thought blocks the shit 
+    int clientFD = accept(fd, (struct sockaddr *)&clientAddr,&clientAddrSize); //As I thought blocks the shit...Lol purists say 'Casting is BAD! UnU' untill it isn't and man pages say to do so lol
     if (clientFD == -1) { perror("Failed proposal attempt\n"); return(-1); } //Yeah I am running out of error jokes slowly
     /*
         This shit will be needed for myself to not soft-lock myself 
@@ -96,7 +102,10 @@ int main(void)
     
     */
 
-
+    send(clientFD,"Yet were I flame, Still...I'd be lighting your cigs on an abyss",sizeof("Yet were I flame, Still...I'd be lighting your cigs on an abyss"),0); 
+    //That doesn't go to page, neither does appear in console...so...it goes to backrooms...
+    
+    
     //since almost every server runs repeatetly 
     while (1) {
         printf("Working\n");
