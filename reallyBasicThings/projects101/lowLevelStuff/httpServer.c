@@ -1,4 +1,3 @@
-#include <asm-generic/errno.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/socket.h>
