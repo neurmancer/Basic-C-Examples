@@ -23,7 +23,7 @@ int fibonacci(int n) {
         first = second;
         second = sum;
     }
-    return second;
+    return(second);
 }
 
 int fibonacciCursed(int n)          //Seems better right? but fuck no this shit is a CPU fucker for each recursion it calculates old values twice like for f(3) = f(2) + f(1) and f(2) calculates f(1)+f(0) again and again
