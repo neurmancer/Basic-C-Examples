@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/socket.h>
+#include <string.h> //for strcmp
 
 //These ones here because Beej said so (and probably to get getaddrinfo())
 #include <netdb.h> 
@@ -108,6 +109,10 @@ int main(void)
     
     printf("%d\n",recievedBytes); //Recieved 692 bytes on first run lol 
     printf("%.*s",recievedBytes,httpRequest);  //now I wonder if I go further and read exact amount of written data 
+
+    if (!strncmp(httpRequest,"GET",3*sizeof(char))) {
+        printf("IT'S A GET REQUEST\n"); //I fucking doubt that's correct way to check the request but I regret nothing(and yeah this is a postal reference)
+    }
 
     send(clientFD,"Yet were I flame, Still...I'd be lighting your cigs on an abyss",sizeof("Yet were I flame, Still...I'd be lighting your cigs on an abyss"),0); 
     //That doesn't go to page, neither does appear in console...so...it goes to backrooms...or to her...I mean I wish it's going to backrooms or my texting my ex joke won't be a joke anymore
