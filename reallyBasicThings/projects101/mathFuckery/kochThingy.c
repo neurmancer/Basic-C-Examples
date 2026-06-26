@@ -22,7 +22,7 @@ float STEP_SIZE = 22.5f;
                 This is here as a template for now...  
                 For the uninitated (or how tf u spell it) I have file called BitWizardy.c in experimenting subfolder where I tried to visulize Koch's Snowflake with Thue-Morse sequence
                 Except the visulization part since it was my 13th day of programming so here we are finishing the shit that I've started out of passion but problem is...I forgot the instructions
-                and refuse to check again lol...MY BRAIN GONNA GIVE IT BACK TO ME
+                and refuse to check again lol...MY BRAIN GONNA GIVE IT BACK TO ME (yeah I am terry davis'ing my way to knowledge if you can't tell)
 
                 And this file is where we split our ways with Beckett since this file is where Godot arrives...
 

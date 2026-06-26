@@ -93,7 +93,7 @@
 
 - A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)
 
-- Doppler Effect Simulator (using raylib.h so you gotta have it too) 
+- Doppler Effect Simulator (using raylib.h so you gotta have it too) **_More Features in Dev_**
 
 - Screensaver that paints screen from scratch using primes  with raylib 
 
@@ -106,7 +106,7 @@
 > Baby's Kernel Drivers (We'll learn together)
 > 
 > - First failed attempt added(using TLDP's old sources)
-> - New file is sitting empty for tomorrow
+> - New file is sitting empty for future
 >
 >
 > Other low-level stuff

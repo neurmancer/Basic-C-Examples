@@ -10,7 +10,10 @@ static double inline defArccos(double val)
     return(acos(val));
 }
 #define PI defArccos(-1.0) /*Yeah the reason I did this is typing #define acos(-1) would make the program caluclate for
-             PI over and over instead of giving the value on compile time(or first seconds of running lol) if you don't forget -O2*/
+             PI over and over instead of giving the value on compile time(or first seconds of running lol) if you don't forget -O2
+            and yeah my second best idea was simulating UINT_MAX amount of needle drops to get and estimation of 2/PI and divide 2 by it so I can get pi but anyways
+
+             */
 
              /*This is a intro for myself to remember (or learn) some math and get to the point where I can wield FFT efficently for future project ideas
                 'But Neuro it's O(n^2) that's inefficient!'...First stfu you meatloaf I don't even know the Bachmann–Landau (Order) nation yet. Second so what? Can you implement a DFT tho? I think the same 

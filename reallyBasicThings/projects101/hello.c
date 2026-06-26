@@ -4,7 +4,7 @@
 int main(void)
 {
     //A basic format showcase file 
-    /*If an asshole interviewer asks you to loop a word to print something like this as a casual intro question you can do that
+    /*If an interviewer asks you to loop a word to print something like this as a casual intro question you can do that
     Lol...
     */
 

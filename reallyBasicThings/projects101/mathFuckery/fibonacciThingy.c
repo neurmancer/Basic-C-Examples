@@ -1,4 +1,4 @@
-#include <limits.h>     //For INT_MAX because I ain't remembering how much is 2^32-1 or shit
+#include <limits.h>     //For INT_MAX because I ain't remembering how much is 2^31-1 or shit
 
 int fibonacci(int n);           //Fibonacci sequenec calcualtor and yeah I feel more comfortable declaring at the top and giving functioniality (or how tf you spell that) at down
 int fibonacciCursed(int n);      //And fucked up way using 'recursion' 

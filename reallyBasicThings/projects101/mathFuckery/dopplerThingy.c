@@ -22,6 +22,11 @@
 #define COOL_RED CLITERAL(Color){53, 0, 13, 255} //Get it? because it has a essance of blue in it?
 #define DA_BLUE CLITERAL(Color){0, 13, 53, 255}
 
+//Audio defines
+
+#define BUFFER_SIZE 4096    //Audio buffer
+#define SAMPE_RATE 44100    //One of the classical sample rates 
+
 
 /*              Sup? Got bored again and math fuckery wasn't enough...so here we are learning a 'framework' or lib I don't know what to call 
                 but I am using raylib as you can see...
@@ -42,9 +47,13 @@
 
                 6- I am doing this purely with what I remember so it might not be correct. 
                 For instance....waves probably need a vector as the car moves due to Newtonian laws... 
-                or just due to common sense summing  the velocity of car and wave since the emmited wave starts at a speed relative to a stationary observer..or does it? I mean if you move in a train you'd move at speed of you+train do sounds do the same? waves? but they're physical too if not why the fuck even doppler occurs? it should be dependent on the medium (if that's the right term) right otherwise how raptors would go super...I mean if the vectors would summed sound would always act stationary relative to the source right? but shit goes mach1+ so IDK MAN IDK...
+                or just due to common sense summing  the velocity of car and wave since the emmited wave starts at a speed relative to a stationary observer..or does it? 
+                I mean if you move in a train you'd move at speed of you+train do sounds do the same? waves? but they're physical too if not why the fuck even doppler occurs?
+                it should be dependent on the medium (if that's the right term) right otherwise how raptor jets would go supersonic...
+                I mean if the vectors would summed sound would always act stationary relative to the source right? but shit goes mach1+ so IDK MAN IDK...
+                
                 but I gotta check that to implement...
-                i think Newtonian motion is fine since we're working on soundwaves so no Lorenz factor or relative velocity fuckery yet..
+                i think Newtonian motion is fine since we're working on soundwaves so no Lorentz factor or relative velocity fuckery yet..
                 but really tho I am not a physicist so this might be way off...
                 as I said this file is from memory of mine not based on wikipedia so don't expect me to show you lambda = vel / freq at least for now  
 
@@ -62,14 +71,17 @@
                 I may add 
                     1- A rectangle representing an observer on a random point *Added*
                     2- An acceleration element to the car *Added* 
-                    3- Adding sounds to demonstrate pitch shift (Probably gonna be a ear-fucker)
-                    4-or if I can figure out how to partially color a circle I may add 'blue-shift' 
-                    for the positive vector and 'red-shift' for the negative as the vehicle goes visually ofc (maybe a little math for the fun too)   
-                
+                    3- Adding sounds to demonstrate pitch shift (Probably gonna be a ear-fucker) *In Dev*
+                    4-or if I can figure out how to partially color a circle I may add 'blue-shift'  *Discarded into a celestial doppler simulator in the future*
+
+
                 Known bugs: 
-                    -Frequency is twice for some FUCKING reason it emits waves twice as much in a given time...tried to use time(NULL), clock(),
-                    and I wanna get an accurate shit hence I don't just tune it to twice as much or /2 the result but now you can see the period in terminal as a counter 
-                    (if you don't now what is a period it is basically (freq)^-1 or wave count per unit of time (second)) 
+                    -Nothing for now wave propagation problem has been solved    
+
+                In Dev Features: 
+                    1- *Audio stream and audible pitch shift as the vehicle moves*
+                    2- Correct wave propagation (this appears to be solved)
+
 
 
                     and before I dip (since it's fucking 2.30AM) doppler effect isn't a thing only applied to sound waves it applies to all waves...
@@ -89,7 +101,16 @@
                 and if you don't know how the spectrum goes it goes like infrared(invisible to human eye)-Red, Orange,Yellow, Green, Blue, Indigo, Violet - Ultraviolet(invisible to human eye) simply ROYGBIV
   
                 And when I say 'No green stars' it's based on human perception... ironic enough... the Sun's peak falls on green on the spectrum and we see it white (well...more yellow'ish due to atmosphere but you got the thing bruh)
-*/
+
+
+                Current version : 1.02B
+                Last stable version : 1.0
+
+
+
+
+
+                */
 
 
 /*      Objects(or Structs)     */
@@ -163,6 +184,24 @@ int main(void)
     InitWindow(WIDTH, HEIGHT ,"Doppler Thingy");
     SetTargetFPS(FPS);
 
+    InitAudioDevice();
+    if (!IsAudioDeviceReady()) { perror("Audio is not available\n"); CloseAudioDevice(); }
+    
+    // Set the number of samples the stream will keep in memory at a time to BUFFER_SIZE (comment stolen from raylib srcs)
+    SetAudioStreamBufferSizeDefault(BUFFER_SIZE);
+    float buffer[BUFFER_SIZE] = { 0 };
+    AudioStream relativeSound = LoadAudioStream(SAMPE_RATE, 32,1); //Mono...I mean should I make it stero to make the car go weeeeeee
+    
+    float pan = 0.0f;
+    SetAudioStreamPan(relativeSound,pan);
+
+    PlayAudioStream(relativeSound);
+
+    int soundFrequency = 440; //A (or La for music nerds...most common tuning base note)
+    int newFrequency = soundFrequency;
+
+
+
     if (!IsWindowReady()) { perror("Window got fucked up\n"); return(-1) ;}
 
     //Car props
@@ -195,6 +234,7 @@ int main(void)
             
             while(currentTime - lastEmitTime >= 0.50f) {
                 emmitWave();
+                printf("Emitted\n");
                 lastEmitTime = GetTime();  // veya += 0.20 (catch-up için) lol I switched back to my native mid-coding and didn't even realize 
             }
 
@@ -224,6 +264,7 @@ int main(void)
         car.speed = sqrt((car.vX*car.vX)+(car.vY*car.vY));
         expandWaves(dt);
         waveCollisions += checkObserverCollisions();
+        printf("Wave collisions %d\n",waveCollisions);
 
 
         BeginDrawing();
@@ -242,7 +283,6 @@ int main(void)
 
 
     CloseWindow();
-
     return(0);
 }
 
