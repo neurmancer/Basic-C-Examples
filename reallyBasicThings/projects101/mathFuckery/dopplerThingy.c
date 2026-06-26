@@ -65,23 +65,7 @@
                 It is the  change in the frequency or pitch of a wave in relation to an observer who is moving relative to the wave's source 
                 so if an ambulance is coming towards you you'll hear a higher pitch and if it's going further away the pitch will lower 
                 did I simulate it?
-                    -Kinda visually but nah there is no frequency or wavelength detection in this program is there a math involved? Fuck yeah!
-                
-                    I basically made a ball that you can move with WASD and it creates rings around itself...
-                
-                I may add 
-                    1- A rectangle representing an observer on a random point *Added*
-                    2- An acceleration element to the car *Added* 
-                    3- Adding sounds to demonstrate pitch shift (Probably gonna be a ear-fucker) *In Dev*
-                    4-or if I can figure out how to partially color a circle I may add 'blue-shift'  *Discarded into a celestial doppler simulator in the future*
-
-
-                Known bugs: 
-                    -Nothing for now wave propagation problem has been solved    
-
-                In Dev Features: 
-                    1- *Audio stream and audible pitch shift as the vehicle moves*
-                    2- Correct wave propagation (this appears to be solved)
+                            Fuck yeah!                
 
 
 
@@ -104,8 +88,8 @@
                 And when I say 'No green stars' it's based on human perception... ironic enough... the Sun's peak falls on green on the spectrum and we see it white (well...more yellow'ish due to atmosphere but you got the thing bruh)
 
 
-                Current version : 1.03B
-                Last stable version : 1.0
+                Current version : 2.0
+                Last stable version : 2.0V (Finalized)
 
                 */
 
