@@ -31,10 +31,16 @@ int main(void)
         
     */
     int fd = socket(AF_INET,SOCK_STREAM,0 ); //fd's short for file descriptor 
-
+    if(fd == -1) {perror("Socket, sucked it"); return(-1); }
+    
+    struct sockaddr serverAdd = { 0 };
+    
+    serverAdd.sa_family = AF_INET;
+    
     // bind(fd, const struct sockaddr *addr, socklen_t len) no clue what it does for now lol... 
     
-    if(fd == -1) {perror("Socket, sucked it"); return(-1); }
+    int bindStatus = bind(fd,(struct sockaddr *)&serverAdd,sizeof(serverAdd)); //   Upon successful completion, bind() shall return 0; otherwise, -1 shall be returned and errno set to indicate the error. (man bind page)
+    if (bindStatus == -1) {perror("Binding to the socket has failed\n"); return(-1); }
 
     //since almost every server runs repeatetly 
     while (1) {
@@ -48,3 +54,62 @@ int main(void)
 
     return(0);
 }
+
+
+/*
+
+    Stole this from man 2 bind to learn how to fucking bind it's been fucking 20 minutes and I can't figure it out how to bind shit yet.
+
+
+     #include <err.h>  unnecessary in my case for now
+     #include <stdlib.h> 
+     #include <string.h>
+     #include <sys/socket.h>
+     #include <sys/un.h>
+     #include <unistd.h>
+
+     #define MY_SOCK_PATH "/somepath"
+     #define LISTEN_BACKLOG 50
+
+     int
+     main(void)
+     {
+         int                 sfd, cfd;
+         socklen_t           peer_addr_size;
+         struct sockaddr_un  my_addr, peer_addr;
+
+         sfd = socket(AF_UNIX, SOCK_STREAM, 0);
+         if (sfd == -1)
+             err(EXIT_FAILURE, "socket");
+
+         memset(&my_addr, 0, sizeof(my_addr));      I guess this is the 0 init 
+         my_addr.sun_family = AF_UNIX;              I'll probably need to use AF_INET instead in my case
+         strncpy(my_addr.sun_path, MY_SOCK_PATH,        Why do I need a path for my scocket ?
+                 sizeof(my_addr.sun_path) - 1);         That's the data part ig
+
+         if (bind(sfd, (struct sockaddr *) &my_addr,
+                  sizeof(my_addr)) == -1)
+             err(EXIT_FAILURE, "bind");
+
+            ==== UNRELATED FOR NOW ======
+
+         if (listen(sfd, LISTEN_BACKLOG) == -1)
+             err(EXIT_FAILURE, "listen");
+
+          Now we can accept incoming connections one
+            at a time using accept(2).  
+
+         peer_addr_size = sizeof(peer_addr);
+         cfd = accept(sfd, (struct sockaddr *) &peer_addr,
+                      &peer_addr_size);
+         if (cfd == -1)
+             err(EXIT_FAILURE, "accept");
+
+         if (close(sfd) == -1)
+             err(EXIT_FAILURE, "close");
+
+         if (unlink(MY_SOCK_PATH) == -1)
+             err(EXIT_FAILURE, "unlink");
+     }
+
+*/
