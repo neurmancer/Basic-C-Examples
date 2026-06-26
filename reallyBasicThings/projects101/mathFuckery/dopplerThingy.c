@@ -5,6 +5,7 @@
 #include <raylib.h> //Yeah now I am a pathetic lib dependent guy...
 #include <time.h>
 
+
 /*      Defines     */
 #define WIDTH 1280.0 //Since I am using floats everywhere for position .0 (or explicit casting is a better way to shut cc warnings)
 #define HEIGHT 960.0
@@ -188,11 +189,13 @@ int main(void)
 
     InitAudioDevice();
     if (!IsAudioDeviceReady()) { perror("Audio is not available\n"); CloseAudioDevice(); }
-    
+        
     // Set the number of samples the stream will keep in memory at a time to BUFFER_SIZE (comment stolen from raylib srcs)
     SetAudioStreamBufferSizeDefault(BUFFER_SIZE);
     
     AudioStream stream = LoadAudioStream(SAMPLE_RATE, 32, 1);
+    SetAudioStreamVolume(stream, 0.4f);   
+
     float pan = 0.0f;
     SetAudioStreamPan(stream, pan);
     PlayAudioStream(stream);
@@ -252,6 +255,11 @@ int main(void)
         if (IsKeyDown(KEY_A)) {car.aX -= ACCELERATION; }
         if (IsKeyPressed(KEY_SPACE)) {car.vX = 0; car.vY = 0;} //Yeah a fucking absolute hand-break
         if (IsKeyPressed(KEY_ESCAPE)) {CloseWindow();} //And a yk...close the win button lol I use dwm and I was using Ctrl+C up until this point to terminate the program
+        if (IsKeyPressed(KEY_M)) {
+            if (IsAudioStreamPlaying(stream)) { PauseAudioStream(stream); } //You'll thank me after 10 seconds trust me lmfao
+            else { ResumeAudioStream(stream); }
+        }
+
 
         //Velocity updates
         car.vX += car.aX * dt; 
@@ -268,7 +276,6 @@ int main(void)
         car.speed = sqrt((car.vX*car.vX)+(car.vY*car.vY));
         expandWaves(dt);
         waveCollisions += checkObserverCollisions();
-        printf("Wave collisions %d\n",waveCollisions);
 
         float calculatedFreq = updateDopplerFrequency(&car, &observer);
         newSineFrequency = (int)calculatedFreq;   // boom, now your audio uses it
