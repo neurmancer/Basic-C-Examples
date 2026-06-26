@@ -78,26 +78,11 @@ int main(void)
 
     int bindStatus = bind(fd, result->ai_addr,result->ai_addrlen); //   Upon successful completion, bind() shall return 0; otherwise, -1 shall be returned and errno set to indicate the error. (man bind page)
     if (bindStatus == -1) {perror("Avoidant attachment issue, see a therapist ASAP\n"); return(-1); }
-
+    int clientFD = 0;
     //Now since I've arrived to...yk acutal networking part I gotta listen() and accept() right...do I need fork()s? or is listen() a non-blocking function 
 
     //Listening test 
-    int listenStatus = listen(fd,BACKLOG); 
-    /*
-        The  accept() system call is used with connection-based socket types (SOCK_STREAM, SOCK_SEQPACKET).  It extracts the first connection request on the queue of pending connections for the
-        listening socket, sockfd, creates a new connected socket, and returns a new file descriptor referring to that socket.  The newly created socket is not in the listening state.  
-        The original socket sockfd is unaffected by this call... so this explanation says me that I'll get a seperate fd (which is listeningStatus ig) after having a file waiting approvel from accept()
-        Does it fork the process or memcpy the old data? IDK...and I guess that's point of using a fucking API
-
-
-    */
-    if (listenStatus == -1) {perror("Port is like Beethoven after 1817 you know what I am saying?\n"); return(-1);}
-
-    struct sockaddr_storage clientAddr = { 0 };
-    socklen_t clientAddrSize = sizeof(clientAddr);
-
-    int clientFD = accept(fd, (struct sockaddr *)&clientAddr,&clientAddrSize); //As I thought blocks the shit...Lol purists say 'Casting is BAD! UnU' untill it isn't and man pages say to do so lol
-    if (clientFD == -1) { perror("Failed proposal attempt\n"); return(-1); } //Yeah I am running out of error jokes slowly
+    
     /*
         This shit will be needed for myself to not soft-lock myself 
 
@@ -116,48 +101,62 @@ int main(void)
     
     
     */
-    char httpRequest[RECV_BUFFER] = { 0 };
-    int recievedBytes = recv(clientFD,httpRequest,sizeof(httpRequest),0); //These calls return the number of bytes received, or -1 if an error occurred.  In the event of an error, errno is set to indicate the error.
-    if (recievedBytes == -1) { perror("I couldn't find a joke to suit recv lol\n"); return(-1); }
+       
     
-    printf("%d\n",recievedBytes); //Recieved 692 bytes on first run lol 
-    printf("%.*s",recievedBytes,httpRequest);  //now I wonder if I go further and read exact amount of written data 
-
-    if (!strncmp(httpRequest,"GET",3*sizeof(char))) {
-        printf("IT'S A GET REQUEST\n"); //I fucking doubt that's correct way to check the request but I regret nothing(and yeah this is a postal reference)
-        
-        //Now I gotta give the index.html to page somehow...
-        const char http_response[]  = "HTTP/1.1 200 OK\r\n"
-                                    "Content-Type: text/html; charset=utf-8\r\n"
-                                    "Content-Length: 3020\r\n"
-                                    "Connection: close\r\n"
-                                    "Server: Cyberspace\r\n"
-                                    "\r\n";
-        send(clientFD,http_response,strlen(http_response),0);
-        printf("Works till here\n");
-        FILE *indexFD = fopen("frontEnd/index.html","r");
-        char c = 0;
-        while ((c = getc(indexFD)) != EOF) {
-            int sentData = send(clientFD,&c,sizeof(c), 0);
-     
-        }
-
-                                       
-    }
-
-    else {
-        printf("Bruh...I don't even know how I got GET request what can I do with a non-GET request\n");
-    }
+    
 
     //That doesn't go to page, neither does appear in console...so...it goes to backrooms...or to her...I mean I wish it's going to backrooms or my texting my ex joke won't be a joke anymore
     
     
     //since almost every server runs repeatetly 
     while (1) {
+
+        int listenStatus = listen(fd,BACKLOG); 
+
+        if (listenStatus == -1) {perror("Port is like Beethoven after 1817 you know what I am saying?\n"); return(-1);}
+
+        struct sockaddr_storage clientAddr = { 0 };
+        socklen_t clientAddrSize = sizeof(clientAddr);
+
+        clientFD = accept(fd, (struct sockaddr *)&clientAddr,&clientAddrSize); //As I thought blocks the shit...Lol purists say 'Casting is BAD! UnU' untill it isn't and man pages say to do so lol
+        if (clientFD == -1) { perror("Failed proposal attempt\n"); return(-1); } //Yeah I am running out of error jokes slowly
+
+
+        char httpRequest[RECV_BUFFER] = { 0 };
+        int recievedBytes = recv(clientFD,httpRequest,sizeof(httpRequest),0); //These calls return the number of bytes received, or -1 if an error occurred.  In the event of an error, errno is set to indicate the error.
+        if (recievedBytes == -1) { perror("I couldn't find a joke to suit recv lol\n"); return(-1); }
+    
         printf("Working\n");
         sleep(1);
         //Do shit as recieved 
 
+
+
+        if (!strncmp(httpRequest,"GET",3*sizeof(char))) {
+            printf("IT'S A GET REQUEST\n"); //I fucking doubt that's correct way to check the request but I regret nothing(and yeah this is a postal reference)
+            
+            //Now I gotta give the index.html to page somehow...
+            const char http_response[]  = "HTTP/1.1 200 OK\r\n"
+                                        "Content-Type: text/html; charset=utf-8\r\n"
+                                        "Content-Length: 3020\r\n"
+                                        "Connection: close\r\n"
+                                        "Server: Cyberspace\r\n"
+                                        "\r\n";
+            send(clientFD,http_response,strlen(http_response),0);
+            printf("Works till here\n");
+            FILE *indexFD = fopen("frontEnd/index.html","r");
+            char c = 0;
+            while ((c = getc(indexFD)) != EOF) {
+                int sentData = send(clientFD,&c,sizeof(c), 0);
+        
+            }                                          
+        }
+
+        else {
+                printf("Bruh...I don't even know how I got GET request what can I do with a non-GET request\n");
+        }
+
+        
     }
 
     close(fd);

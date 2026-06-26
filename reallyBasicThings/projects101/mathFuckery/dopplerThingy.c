@@ -103,12 +103,8 @@
                 And when I say 'No green stars' it's based on human perception... ironic enough... the Sun's peak falls on green on the spectrum and we see it white (well...more yellow'ish due to atmosphere but you got the thing bruh)
 
 
-                Current version : 1.02B
+                Current version : 1.03B
                 Last stable version : 1.0
-
-
-
-
 
                 */
 
@@ -160,6 +156,7 @@ void expandWaves(float dT);
 
 unsigned int checkObserverCollisions(void);
 
+float calculateDistance(Vector2 firstPOS,Vector2 secondPOS);
 /* Global Vars  (I dunno how many I'll have but here it is)... */
 
 Vehicle car = { 0 };
@@ -200,7 +197,7 @@ int main(void)
     int soundFrequency = 440; //A (or La for music nerds...most common tuning base note)
     int newFrequency = soundFrequency;
 
-
+    float waveLength = (float) WAVE_SPEED / soundFrequency;
 
     if (!IsWindowReady()) { perror("Window got fucked up\n"); return(-1) ;}
 
@@ -367,3 +364,10 @@ unsigned int checkObserverCollisions(void)
     }
     return(collisionCount);
 }
+
+float calculateDistance(Vector2 firstPOS,Vector2 secondPOS){
+    float result = 0.0f;
+
+
+    return(result);
+}//As a template and to shut my beloved cc 
