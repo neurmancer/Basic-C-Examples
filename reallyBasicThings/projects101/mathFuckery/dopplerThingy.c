@@ -25,7 +25,7 @@
 //Audio defines
 
 #define BUFFER_SIZE 4096    //Audio buffer
-#define SAMPE_RATE 44100    //One of the classical sample rates 
+#define SAMPLE_RATE 44100    //One of the classical sample rates 
 
 
 /*              Sup? Got bored again and math fuckery wasn't enough...so here we are learning a 'framework' or lib I don't know what to call 
@@ -156,11 +156,14 @@ void expandWaves(float dT);
 
 unsigned int checkObserverCollisions(void);
 
+float updateDopplerFrequency(const Vehicle* car, const Rectangle* observer);
 float calculateDistance(Vector2 firstPOS,Vector2 secondPOS);
 /* Global Vars  (I dunno how many I'll have but here it is)... */
 
 Vehicle car = { 0 };
 Rectangle observer = { 0 };
+
+
 /*This is not the best practice but I ended up having only 3 globabls and adding parameteres for only 3 globals seemed too much work tbh so deal with it pls*/
 
 unsigned int waveCount = 0; 
@@ -171,7 +174,9 @@ int main(void)
 
     SetRandomSeed(time(NULL)); //I really dunno why I used this from raylib instead of rand() but I did...I NEED CHANGE TOO forgive me RNGsus for what I've sinned
     
-
+    SetAudioStreamBufferSizeDefault(BUFFER_SIZE);
+    float buffer[BUFFER_SIZE] = { 0 };
+    
     observer.x = GetRandomValue((WIDTH/10),WIDTH-50);
     observer.y = GetRandomValue((HEIGHT/10),HEIGHT-50);
     observer.width = 30.0f; 
@@ -186,18 +191,16 @@ int main(void)
     
     // Set the number of samples the stream will keep in memory at a time to BUFFER_SIZE (comment stolen from raylib srcs)
     SetAudioStreamBufferSizeDefault(BUFFER_SIZE);
-    float buffer[BUFFER_SIZE] = { 0 };
-    AudioStream relativeSound = LoadAudioStream(SAMPE_RATE, 32,1); //Mono...I mean should I make it stero to make the car go weeeeeee
     
+    AudioStream stream = LoadAudioStream(SAMPLE_RATE, 32, 1);
     float pan = 0.0f;
-    SetAudioStreamPan(relativeSound,pan);
+    SetAudioStreamPan(stream, pan);
+    PlayAudioStream(stream);
 
-    PlayAudioStream(relativeSound);
-
-    int soundFrequency = 440; //A (or La for music nerds...most common tuning base note)
-    int newFrequency = soundFrequency;
-
-    float waveLength = (float) WAVE_SPEED / soundFrequency;
+    int sineFrequency = 440;
+    int newSineFrequency = 440;
+    int sineIndex = 0;
+    double sineStartTime = 0.0;
 
     if (!IsWindowReady()) { perror("Window got fucked up\n"); return(-1) ;}
 
@@ -219,6 +222,10 @@ int main(void)
     unsigned int waveCollisions = 0;
     
     double lastEmitTime = 0.0f;
+
+    Vector2 observerPos = { observer.x + observer.width/2, observer.y + observer.height/2 };
+    Vector2 carPos = { car.x, car.y };
+
 
     //Game loop or logic loop (I AM USING GRAPHS FOR THE FIRST TIME IDK WHAT TO CALL THIS)
     while (!WindowShouldClose()) {
@@ -262,6 +269,31 @@ int main(void)
         expandWaves(dt);
         waveCollisions += checkObserverCollisions();
         printf("Wave collisions %d\n",waveCollisions);
+
+        float calculatedFreq = updateDopplerFrequency(&car, &observer);
+        newSineFrequency = (int)calculatedFreq;   // boom, now your audio uses it
+
+
+        if (IsAudioStreamProcessed(stream))
+        {
+            for (int i = 0; i < BUFFER_SIZE; i++)
+            {
+                int wavelength = SAMPLE_RATE/sineFrequency;
+                buffer[i] = sin(2*PI*sineIndex/wavelength);
+                sineIndex++;
+
+                if (sineIndex >= wavelength)
+                {
+                    sineFrequency = newSineFrequency;
+                    sineIndex = 0;
+                    sineStartTime = GetTime();
+                }
+            }
+
+            UpdateAudioStream(stream, buffer, BUFFER_SIZE);
+        }
+        
+
 
 
         BeginDrawing();
@@ -365,9 +397,51 @@ unsigned int checkObserverCollisions(void)
     return(collisionCount);
 }
 
-float calculateDistance(Vector2 firstPOS,Vector2 secondPOS){
-    float result = 0.0f;
+float updateDopplerFrequency(const Vehicle* car, const Rectangle* observer) //This math fucking broke me...
+{
+    if (car == NULL || observer == NULL) {
+        return(440.0f);
+    }
 
+    Vector2 carPos = { car->x, car->y };
+    Vector2 obsPos = { 
+        observer->x + observer->width / 2.0f, 
+        observer->y + observer->height / 2.0f 
+    };
+    
+    Vector2 toObs = { obsPos.x - carPos.x, obsPos.y - carPos.y };
+    float dist = sqrtf(toObs.x * toObs.x + toObs.y * toObs.y); 
+    
+    if (dist < 2.0f) {
+        return(440.0f);
+    }
 
-    return(result);
-}//As a template and to shut my beloved cc 
+    toObs.x /= dist;
+    toObs.y /= dist;
+    
+    float radialVel = car->vX * toObs.x + car->vY * toObs.y;  // positive = towards observer
+    
+    float vs = WAVE_SPEED; //Velocity 
+    float f = 440.0f; //Freq
+    
+    float observed; 
+
+    if (radialVel >= vs - 0.1f) {  
+        // SUPERSONIC TOWARDS OBSERVER = SONIC BOOM MODE
+        observed = 60.0f;           // low pitch + shock
+    }
+    else if (radialVel <= -vs + 0.1f) {
+        // Moving away faster than sound almost no sound reaches right?
+        observed = 10.0f;
+    }
+    else {
+        // Normal Doppler
+        observed = f * (vs / (vs - radialVel));
+    }
+    
+    // Hard clamps
+    if (observed < 40.0f) observed = 40.0f;
+    if (observed > 1200.0f) observed = 1200.0f;
+    
+    return(observed);
+}
