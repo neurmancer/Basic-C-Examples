@@ -20,7 +20,7 @@
 
 /*
 
-                                **This project is finished**
+                                **This project is finished** (nah it's still broken I'll change the internal structure of flagging shit tomorrow (it's 1.37AM))
 
 
     This is gonna be as same as primeScreensaverThingy but for low-level gremlins (like me OwO)(and I use emoticons so much so what?Don't act like you didn't use mySpace)
@@ -127,14 +127,16 @@ int main(void)
     printf("Press Ctrl+C to exit\nHave FUN!\n");
     usleep(SECOND*1.3f);
 
-    int posX = 0,posY = 0; //Yup assigning together for fun
+    int posX = 0;
+    int posY = 0;
 
     printf(WIPE_SCREEN);
     for(int j = 0;j < targetCount;j++) {
 
         posX = posGen(xValues,width,&usedXs);
         posY = posGen(yValues,height,&usedYs);
-        if (posX == -1 && posY == -1) { printf(WIPE_SCREEN "You are done"); return(0);}
+       
+       
         int rValue = ((primes[j]*13) % 256); 
         int gValue = ((primes[j]*53) % 256);
         int bValue = ((primes[j]*689) % 256);
@@ -204,7 +206,7 @@ int posGen(flaggedNum *arr,int size,int *usedOnes)
     }while (arr[x-1].isUsed);
     
     arr[x-1].isUsed = 1;
-    *usedOnes++;
+    (*usedOnes)++; //postfix ++ has higher precedence than * AND I FORGOT THAT FUCKKKK
 
     return(x);
 }
