@@ -228,7 +228,7 @@ Vector2 *instructor(Vector2 *arr, int *arrSize, int maxSteps)
 Vector2 *reallocator(Vector2 *arr,int *currentSize)
 {
     if (arr == NULL) {
-        arr = malloc(BUFSIZ*sizeof(Vector2));
+        arr = malloc(256*sizeof(Vector2));
         if (arr == NULL) {perror("Allocation error\n"); return(NULL); }    
         return(arr);
     }
