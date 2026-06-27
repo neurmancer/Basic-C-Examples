@@ -57,9 +57,10 @@
 
 * [Preprocessors](#_ifnwin32-yippie-part)
 
-* [UNCLASSIFED](#unclassified-math-fuckery)
+* [UNCLASSIFED MATH FUCKERY](#unclassified-math-fuckery)
 
 * [Low-Level Stuff](#low-level-stuff)
+
 
 ### Intro Lectures
 
@@ -121,11 +122,16 @@
 > - Structs with dynamic allocation intro 
 
 
+
+
 ### _IFNWIN32 "Yippie" Part
 
 > - First lecture using define and macros
 >
 > - Second lecture Conditional blocks (IFDEF,IFNDEF,ELIF)
+>
+>
+
 
 
 
@@ -166,15 +172,19 @@
 > - Non-failed second modern-attempt (_working_) with no tutorial (I'll add shit in the future let me learn first TnT) 
 >
 >
-> **Networking Projects**
->  _**Networking**_ Files has their own readme in the networking subfolder for lecture descritions this part will only be used to display my cursed projects 
+            **Networking Projects**
 >
-> A basic HTTP TCP server using sockets (pure C...no external libs) **Will be Developed Further**
+- > _**Networking**_ Files has their own readme in the networking subfolder for lecture descritions this part will only be used to display my cursed projects 
 >
-> Other Low-Level Stuff
+- > A basic HTTP TCP server using sockets (pure C...no external libs) **Will be Developed Further**
 >
-> - A mainless C file that you can run (for no apperant reason)
-> - Buffer oveflow for lulz. 
+- > Other Low-Level Stuff
+>
+- > - A mainless C file that you can run (for no apperant reason)
+>
+- > - Buffer oveflow for lulz. 
+
+
 
 
 
@@ -187,6 +197,9 @@
 - Added a walking segfault PTSD on purpose 
 
 
+
+
+
 ## ASM DISASSEMBLIES OF FILES FOR THOSE LOW-LEVEL GREMLINS LIKE ME LOVES SPICY C NUDES
 
 - Basically Every script I'll put in the repo will get it's assembly file with the same name 
@@ -195,6 +208,8 @@
 - __*Been gone to get some cigs*__ New updated will be here once when I remember how to use the Makefile again
 
 
+
+    
 
 ## Compile and Run
 ```bash
@@ -209,6 +224,8 @@ cc filename.c -o output #To compile
 #To run (but since all the files written for 
 #Linux and don't have Windows ports I presume you already know to do this because windows sux)
 ```
+
+
 
 
 ## Future Adds 
