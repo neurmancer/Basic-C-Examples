@@ -215,7 +215,7 @@ int main(void)
             printablePrimes++;
             dLastPrint -= 0.1f;
 
-            DrawPixelV(*pixelIter,(Color){(primes[printablePrimes]*13) % 255, (primes[printablePrimes]*53) % 255,(primes[printablePrimes]*13) % 255,255});        
+            DrawPixelV(*pixelIter,(Color){(primes[printablePrimes]*13) % 255, (primes[printablePrimes]*53) % 255,(primes[printablePrimes]*689) % 255,255}); //Prime based determinism (the best kind in universe)        
             pixelIter++;
         }
 

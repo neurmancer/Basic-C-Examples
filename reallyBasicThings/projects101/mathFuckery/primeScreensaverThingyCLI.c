@@ -96,15 +96,15 @@ int main(void)
 
     int primeCount = 0;
     int targetCount = width*height;
-    unsigned int *primes = (unsigned int *) calloc(targetCount+1,sizeof(unsigned int));
+    primes = (unsigned int *) calloc(targetCount+1,sizeof(unsigned int));
     if (primes == NULL) { return(-1) ; }
 
     unsigned int *iter = primes; //To not to loose the root again...
 
-    flaggedNum *xValues = (flaggedNum *) calloc(width,sizeof(flaggedNum));
+    xValues = (flaggedNum *) calloc(width,sizeof(flaggedNum));
     if (xValues == NULL) { return(-1); }
 
-    flaggedNum *yValues = (flaggedNum *)calloc(height,sizeof(flaggedNum));
+    yValues = (flaggedNum *)calloc(height,sizeof(flaggedNum));
     if(yValues == NULL) { return(-1); }
 
     int usedXs = 0;
@@ -124,23 +124,23 @@ int main(void)
         }
     }
 
-    arePrimesDone = 1;
-
     printf("Press Ctrl+C to exit\nHave FUN!\n");
     usleep(SECOND*1.3f);
+
+    int posX = 0,posY = 0; //Yup assigning together for fun
 
     printf(WIPE_SCREEN);
     for(int j = 0;j < targetCount;j++) {
 
-        int posX = posGen(xValues,width,&usedXs);
-        int posY = posGen(yValues,height,&usedYs);
+        posX = posGen(xValues,width,&usedXs);
+        posY = posGen(yValues,height,&usedYs);
+        if (posX == -1 && posY == -1) { printf(WIPE_SCREEN "You are done"); return(0);}
         int rValue = ((primes[j]*13) % 256); 
         int gValue = ((primes[j]*53) % 256);
         int bValue = ((primes[j]*689) % 256);
         printf(MOVE_CURSOR,posY,posX);
         printf(PAINT,rValue,gValue,bValue,WALL_STRING);
-        usedXs++;
-        usedYs++;
+
         usleep(SECOND*0.25);
     }
 
@@ -201,9 +201,10 @@ int posGen(flaggedNum *arr,int size,int *usedOnes)
     int x = 0;
     do {
         x = (rand() % size)+1; //Never trust a computer to compute use bracelets  -Sun Tzu (or Linus Torvalds IDK)    
-    }while (arr[x].isUsed);
+    }while (arr[x-1].isUsed);
     
     arr[x-1].isUsed = 1;
+    *usedOnes++;
 
     return(x);
 }
@@ -215,6 +216,7 @@ void cleanUp(void) {
     free(yValues);
     primes = NULL;
     xValues = yValues = NULL; //Trying new things lol
+    printf(WIPE_SCREEN RESET_COLOR RETURN_CURSOR);
 }
 
 
