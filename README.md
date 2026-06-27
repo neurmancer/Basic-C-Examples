@@ -198,13 +198,20 @@ cc filename.c -o output #To compile
 
 ## Future Adds 
 - **More** Janky physics simulators and _Math Fuckery_ such as :
+>
 > - Doppler effect simulator for celestial bodies (redshifting/blueshifting)
 > - A basic pendulum 
 > - Maybe a function visualizer 
 > - Tupper's self-referntial graph (possible but no promises)
 > - Sierpinski's triangle (if I can reverse engineer the math lol)
 > -  Sierpinski's tetrahedron (if I learn cameras & movements on raylib)
-
+> 
+> I may add basic games either into this repo or I might create another repo for games here are the ones I'd love to build
+>
+> - **Galaga** Clone
+> - **Pong** ofc (maybe multiplier with my own server for flex)
+> - **Breakout**
+(yeah I am a retro guy...and those serves to the purpose of this repo...beginner friendly...no DS emulation yet)
 
 
 ## Nerdy Part

@@ -1,3 +1,10 @@
+                    /* 
+                                Roses are red, roses are blue
+                                Depending on the velocity relative to you
+                    */
+
+
+
 /*    Includes    */
 
 #include <math.h>
