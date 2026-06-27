@@ -225,10 +225,10 @@ Vector2 *instructor(Vector2 *arr, int *arrSize, int maxSteps)
 }
 
 
-Vector2 *reallocator(Vector2 *arr,int *currentSize)
+Vector2 *reallocator(Vector2 *arr,int *currentSize) //I am fighting with myself rn for not naming this 'realligator'
 {
     if (arr == NULL) {
-        arr = malloc(256*sizeof(Vector2));
+        arr = malloc(256*sizeof(Vector2));  
         if (arr == NULL) {perror("Allocation error\n"); return(NULL); }    
         return(arr);
     }
