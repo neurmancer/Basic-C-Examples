@@ -31,7 +31,7 @@ static int __init rizz(void)
 {
     pr_info("Sup? Ring 0?(Still single?)"); //Yeah still making fun of lack of engagement ring...in the kernel...and I trust myself with god privs on a rig...I got balls...or great ignorance lmfao
     pr_info("Locked&Loaded!\n");
-    return 0;  // 0 = success, nonzero = shit went sideways
+    return (0);  // 0 = success, nonzero = shit went sideways
 }
 
 // Modern cleanup function
