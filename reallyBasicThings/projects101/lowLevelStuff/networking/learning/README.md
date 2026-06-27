@@ -2,7 +2,7 @@
 
 This readme exists for classification sake or I'll loose my mind dwelling into fucking folders
 
-# Table Of Content
+# Table Of Contents
 
 * [ToC](#table-of-content)
 
@@ -35,7 +35,7 @@ This readme exists for classification sake or I'll loose my mind dwelling into f
 ### Making Shit Up
 > You may find the files listed down here in the subfolder 'projects' (unless I rename it then you gotta look for the new version...) 
 >
-> A HTTP Server in Raw C with sockets (**Will be developed further when I learn more shit**) and an index.html for testing (my max capability is that in front-end don't judge...or do IDC)
+> A HTTP TCP Server in Raw C with sockets (**Will be developed further when I learn more shit**) and an index.html for testing (my max capability is that in front-end don't judge...or do IDC)
 >
 >
 >

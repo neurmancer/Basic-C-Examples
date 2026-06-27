@@ -2,15 +2,22 @@
 
 
 ## Table of Contents
+
 * [Basic Projects and Lectures](#basic-projects-and-lectures)
+
 * [Funny Things](#funny-things)
+
 * [Spicy C Nudes](#asm-disassemblies-of-files-for-those-low-level-gremlins-like-me-loves-spicy-c-nudes)
+
 * [Compiling & Running](#compile-and-run)
+
+* [Future Project Ideas](#future-adds)
+
 * [Books & Learning Sources](#nerdy-part)
 
-# Basic Projects and Lectures
 
-* [Projects 101](#projects-101)
+
+# Basic Projects and Lectures
 
 * [May RNGSUS Bless Us With sran()](#prngforbeginners)
 
@@ -26,30 +33,7 @@
 > - Handle subfoldering better shit is growing so fast...
 > - Maybe...just maybe *slow down turbo*  **NAH** go for it
 
-## Projects 101
 
-- **Now projects101 got a renewed folder tree for math fuckery and low-level stuff**
-
-- Hello, world script
-
-- %.*s format for printf 
-
-- Basic FizzBuzz script 
-
-- Conditionals intro
-
-- Basic enum101 lectureishy (yeah I started to make words up)
-
-- Struct intro 
-
-- Unions intro
-
-- A basic inverted array walk via pointers (with memory address laid out)
-
-- Subfoldef for bitwise sorcery 
-
-> - A bitwise operations chart 
-> - and a cmpbits program
 
 ### PRNGForBeginners
 - >  Basic heads or tails program (with explanations)
@@ -63,10 +47,9 @@
 
 ## Lectureish (boring part)
 
+    Lecturish part Table of Contents
 
-* [UNCLASSIFED](#unclassified-math-fuckery)
-
-* [Low-Level Stuff](#low-level-stuff)
+* [Intro](#intro-lectures)
 
 * [Pointer Inferno](#pointerhell)
 
@@ -74,60 +57,40 @@
 
 * [Preprocessors](#_ifnwin32-yippie-part)
 
+* [UNCLASSIFED](#unclassified-math-fuckery)
 
-### Unclassified Math Fuckery
+* [Low-Level Stuff](#low-level-stuff)
 
-- All math fuckery files moved into a subfolder in projects101 folder called mathFuckery
+### Intro Lectures
 
-- Fibonacci sequence function (with loops and recursion)
-
-- Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
-
-- Basic prime number counter with user input
-
-- Get time program experiment
-
-- Basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here(And So I Did)
-
-- Cmp popcount program
-
-- Koch Curve from Binary interpretation I made (not sure if it's accurate) 
-
-- Koch Snowflake using Thue-Morse Sequence (same thing with Koch Curve file but with graphics(raylib required) and yeah still not sure if it's accurate)
-
-- A Discrete Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
-
-- A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)
-
-- Doppler Effect Simulator (using raylib.h so you gotta have it too)
-
-- Screensaver that paints screen from scratch using primes  with raylib 
-
-- Screensaver that paints screen from scratch using primes  with ANSI for CLI 
-
-
-
-### Low-Level Stuff
-
-> Baby's Kernel Drivers (We'll learn together)
+- **Now projects101 got a renewed folder tree for math fuckery and low-level stuff**
+>
+> - Hello, world program
 > 
-> **None-functional Attempt files** (whether not compiling or fucking your kernel they'll be here)
+> - %.*s format for printf 
 >
-> - First failed attempt added(using TLDP's old sources)
-> - A kernel driver that attempts to haunt you pirated rickroll and ffplay
+> - Basic FizzBuzz program 
 >
-> **Functional Files**
-> - Non-failed second modern-attempt (_working_) with no tutorial (I'll add shit in the future let me learn first TnT) 
+> - Conditionals intro
 >
+> - Basic enum101 lectureishy (yeah I started to make words up)
 >
-> **Networking**
-> 
-> A basic HTTP TCP server using sockets (pure C...no external libs) **Will be Developed Further**
+> - Struct intro 
 >
-> Other Low-Level Stuff
+> - Unions intro
 >
-> - A mainless C file that you can run (for no apperant reason)
-> - Buffer oveflow for lulz. 
+> - A basic inverted array walk via pointers (with memory address laid out)
+>
+> - Subfoldef for bitwise sorcery 
+>
+> - A bitwise operations chart 
+>
+> - and a cmpbits program 
+>
+> - Basic prime number counter with user input
+>
+> - Basic terminal window get test program for myself just syntax and shit. To use in DVD-Screensaver but till I use it this will stay here(And So I Did)
+
 
 
 ### PointerHell 
@@ -165,6 +128,53 @@
 > - Second lecture Conditional blocks (IFDEF,IFNDEF,ELIF)
 
 
+
+### Unclassified Math Fuckery
+
+> > All math fuckery files moved into a subfolder in projects101 folder called mathFuckery
+>
+> > Fibonacci sequence function (with loops and recursion)
+>
+> > Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
+>
+> > Koch Curve from Binary interpretation I made (not sure if it's accurate) 
+>
+> > Koch Snowflake using Thue-Morse Sequence (same thing with Koch Curve file but with graphics(raylib required) and yeah still not sure if it's accurate)
+>
+> > A Discrete Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
+>
+> > A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)
+>
+> > Doppler Effect Simulator (using raylib.h so you gotta have it too)
+
+> > Screensaver that paints screen from scratch using primes  with raylib 
+
+> > Screensaver that paints screen from scratch using primes  with ANSI for CLI 
+
+
+
+### Low-Level Stuff
+
+> Baby's Kernel Drivers (We'll learn together)
+> 
+> **None-functional Attempt files** (whether not compiling or fucking your kernel they'll be here)
+>
+> - First failed attempt added(using TLDP's old sources)
+> - A kernel driver that attempts to haunt you pirated rickroll and ffplay
+>
+> **Functional Files**
+> - Non-failed second modern-attempt (_working_) with no tutorial (I'll add shit in the future let me learn first TnT) 
+>
+>
+> **Networking Projects**
+>  _**Networking**_ Files has their own readme in the networking subfolder for lecture descritions this part will only be used to display my cursed projects 
+>
+> A basic HTTP TCP server using sockets (pure C...no external libs) **Will be Developed Further**
+>
+> Other Low-Level Stuff
+>
+> - A mainless C file that you can run (for no apperant reason)
+> - Buffer oveflow for lulz. 
 
 
 
