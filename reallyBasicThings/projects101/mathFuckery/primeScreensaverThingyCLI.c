@@ -137,7 +137,7 @@ int main(void)
         printf(MOVE_CURSOR,points[j].y,points[j].x);
         printf(PAINT,rValue,gValue,bValue,WALL_STRING);
 
-        usleep(SECOND*0.25);
+        usleep(SECOND*0.33);
     }
 
 
