@@ -129,7 +129,9 @@ void iterative_fft(complexNum *X, int N) {
 }
 
 
-//Same experimental function from dftThingy.c since I even forgot how the fuck I coded it but changed the freq to 7Hz to make it closer to 7.83Hz (For the vibez...iykyk)
+/*Same experimental function from dftThingy.c since I even forgot how the fuck I coded it but changed the freq to 7Hz to make it closer to 7.83Hz (For the vibez...iykyk)
+    Tho that felt so 'new-agist'...what's next? an OS? I'd probably be omw Terry Davis'ing it too...to create BrothelOS using UnholyC lol
+*/
 double *fill(int sampleSize)
 {
     double *x = (double *)malloc(sampleSize*(sizeof(double)));

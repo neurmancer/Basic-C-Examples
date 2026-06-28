@@ -43,7 +43,7 @@ int isPrime(int val)
 
     if (val % 6 == 1 || val % 6 == 5) {
 
-        for (int i = 5; (i*i) <= val; i += 2) 
+        for (int i = 5; (i*i) <= val; i += 2) //Btw you may prefer using i <= val/i (with a divide by zero check tho this doesn't require it) to prevent overflow
         {   
             if (val % i == 0) {
                 return(0);

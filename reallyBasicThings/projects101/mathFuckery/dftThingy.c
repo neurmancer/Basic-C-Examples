@@ -16,7 +16,7 @@ static double inline defArccos(double val)
              */
 
              /*This is a intro for myself to remember (or learn) some math and get to the point where I can wield FFT efficently for future project ideas
-                'But Neuro it's O(n^2) that's inefficient!'...First stfu you meatloaf I don't even know the Bachmann–Landau (Order) nation yet. Second so what? Can you implement a DFT tho? I think the same 
+                'But Neuro it's O(n^2) that's inefficient!'...First stfu you meatloaf I don't even know the Bachmann–Landau (Order) notation yet. Second so what? Can you implement a DFT tho? I think the same 
                 so shut up and learn mwah(affectionately or how tf u spell it). 
              */
 

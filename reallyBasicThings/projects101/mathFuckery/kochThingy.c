@@ -190,7 +190,16 @@ unsigned int popCount(unsigned int x)
     while (x != 0) {
         x &= (x-1); //Brian Kernighan's trick for flipping the rightmost '1' off (pun intended) (and yeah after 'reinventing' it in Bitwizardy.c I learned the proper name of the guy) 
         upBits++;
-    } //Honest take? This trick is so elegant in my opinion... 
+    } //Honest take? This trick is so elegant in my opinion...  tho we're talking about Kernighan the guy who wrote 
+    /* 'Beautiful code is likely to be simple -- clear and easy to understand. Beautitful code is likely to be compact -- just enough code to do the job and no more
+      but not cryptic, to the point where it cannot be understood.
+      Beautiful code may well be general, solving a broad class of problems in a uniform way. One might even describe it as elegant, showing good taste and refinement.
+    
+
+                                                                        -Exegesis by Brian Kernighan (on a regex matcher coded by Rob Pike)
+
+        This guy gets it...
+      */
     return(upBits);
 }
  
