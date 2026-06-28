@@ -48,15 +48,16 @@
 
 typedef struct{
     int x; 
-    int isUsed;
-}flaggedNum; //Yup as I said using the same logic as before
+    int y;
+
+
+}point; //Slightly different logic this time
 
 
 
 int isPrime(unsigned int *arr,unsigned int val);
-int posGen(flaggedNum *arr,int size,int *usedOnes);
 
-flaggedNum *fillTheArray(flaggedNum *root,int size);
+point *fillTheArray(point *root,int width,int height);
 
 void handleSIGINT(int sig);
 void cleanUp(void);
@@ -65,10 +66,8 @@ void cleanUp(void);
 
 
 unsigned int *primes = NULL;
-flaggedNum   *xValues = NULL;
-flaggedNum   *yValues = NULL;
 
-
+point *points = NULL;
 
 
 int main(void)
@@ -84,7 +83,6 @@ int main(void)
     if (atexit(cleanUp) != 0) { perror("At exit failed...you're probably leaking some memory TnT\n");return(-1); };
 
     srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
-    int arePrimesDone = 0;
 
     struct winsize window;
 
@@ -98,20 +96,22 @@ int main(void)
     int targetCount = width*height;
     primes = (unsigned int *) calloc(targetCount+1,sizeof(unsigned int));
     if (primes == NULL) { return(-1) ; }
-
     unsigned int *iter = primes; //To not to loose the root again...
 
-    xValues = (flaggedNum *) calloc(width,sizeof(flaggedNum));
-    if (xValues == NULL) { return(-1); }
+    points = (point *)calloc(targetCount,sizeof(point));
 
-    yValues = (flaggedNum *)calloc(height,sizeof(flaggedNum));
-    if(yValues == NULL) { return(-1); }
+    if (points == NULL){ return(-1); }
+    points = fillTheArray(points,width,height);
+    
 
-    int usedXs = 0;
-    int usedYs = 0;
+    for(int i = 0;i < width;i++)
+    {
+        for(int j = 0;j < height;j++)
+        {
+            printf("x:%d\ty:%d\n",points[j].x,points[j].y);
+        }
+    }
 
-    if(fillTheArray(xValues,width) == NULL) { return(-1); }
-    if(fillTheArray(yValues,height) == NULL) { return(-1); }
 
 
 
@@ -124,27 +124,26 @@ int main(void)
         }
     }
 
-    printf("Press Ctrl+C to exit\nHave FUN!\n");
-    usleep(SECOND*1.3f);
+    //printf("Press Ctrl+C to exit\nHave FUN!\n");
+    usleep(SECOND*5.0f);
 
-    int posX = 0;
-    int posY = 0;
 
+
+/*
     printf(WIPE_SCREEN);
     for(int j = 0;j < targetCount;j++) {
 
-        posX = posGen(xValues,width,&usedXs);
-        posY = posGen(yValues,height,&usedYs);
        
        
         int rValue = ((primes[j]*13) % 256); 
         int gValue = ((primes[j]*53) % 256);
         int bValue = ((primes[j]*689) % 256);
-        printf(MOVE_CURSOR,posY,posX);
+        //printf(MOVE_CURSOR,posY,posX);
         printf(PAINT,rValue,gValue,bValue,WALL_STRING);
 
         usleep(SECOND*0.25);
     }
+*/
 
     return(0);
 }
@@ -183,41 +182,30 @@ int isPrime(unsigned  int *arr,unsigned int val)
 }
 
 
-flaggedNum *fillTheArray(flaggedNum *root,int size)
+point *fillTheArray(point *root,int width,int height)
 {
-    if (root == NULL){ return(NULL); }
-
-    for (int i = 0;i < size;i++) { //CLI interface starts at index 1,1 not 0,0 (yeah that fucks me up each time)
-        root[i].x = i+1; //As I said I need to reach size but not seg-assulting my own ass 
-        root[i].isUsed = 0;
+    int index = 0;
+    for(int i = 0;i < width;i++)
+    {   
+        for(int j = 0;j < height;j++)
+        {
+             //I hope this works lmfao
+            root[index].x = i+1;
+            root[index].y = j+1;
+            index++;
+        }
     }
     return(root);
-}
-
-int posGen(flaggedNum *arr,int size,int *usedOnes)
-{
-    if (*usedOnes == size) {
-        return(-1); //To prevent infinte loop    
-    }
-
-    int x = 0;
-    do {
-        x = (rand() % size)+1; //Never trust a computer to compute use bracelets  -Sun Tzu (or Linus Torvalds IDK)    
-    }while (arr[x-1].isUsed);
-    
-    arr[x-1].isUsed = 1;
-    (*usedOnes)++; //postfix ++ has higher precedence than * AND I FORGOT THAT FUCKKKK
-
-    return(x);
 }
 
 
 void cleanUp(void) {
     free(primes);
-    free(xValues);
-    free(yValues);
+    free(points);
+
     primes = NULL;
-    xValues = yValues = NULL; //Trying new things lol
+    points = NULL;
+
     printf(WIPE_SCREEN RESET_COLOR RETURN_CURSOR);
 }
 
