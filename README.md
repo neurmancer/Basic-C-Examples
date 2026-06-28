@@ -143,6 +143,8 @@
 >
 > > Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
 >
+> > A sqrt function approximation attempt to scratch my curious itch (it's not accurate)
+>
 > > Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 >
 > > Koch Snowflake using Thue-Morse Sequence (same thing with Koch Curve file but with graphics(raylib required) and yeah still not sure if it's accurate)
