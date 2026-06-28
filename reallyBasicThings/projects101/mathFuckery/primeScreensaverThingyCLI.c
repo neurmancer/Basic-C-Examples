@@ -39,8 +39,8 @@
 
 
     and for the record: This program will be using Ctrl+C for exit with a custom handler... 
-    Chaged the shuffle logic with Fisher-Yates algorithm (I guess that's correct term but not sure)
-
+    Chaged the shuffle logic with Fisher-Yates algorithm (I guess that's correct term but not sure and It is also known as the Knuth shuffle) did I implement it correctly?
+    No fucking idea...
     
 */
 
@@ -202,7 +202,7 @@ point *shuffle(point *root,int size)
         int j = rand() % size;
         point temp = root[i];
         root[i] = root[j];
-        root[j] = root[i];
+        root[j] = temp;
     }
 
     return(root);
