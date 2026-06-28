@@ -43,7 +43,7 @@ float sqrty(unsigned int val)
     float result = 0;
     int i = 0;
     
-    for(;i*i <= val && (i+1)*(i+1) <= val;i++){ }
+    for(;i <= (float)val/i && (i+1) <= (float)val/(i+1);i++){ }
     
     float z = i;
     float divide = (float)(val-(z*z)) /(float)(2*z);

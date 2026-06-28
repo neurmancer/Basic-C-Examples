@@ -19,7 +19,7 @@
 
 # Basic Projects and Lectures
 
-* [May RNGSUS Bless Us With sran()](#prngforbeginners)
+* [May RNGSUS Bless Us With Srand()](#prngforbeginners)
 
 * [Experimenting(Madman's Diary)](#experimenting)
 
