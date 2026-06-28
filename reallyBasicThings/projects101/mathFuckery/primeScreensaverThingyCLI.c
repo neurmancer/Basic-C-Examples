@@ -20,7 +20,7 @@
 
 /*
 
-                                **This project is finished** (nah it's still broken I'll change the internal structure of flagging shit tomorrow (it's 1.37AM))
+                                **This project is finished**
 
 
     This is gonna be as same as primeScreensaverThingy but for low-level gremlins (like me OwO)(and I use emoticons so much so what?Don't act like you didn't use mySpace)
@@ -38,12 +38,10 @@
     and since the idea is same as the gui version most of the logic will be same too...just ported to CLI 
 
 
-    and for the record: This program will be using Ctrl+C for exit with a custom handler...
+    and for the record: This program will be using Ctrl+C for exit with a custom handler... 
+    Chaged the shuffle logic with Fisher-Yates algorithm (I guess that's correct term but not sure)
 
     
-
-
-
 */
 
 typedef struct{
@@ -58,6 +56,8 @@ typedef struct{
 int isPrime(unsigned int *arr,unsigned int val);
 
 point *fillTheArray(point *root,int width,int height);
+point *shuffle(point *root,int size);
+
 
 void handleSIGINT(int sig);
 void cleanUp(void);
@@ -104,16 +104,12 @@ int main(void)
     points = fillTheArray(points,width,height);
     
 
-    for(int i = 0;i < width;i++)
-    {
-        for(int j = 0;j < height;j++)
-        {
-            printf("x:%d\ty:%d\n",points[j].x,points[j].y);
-        }
-    }
+    int index = 0;
+    
+    points = shuffle(points,targetCount);
 
 
-
+    
 
     for (int i = 0;i < targetCount;i++) {
         int primey = isPrime(primes,i);
@@ -124,26 +120,26 @@ int main(void)
         }
     }
 
-    //printf("Press Ctrl+C to exit\nHave FUN!\n");
-    usleep(SECOND*5.0f);
+    printf("Press Ctrl+C to exit\nHave FUN!\n");
+    usleep(SECOND*1.3f);
 
 
 
-/*
+
     printf(WIPE_SCREEN);
     for(int j = 0;j < targetCount;j++) {
 
-       
-       
+        
         int rValue = ((primes[j]*13) % 256); 
         int gValue = ((primes[j]*53) % 256);
         int bValue = ((primes[j]*689) % 256);
-        //printf(MOVE_CURSOR,posY,posX);
+        
+        printf(MOVE_CURSOR,points[j].y,points[j].x);
         printf(PAINT,rValue,gValue,bValue,WALL_STRING);
 
         usleep(SECOND*0.25);
     }
-*/
+
 
     return(0);
 }
@@ -195,6 +191,20 @@ point *fillTheArray(point *root,int width,int height)
             index++;
         }
     }
+    return(root);
+}
+
+point *shuffle(point *root,int size)
+{
+
+    for(int i = 0;i < size;i++)
+    {
+        int j = rand() % size;
+        point temp = root[i];
+        root[i] = root[j];
+        root[j] = root[i];
+    }
+
     return(root);
 }
 
