@@ -27,7 +27,7 @@
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Test?");
 
-int my_module(void) //Doesn't take any argument 
+int init_module(void) //Doesn't take any argument 
 {
 	//What init does basically (man...it's hard to simplify KERNEL STUFF) registering a handler for something on the (or with the) kernel or 
 	//replace/overwrite one of kernel's own functions
