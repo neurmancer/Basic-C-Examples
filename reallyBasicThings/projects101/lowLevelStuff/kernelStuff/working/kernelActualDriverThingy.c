@@ -21,13 +21,14 @@
 
 
 
+
 MODULE_LICENSE("GPL-3.0");
 MODULE_AUTHOR("Neuro");
 MODULE_DESCRIPTION("Panic at the Kernel");
 MODULE_VERSION("0.13");  
 
 // Modern init function
-static int __init rizz(void)
+static int __init intro(void)
 {
     pr_info("Sup? Ring 0?(Still single?)"); //Yeah still making fun of lack of engagement ring...in the kernel...and I trust myself with god privs on a rig...I got balls...or great ignorance lmfao
     pr_info("Locked&Loaded!\n");
@@ -35,11 +36,11 @@ static int __init rizz(void)
 }
 
 // Modern cleanup function
-static void __exit ghost(void)
+static void __exit dip(void)
 {
     pr_info("Breaking up already? :/\n");
     pr_info("Module unlocked&unloaded.\n");
 }
 
-module_init(rizz); //Modern registering way ig...TLDP made me dirty with init_module thingies
-module_exit(ghost);
+module_init(intro); //Modern registering way ig...TLDP made me dirty with init_module thingies
+module_exit(dip);

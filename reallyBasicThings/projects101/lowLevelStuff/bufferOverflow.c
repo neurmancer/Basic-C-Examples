@@ -7,7 +7,7 @@
         Shit to know:
             1- This file requries additional flags : -fno-stack-protector -z execstack -no-pie -O0 what those do? 
                 1- -fno-stack-protector: Modern compilers anticipate user fuckery and put canaries to the stack and this flags flips the bird lol
-                2- -z execstack is basically makes the stack executable (Nx bit is turned on) and that disables it and makes you enable to write to stack
+                2- -z execstack is basically makes the stack executable (Nx bit is turned off) and that disables it and makes you enable to exec shit on stack
                 3- -no-pie This is a saint flag against Gluttony...nah I am just fucking with you it disables the ASLR
                 4- -O0 means 'I know what I've typed compiler shut up and execute don't try to outsmart me'
                 5-For those reasons you gotta compile it with those flags for this to work

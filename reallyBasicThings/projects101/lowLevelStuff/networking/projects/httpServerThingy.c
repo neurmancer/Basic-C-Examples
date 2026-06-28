@@ -24,7 +24,7 @@
         First, resources I use:
             - https://github.com/codecrafters-io/build-your-own-x/blob/master/README.md#build-your-own-network-stack the Beej's guide to networking that I saw from 'Build-your-X' repo (which is a beast on it's own)
                 -And I'll be looking to this guide to find out what functions do what, (if you wanna learn from scratch it is a perfect guide but I am starting from the Chapter 5)
-                (theory part has not been my strong suit anyways)
+                (theory part has not been my strong suit anyways) (and fyi I divert from Beej's guide since it was mostly client-sided and I am trying to be the server side my main source replaced by man pages)
 
         Btw since I am on the topic I am using man pages as primary source to get intel on the libs I am using and if you don't know how, here is how to use man: man <lib_name> works most of the time if you have 
         man-pages on your system (pacman -S man-pages for Arch but dunno for others)

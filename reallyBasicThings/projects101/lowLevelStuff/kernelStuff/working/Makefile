@@ -1,3 +1,5 @@
+#If you rename the source file make sure you renmame it here too
+
 obj-m += kernelActualDriverThingy.o
 
 all:

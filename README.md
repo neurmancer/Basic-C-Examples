@@ -166,7 +166,7 @@
 > **None-functional Attempt files** (whether not compiling or fucking your kernel they'll be here)
 >
 > - First failed attempt added(using TLDP's old sources)
-> - A kernel driver that attempts to haunt you pirated rickroll and ffplay
+> - A kernel driver that attempts to haunt you with pirated rickroll and ffplay
 >
 > **Functional Files**
 > - Non-failed second modern-attempt (_working_) with no tutorial (I'll add shit in the future let me learn first TnT) 

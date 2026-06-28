@@ -19,6 +19,7 @@ static struct task_struct *thread;          //Unistd was not able so we're impro
 
         Yup...another failed attempt...
             It loads the module but the loop doesn't work for some reason that I couldn't solve
+        and you know what? Probably Linus'd beat me with a wet log 'til I stop fucking with ring 0 after this  
 */
 
 
