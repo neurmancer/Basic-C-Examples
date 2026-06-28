@@ -259,6 +259,7 @@ cc filename.c -o output #To compile
 > - **Clean Archicture**
 > - **Grokking Algorithms** (The classic beginner friendly DSA book)
 > - **Linux Kernel Dev**(That's where I wanna end at)
+> - **Linux Kernel Module Programming** (I am on the case OwO)
 
 
 
