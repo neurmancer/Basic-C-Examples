@@ -177,6 +177,8 @@ int main(void)
     
     //Tweaks
     InitWindow(WIDTH, HEIGHT ,"Doppler Thingy");
+    if (!IsWindowReady()) { perror("Window got fucked up\n"); return(-1) ;}
+    
     SetTargetFPS(FPS);
 
     InitAudioDevice();
@@ -198,7 +200,6 @@ int main(void)
     int sineIndex = 0;
     double sineStartTime = 0.0;
 
-    if (!IsWindowReady()) { perror("Window got fucked up\n"); return(-1) ;}
 
     //Car props
     car.x = WIDTH/2;
