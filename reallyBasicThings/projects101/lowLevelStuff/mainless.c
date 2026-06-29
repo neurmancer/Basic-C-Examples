@@ -41,8 +41,8 @@ void _start() {
     //return(0); would cause segfault (if not UB) since there is no crt0.o return TO...there is no return address on stack for _start 
     /*
         Explaination of said Segfault or UB (long version for the nerds Imma yap) _start is called by kernel itself via .global _start flag (you may see it in asm disassemblies)
-        and return or exit() returns value to _start but _start just sends a signal to kernel itself (via r7 or 7th register which is a special register) called SIGHUP and kernel knows 
-        that the program ended  (I think that's correct but sure lol)
+        and return or exit() returns value to _start but _start just sends a signal to kernel itself (via r7 or 7th register which is a special register (or rax on x86 asm but I only coded in ARM for now and partially know ARM sytnax)) called SIGHUP and kernel knows 
+        that the program ended  (I think that's correct but not sure lol) 
     */
 }
 
