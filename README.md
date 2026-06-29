@@ -154,7 +154,7 @@
 
 ## Retro Games
 
-- Pong (Rite of ~Passage~) 
+- Pong (Rite of _Passage_) 
 
 
 ---
