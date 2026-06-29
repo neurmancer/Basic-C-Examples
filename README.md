@@ -200,7 +200,7 @@ cc filename.c -o output #To compile
 > - A basic pendulum 
 > - Maybe a function visualizer 
 > - Tupper's self-referntial graph (possible but no promises)
-> - Sierpinski's triangle (if I can reverse engineer the math lol)  _Probably Next after Pong_
+> - Sierpinski's triangle (if I can reverse engineer the math lol)  _Today I'll start on this too along with pong_
 > - Sierpinski's tetrahedron (if I learn cameras & movements on raylib)
 
 > I may add basic games either into this repo or I might create another repo for games here are the ones I'd love to build
