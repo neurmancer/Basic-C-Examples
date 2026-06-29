@@ -2,8 +2,6 @@
 
 #include <stdio.h>
 #include <raylib.h>
-#include <string.h>
-
 
     /*
         Sup? This is a template for a pong game and my first attempt to build a 'game' if you don't consider dopplerThingy.c
@@ -39,6 +37,9 @@
             3- And collision detection (all three sides for paddles? does raylib have something like that?We'll see...)
             4- Keeping score when the ball hits one of the walls behind 
             5-Maybe a game screen to start the game
+
+
+        AND I'll use the most cursed way to print score on the screen raylib requires string and I keep score as int so here is the idea: score+48 is the char version of score lmfao (and before we get random chars we finish the game at 5)
 
 
 
@@ -154,7 +155,7 @@ int main(void)
         pongBall.position.x += pongBall.vX;
         pongBall.position.y += pongBall.vY;        //Yup it yeets itself now
         
-        
+
 
 
         BeginDrawing();
