@@ -62,7 +62,7 @@
 #define FPS 60
 
 #define PADDLE_SIZE (Vector2) {WIDTH/120.0f,HEIGHT/15.0f}
-#define SPEED 1.5f
+#define SPEED 120.0f
 
 
 /*  ========== COLORS ===========  */
@@ -103,8 +103,9 @@ typedef struct{
 }ball;
 
 
+/*  ======= FUNCTION PROTOTYPES ===== */
 
-
+player *CheckEdges(player *p,int height);
 
 
 int main(void)
@@ -137,25 +138,24 @@ int main(void)
     p2.speed = SPEED; //Man that started to fucking overwhlem me... I should've put those in an array
     p2.score = 0;
 
-
-
-
+    player players[] = {p1,p2};
 
     while (!WindowShouldClose()) {
+
+        float dt = GetFrameTime();
 
 
 
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); } //Raylib does handle that itself for ESC but I love what I'm working with...
-        if (IsKeyDown(KEY_W)) { p1.position.y -= p1.speed;}
-        if (IsKeyDown(KEY_S)) { p1.position.y += p1.speed;}
+        if (IsKeyDown(KEY_W)) { p1.position.y -= p1.speed*dt; }
+        if (IsKeyDown(KEY_S)) { p1.position.y += p1.speed*dt; }
         //Frame-rate dependent. tbh 2 people playing on the same rig wouldn't cause any problem but I'll fix it for sake of fixing it anyways
-        if (IsKeyDown(KEY_UP)) { p2.position.y -= p2.speed;}
-        if (IsKeyDown(KEY_DOWN)) { p2.position.y += p2.speed;}  //It does work at the same time on the same keyboard lol YIPPIE!
+        if (IsKeyDown(KEY_UP)) { p2.position.y -= p2.speed*dt;}
+        if (IsKeyDown(KEY_DOWN)) { p2.position.y += p2.speed*dt;}  //It does work at the same time on the same keyboard lol YIPPIE!
 
         pongBall.position.x += pongBall.vX;
         pongBall.position.y += pongBall.vY;        //Yup it yeets itself now
         
-
 
 
         BeginDrawing();
