@@ -32,7 +32,7 @@ double *fill(int sampleSize);
 
 int main(void) {
     double *x = fill(SAMPLE_SIZE);
-    if (x == NULL){return(-1);}
+    if (x == NULL){ return(-1); }
     complexNum *X = (complexNum *)malloc(SAMPLE_SIZE * sizeof(complexNum));
 
     if (X == NULL){return(-1);} //Yeah in my universe every malloc error returns -1 so I can suffer in peace as I debug afterwards

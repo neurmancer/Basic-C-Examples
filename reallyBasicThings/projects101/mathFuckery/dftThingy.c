@@ -24,7 +24,7 @@ typedef struct {
     double re;
     double im; 
     /*Basically a data type for az+bi (where a and b are multipliers) 
-    I do fucking now the correct notation for complex numbers is z = a+bi which a is the real part and bi is the imaginary but it's fucking too late for me to care about it. 
+    I do fucking know the correct notation for complex numbers is z = a+bi which a is the real part and bi is the imaginary but it's fucking too late for me to care about it. 
     and yeah I am writing this of an essay to prove that I am qualified enough to do that rather than fixing it...Deal with it!
 
     */
@@ -38,6 +38,7 @@ int main(void)
 
     double *x = NULL; 
     x = fill(SAMPLE_SIZE);
+    if (x == NULL) { return(-1); }
     complexNum *X =(complexNum *) malloc(SAMPLE_SIZE*sizeof(complexNum)); 
     if (X == NULL) {return(-1);}
 
