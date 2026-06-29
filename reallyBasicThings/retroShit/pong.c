@@ -1,5 +1,6 @@
 /*  ======== INCLUDES ============   */
 
+#include <stdint.h>
 #include <stdio.h>
 #include <raylib.h>
 
@@ -105,7 +106,7 @@ typedef struct{
 
 /*  ======= FUNCTION PROTOTYPES ===== */
 
-player *CheckEdges(player *p,int height);
+void CheckEdges(player *p,int height);
 
 
 int main(void)
@@ -157,7 +158,6 @@ int main(void)
         pongBall.position.y += pongBall.vY;        //Yup it yeets itself now
         
 
-
         BeginDrawing();
         ClearBackground(BLACK);
         DrawCircleV(pongBall.position,pongBall.radius, pongBall.color);
@@ -169,3 +169,4 @@ int main(void)
 
     return(0);
 }
+
