@@ -12,7 +12,7 @@
 
         Draw 2 rectangles for players 
         draw a ball as..yk...ball
-        make the rects movable (probably W/S for p1 and UP/DOWN for p2 but I don't know if raylib supports polyinput at meantime)
+        make the rects movable (probably W/S for p1 and UP/DOWN for p2 but I don't know if raylib supports polyinput at meantime)(it does take multiple input at the same time)
         And make the ball bounce lol
 
             Important Shit to Know:
@@ -21,7 +21,17 @@
                 3- And it's 00.48AM at night so I won't question how
 
 
+        Man...I wanted to finish this quick but my dignity keeps me on this instead of side-tracking to the triangle thingy or kernel module (I was going to read this...)
+        And yeah as a grown-ass man I am using pinterest to get aesthetic ideas for the 'game' 
+
+
+        Color Ideas 
+            1- A classic pong yk...black background whilte paddles (those are called paddle right?)
+            2- Electric Purple & Night for a cyberpunkish apperance
+            3- Blaze&Void maybe...
+            Fuck it Imma add all of them... with a switch option
 */
+
 
 
 
@@ -42,12 +52,20 @@
 #define SPEED 1.5f
 
 
+/*  ========== COLORS ===========  */
+
+
+
+
+/*Since this is a game I gotta make design choices right... let me get a RGB wheel to reference*/
+
 
 
 /*  =========== OBJECTS ============ */
 
 typedef struct{
 
+    Vector2 size;
     Vector2 position;
     
     float speed; //I may add power ups depending on the flowstate so speed may differ
@@ -92,21 +110,38 @@ int main(void)
     pongBall.color = (Color){53,13,0,255};
 
     player p1 = { 0 };
-    
+    p1.size = (Vector2) {WIDTH/120.0f,HEIGHT/15.0f};
+    p1.position = (Vector2) {WIDTH/16.0f,HEIGHT/2.0f} ;
+    p1.color = WHITE;
+    p1.speed = 1.5f;
+
     player p2 = { 0 };
+
+    p2.size = (Vector2) {WIDTH/120.0f,HEIGHT/15.0f};
+    p2.position = (Vector2) {15.0f*(WIDTH)/16.0f,HEIGHT/2.0f} ;
+    p2.color = WHITE;
+    p2.speed = 3.1f;
+
 
 
 
     while (!WindowShouldClose()) {
         
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); } //Raylib does handle that itself for ESC but I love what I'm working with...
-
+        if (IsKeyDown(KEY_W)) { p1.position.y -= p1.speed;}
+        if (IsKeyDown(KEY_S)) { p1.position.y += p1.speed;}
+        //Frame-rate dependent. tbh 2 people playing on the same rig wouldn't cause any problem but I'll fix it for sake of fixing it anyways
+        if (IsKeyDown(KEY_UP)) { p2.position.y -= p2.speed;}
+        if (IsKeyDown(KEY_DOWN)) { p2.position.y += p2.speed;}  //It does work at the same time on the same keyboard lol YIPPIE!
+        
 
 
 
         BeginDrawing();
         ClearBackground(BLACK);
         DrawCircleV(pongBall.position,pongBall.radius, pongBall.color);
+        DrawRectangleV(p1.position,p1.size,p1.color);
+        DrawRectangleV(p2.position,p2.size,p2.color);
         EndDrawing();
         pongBall.position.x += pongBall.vX;
         pongBall.position.y += pongBall.vY;        //Yup it yeets itself now
