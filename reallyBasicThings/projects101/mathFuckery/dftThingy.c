@@ -60,6 +60,8 @@ int main(void)
 
     free(x);
     free(X);
+    x = NULL;
+    X = NULL;
 
     return(0);
 }

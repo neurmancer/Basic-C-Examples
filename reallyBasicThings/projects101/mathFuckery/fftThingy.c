@@ -56,6 +56,10 @@ int main(void) {
 
     free(x);
     free(X); //Always free your shit 
+
+    x = NULL;
+    X = NULL;
+
     return(0);
 
 
