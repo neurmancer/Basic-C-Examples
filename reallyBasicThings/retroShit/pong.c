@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <raylib.h>
+#include <string.h>
 
 
     /*
@@ -30,6 +31,17 @@
             2- Electric Purple & Night for a cyberpunkish apperance
             3- Blaze&Void maybe...
             Fuck it Imma add all of them... with a switch option
+
+
+        Before I overcomplicate shit I gotta define what is pong in its core to myself
+            1- Two paddles hitting to the ball (duh...)
+            2- Should the ball change angles based on the which side of the paddles (and how far from center of the paddle) or should angle changes happen when it hits the shorter sides
+            3- And collision detection (all three sides for paddles? does raylib have something like that?We'll see...)
+            4- Keeping score when the ball hits one of the walls behind 
+            5-Maybe a game screen to start the game
+
+
+
 */
 
 
@@ -48,7 +60,7 @@
 
 #define FPS 60
 
-#define PADDLE_SIZE (Vector2) {WIDTH/5,HEIGHT/30}
+#define PADDLE_SIZE (Vector2) {WIDTH/120.0f,HEIGHT/15.0f}
 #define SPEED 1.5f
 
 
@@ -110,31 +122,39 @@ int main(void)
     pongBall.color = (Color){53,13,0,255};
 
     player p1 = { 0 };
-    p1.size = (Vector2) {WIDTH/120.0f,HEIGHT/15.0f};
+    p1.size = PADDLE_SIZE;
     p1.position = (Vector2) {WIDTH/16.0f,HEIGHT/2.0f} ;
     p1.color = WHITE;
-    p1.speed = 1.5f;
+    p1.speed = SPEED;
+    p1.score = 0;
 
     player p2 = { 0 };
 
-    p2.size = (Vector2) {WIDTH/120.0f,HEIGHT/15.0f};
+    p2.size = PADDLE_SIZE;
     p2.position = (Vector2) {15.0f*(WIDTH)/16.0f,HEIGHT/2.0f} ;
     p2.color = WHITE;
-    p2.speed = 3.1f;
+    p2.speed = SPEED; //Man that started to fucking overwhlem me... I should've put those in an array
+    p2.score = 0;
+
 
 
 
 
     while (!WindowShouldClose()) {
-        
+
+
+
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); } //Raylib does handle that itself for ESC but I love what I'm working with...
         if (IsKeyDown(KEY_W)) { p1.position.y -= p1.speed;}
         if (IsKeyDown(KEY_S)) { p1.position.y += p1.speed;}
         //Frame-rate dependent. tbh 2 people playing on the same rig wouldn't cause any problem but I'll fix it for sake of fixing it anyways
         if (IsKeyDown(KEY_UP)) { p2.position.y -= p2.speed;}
         if (IsKeyDown(KEY_DOWN)) { p2.position.y += p2.speed;}  //It does work at the same time on the same keyboard lol YIPPIE!
-        
 
+        pongBall.position.x += pongBall.vX;
+        pongBall.position.y += pongBall.vY;        //Yup it yeets itself now
+        
+        
 
 
         BeginDrawing();
@@ -143,8 +163,7 @@ int main(void)
         DrawRectangleV(p1.position,p1.size,p1.color);
         DrawRectangleV(p2.position,p2.size,p2.color);
         EndDrawing();
-        pongBall.position.x += pongBall.vX;
-        pongBall.position.y += pongBall.vY;        //Yup it yeets itself now
+
     }
 
     return(0);
