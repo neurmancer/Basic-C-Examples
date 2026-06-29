@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/wait.h>
 #include <unistd.h>
 #include <sys/ioctl.h> //For ioctl() and getting winsize and shit
 #include <time.h>
@@ -42,6 +41,8 @@
     Chaged the shuffle logic with Fisher-Yates algorithm (I guess that's correct term but not sure and It is also known as the Knuth shuffle) did I implement it correctly?
     No fucking idea...
     
+
+    You know what this file needs? Low-level fuckkery... so..we're gonna type everything with write() for the next version (yeah I added this line after saying this project is finished OwO)
 */
 
 typedef struct{
