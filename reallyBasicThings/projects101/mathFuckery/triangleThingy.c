@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <raylib.h>
-
+#include <math.h>
 
 /* =================== DEFINES   ====================  */
 
@@ -33,6 +33,20 @@
                     If you've seen my other graphic projects you know how I sector things with comment blocks and use camelCase for my own fucntions to reduce confusion with
                     raylib functions (Which are all in PascalCase (as far as I've seen))
 
+
+                    Never drawn a triangle in raylib before so we're head-diving into raylib header to extract some shit 
+
+                    DrawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Color color);                                // Draw a color-filled triangle (vertex in counter-clockwise order!)
+
+                    RLAPI void DrawTriangleLines(Vector2 v1, Vector2 v2, Vector2 v3, Color color);        // Draw triangle outline (vertex in counter-clockwise order!)
+                    RLAPI void DrawTriangleFan(const Vector2 *points, int pointCount, Color color);       // Draw a triangle fan defined by points (first vertex is the center)
+                    RLAPI void DrawTriangleStrip(const Vector2 *points, int pointCount, Color color);     // Draw a triangle strip defined by points
+
+                    those three was what I've found but all of them using Vectors for points...for me this is some computational waste I need to calculate the perfect 
+                    eqaul distances from a center... First Idea...with a given radius draw a circle and draw a triangle within the circle where all 3 vertices of the triangle 
+                    are on the arc of the said circle...
+
+
             */
 
 /* ========== OBJECTS  =====================  */
@@ -55,11 +69,29 @@ int main(void)
     if (!IsWindowReady()) { perror("Windows suck as always\n"); return(-1); }
     SetTargetFPS(FPS);
     
+    Vector2 center = {WIDTH/2.0f,HEIGHT/2.0f};
+    float radius = 289.17f;
+    float angle = 0.0f;         //FUCK WHY THE FUCK I CAN'T MAKE THIS PARALLEL To screen AAAAAAAAAAAAAAA
+    
+    Vector2 triangleVertices[3] = { 0 };
+
+
+    for (int i = 0; i < 3;i++) {
+        triangleVertices[i].x = center.x + cosf(angle)*radius;
+        triangleVertices[i].y = center.y - sinf(angle)*radius;
+        angle += 2*PI/3;
+    }
+    
+
+
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
         
-        
+
+
         BeginDrawing();
+        ClearBackground(BLACK);
+        DrawTriangle(triangleVertices[0],triangleVertices[1],triangleVertices[2],VIOLET); //Solved it this shit requires CCW (or positive motion between verticies) This shit broke me ngl
         EndDrawing();
     }
 
