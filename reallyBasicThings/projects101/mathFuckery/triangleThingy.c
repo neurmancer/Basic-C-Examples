@@ -14,6 +14,8 @@
 
 
 #define TRIANGLE_SIDE_LENGTH 530.0f
+#define DEPTH_STEP 1
+
 
 /* ========================== YAPPING  ===================== */
 
@@ -94,10 +96,11 @@
 /* ============== FUNCTION PROTOTYPES  ================  */
 
 void drawItPlease(Vector2 peak,float length);
-void recursiveDrawing(Vector2 peak,float length,int maxDepth,int *currentDepth);
+void recursiveDrawing(Vector2 peak,float length,int maxDepth,int currentDepth);
 
 /* ============== GLOBAL VARS ===================  */
 
+//Lol nothing to see here move on civilian
 
 
 
@@ -108,19 +111,23 @@ int main(void)
     InitWindow(WIDTH, HEIGHT,"Thingyangle");
     if (!IsWindowReady()) { perror("Windows suck as always\n"); return(-1); }
     SetTargetFPS(FPS);
-    
 
-    
-    Vector2 vertex = {WIDTH/2.0f,HEIGHT/5.0f};
+
+    int maxDepth = 0;
+    int depth = 0;
 
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
-        
+        if (IsKeyPressed(KEY_SPACE)) { maxDepth+=DEPTH_STEP; }
         
 
         BeginDrawing();
+
         ClearBackground(BLACK);
-        drawItPlease(vertex, TRIANGLE_SIDE_LENGTH);
+    
+        Vector2 vertex = {WIDTH/2.0f,HEIGHT/5.0f};
+        recursiveDrawing(vertex,TRIANGLE_SIDE_LENGTH,maxDepth, depth);
+        
         EndDrawing();
     }
 
@@ -144,21 +151,26 @@ void drawItPlease(Vector2 peak,float length)
     DrawTriangle(peak,left,right,VIOLET);
 }
 
-//What should I recurse...
-void recursiveDrawing(Vector2 peak,float length,int maxDepth,int *currentDepth)
+//What should I recurse... tho I hate recursion this shit is 3^n so give it more than 10 and you'll be the first the watch your rig's funeral
+void recursiveDrawing(Vector2 peak,float length,int maxDepth,int currentDepth)
 {
     //So you don't blow your PC but the definition of Sierpinski Triangle is infinite recursions but...we have finite ram lol
-    if (*currentDepth >= maxDepth) { return; }
-    
-    drawItPlease(peak,length);
-    (*currentDepth)++; //Don't increment the memory address lmfao
+    if (currentDepth >= maxDepth) { 
+        drawItPlease(peak, length);
+        return;
+    }
 
-    float y = peak.y + length * sinf(PI/3);
-    Vector2 left = (Vector2){peak.x - length/2,y};
-    Vector2 right = (Vector2){peak.x + length/2,y}; 
+    
+    currentDepth++; //Don't increment the memory address lmfao that's gonna get incramented thrice as much isn't it?
+
+    float y = peak.y + length/2 * sinf(PI/3);
+    Vector2 left = (Vector2){peak.x - length/4, y};
+    Vector2 right = (Vector2){peak.x + length/4, y}; 
 
     recursiveDrawing(peak,length/2, maxDepth,currentDepth);
     recursiveDrawing(left,length/2, maxDepth,currentDepth);
     recursiveDrawing(right,length/2, maxDepth,currentDepth);
+
+    //I should probably split the logic and drawing to two different funcitons but...
 
 }
