@@ -123,7 +123,7 @@ typedef struct{
 
 /*  ======= FUNCTION PROTOTYPES ===== */
 
-void CheckEdges(player *p,int height);
+void checkEdges(player *p,int height);
 
 
 typedef struct{
@@ -215,11 +215,24 @@ int main(void)
         if (IsKeyDown(KEY_DOWN)) { players[1].position.y += players[1].speed*dt;}  //It does work at the same time on the same keyboard lol YIPPIE!
 
 
-
+         //I'll ditch this part into a funciton don't worry just testing the logic 
         for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
-            CheckEdges(&players[i],HEIGHT);
+            checkEdges(&players[i],HEIGHT);
         }
 
+        for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
+            Vector2 point1 = (Vector2){players[i].position.x+players[i].size.x,players[i].position.y};
+            Vector2 point2 = {point1.x,point1.y+players[i].size.y};
+            if (i) {
+                point1.x = players[i].position.x;
+                point2.x = players[i].position.x;
+            }
+            if(CheckCollisionCircleLine(pongBall.position,pongBall.radius,point1,point2))
+            {
+                pongBall.vX *= -1;
+                pongBall.vY *= -1;
+            }
+        }
 
         pongBall.position.x += pongBall.vX*dt*cosf(angle+PI);        //Basic Trigo babyyyyyyyy (and probably all I need )
         pongBall.position.y += pongBall.vY*dt*sinf(angle+PI);        //Yup it yeets itself now
@@ -242,7 +255,7 @@ int main(void)
     return(0);
 }
 
-void CheckEdges(player *p,int height)
+void checkEdges(player *p,int height)
 {
     if (p->position.y <= 0) {
         p->position.y = 0;
