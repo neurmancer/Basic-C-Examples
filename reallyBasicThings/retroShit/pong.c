@@ -73,7 +73,7 @@
 #define PADDLE_SIZE (Vector2) {WIDTH/100.0f,HEIGHT/10.0f}
 #define PADDLE_SPEED 120.0f
 
-#define BALL_RADIUS WIDTH*HEIGHT/200000
+#define BALL_RADIUS WIDTH*HEIGHT/200000.0f
 
 /*  ========== COLORS ===========  */
 
