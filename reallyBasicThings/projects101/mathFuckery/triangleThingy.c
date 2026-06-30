@@ -86,6 +86,8 @@
 
 
 
+                    FLAG_MSAA_4X_HINT       = 0x00000020 found that for anti-aliasing yk...we're diving into fractions so it's neat to have for you guys...my RX580 won't be able to do much shit anways
+
             */
 
 /* ========== OBJECTS  =====================  */
@@ -111,14 +113,14 @@ int main(void)
     InitWindow(WIDTH, HEIGHT,"Thingyangle");
     if (!IsWindowReady()) { perror("Windows suck as always\n"); return(-1); }
     SetTargetFPS(FPS);
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
 
-
-    int maxDepth = 0;
+    int iterDepth = 0;
     int depth = 0;
 
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
-        if (IsKeyPressed(KEY_SPACE)) { maxDepth+=DEPTH_STEP; }
+        if (IsKeyPressed(KEY_SPACE)) { iterDepth++; }
         
 
         BeginDrawing();
@@ -126,7 +128,7 @@ int main(void)
         ClearBackground(BLACK);
     
         Vector2 vertex = {WIDTH/2.0f,HEIGHT/5.0f};
-        recursiveDrawing(vertex,TRIANGLE_SIDE_LENGTH,maxDepth, depth);
+        recursiveDrawing(vertex,TRIANGLE_SIDE_LENGTH,iterDepth, depth);
         
         EndDrawing();
     }
