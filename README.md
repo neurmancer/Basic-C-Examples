@@ -117,6 +117,8 @@
 
 > > Koch Snowflake using Thue-Morse Sequence (same thing with Koch Curve file but with graphics(raylib required) and yeah still not sure if it's accurate)
 
+> > Sierpinski's triangle visualizer using recursion and raylib (math broke me bad in this one lmfao) 
+
 > > A Discrete Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
 
 > > A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)
@@ -199,8 +201,7 @@ cc filename.c -o output #To compile
 > - Doppler effect simulator for celestial bodies (redshifting/blueshifting)
 > - A basic pendulum 
 > - Maybe a function visualizer 
-> - Tupper's self-referntial graph (possible but no promises)
-> - Sierpinski's triangle (if I can reverse engineer the math lol)  _Today I'll start on this too along with pong_
+> - Tupper's self-referntial graph (possible but no promises) 
 > - Sierpinski's tetrahedron (if I learn cameras & movements on raylib)
 
 > I may add basic games either into this repo or I might create another repo for games here are the ones I'd love to build
