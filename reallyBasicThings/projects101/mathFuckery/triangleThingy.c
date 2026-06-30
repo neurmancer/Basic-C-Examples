@@ -56,8 +56,11 @@
 
 /* ============== FUNCTION PROTOTYPES  ================  */
 
+void drawItPlease(Vector2 peak,float length);
+
 
 /* ============== GLOBAL VARS ===================  */
+
 
 
 
@@ -76,22 +79,19 @@ int main(void)
     Vector2 triangleVertices[3] = { 0 };
 
 
-    for (int i = 0; i < 3;i++) {
-        triangleVertices[i].x = center.x + cosf(angle)*radius;
-        triangleVertices[i].y = center.y - sinf(angle)*radius;
-        angle += 2*PI/3;
-    }
+    triangleVertices[0] = (Vector2) {WIDTH/2.0f-135.0f,HEIGHT/1.8f};
+    triangleVertices[1] = (Vector2) {WIDTH/2.0f+135.0f,HEIGHT/1.8f};
     
-
+    Vector2 test = {WIDTH/2.0f,HEIGHT/3.0f};
 
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
         
-
+        
 
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawTriangle(triangleVertices[0],triangleVertices[1],triangleVertices[2],VIOLET); //Solved it this shit requires CCW (or positive motion between verticies) This shit broke me ngl
+        drawItPlease(test, 250.0f);
         EndDrawing();
     }
 
@@ -100,4 +100,14 @@ int main(void)
     CloseWindow();
 
     return(0);
+}
+
+//IFUCKINGHATEMATH
+void drawItPlease(Vector2 peak,float length)
+{
+    float y = peak.y + length * sinf(PI/3);
+    Vector2 left = (Vector2){peak.x - length/2,y};
+    Vector2 right = (Vector2){peak.x + length/2,y}; 
+
+    DrawTriangle(peak,left,right,VIOLET);
 }
