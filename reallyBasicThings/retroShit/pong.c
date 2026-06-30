@@ -1,5 +1,6 @@
 /*  ======== INCLUDES ============   */
 
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <raylib.h>
@@ -44,6 +45,14 @@
 
 
 
+        Here is the yoinking from rcore.c part starts...
+
+            
+            bool CheckCollisionCircleLine(Vector2 center, float radius, Vector2 p1, Vector2 p2); I'll probaby need this instead of 
+            
+            bool CheckCollisionCircleRec(Vector2 center, float radius, Rectangle rec); //since this one will give me whether ball collides with paddle or not and the other one I can look for each edge seperatly 
+
+
 */
 
 
@@ -68,7 +77,15 @@
 
 /*  ========== COLORS ===========  */
 
+/*  Backgrounds */
 
+#define PURPLSIH_BG (Color){50,20,45,127}
+#define VIOLET_BG (Color){12,10,62,255}
+
+/* Paddles & ball*/
+
+#define NEON_LINE (Color){158,255,31,255}
+#define CRIMSON (Color){153,0,51,255}
 
 
 /*Since this is a game I gotta make design choices right... let me get a RGB wheel to reference*/
@@ -109,6 +126,22 @@ typedef struct{
 void CheckEdges(player *p,int height);
 
 
+typedef struct{
+
+    Color bgColor;
+    Color objectColor;
+}Theme;
+
+
+
+/* =========== GLOBAL VARS ============  */
+
+//In radians 
+
+double angle = (2*PI); //Or Zero degrees 
+
+
+
 int main(void)
 {
 
@@ -116,6 +149,11 @@ int main(void)
     if (!IsWindowReady()) { perror("Window may not be ready but Linux is B;) \n"); return(-13); }
     SetTargetFPS(FPS);
 
+    Theme classic = {WHITE,BLACK};
+    Theme neonLime = {PURPLSIH_BG,NEON_LINE};
+    Theme retroWavish = {VIOLET_BG,CRIMSON};
+
+    Theme themes[] = {classic,neonLime,retroWavish};
     ball pongBall = { 0 };
         
     player p1 = { 0 };    
@@ -126,7 +164,7 @@ int main(void)
 
     for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
         players[i].size = PADDLE_SIZE;
-        players[i].color = WHITE;
+        players[i].color = CRIMSON;
         players[i].speed = PADDLE_SPEED;
         players[i].score = 0;
 
@@ -139,7 +177,7 @@ int main(void)
     pongBall.radius = 3.0f;
     pongBall.vX = 125.0f;
     pongBall.vY = 75.0;
-    pongBall.color = (Color){53,13,0,255};
+    pongBall.color = CRIMSON;
 
   
   
@@ -163,13 +201,13 @@ int main(void)
         }
 
 
-        pongBall.position.x += pongBall.vX*dt;
-        pongBall.position.y += pongBall.vY*dt;        //Yup it yeets itself now
+        pongBall.position.x += pongBall.vX*dt*cosf(angle+PI);        //Basic Trigo babyyyyyyyy (and probably all I need )
+        pongBall.position.y += pongBall.vY*dt*sinf(angle+PI);        //Yup it yeets itself now
 
         //Drawing
 
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(VIOLET_BG);
         for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++)
         {
             DrawRectangleV(players[i].position,players[i].size,players[i].color);
