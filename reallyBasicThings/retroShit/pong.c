@@ -63,7 +63,7 @@
 #define FPS 60
 
 #define PADDLE_SIZE (Vector2) {WIDTH/120.0f,HEIGHT/15.0f}
-#define SPEED 120.0f
+#define PADDLE_SPEED 120.0f
 
 
 /*  ========== COLORS ===========  */
@@ -117,52 +117,65 @@ int main(void)
     SetTargetFPS(FPS);
 
     ball pongBall = { 0 };
-    
-    pongBall.position = (Vector2){WIDTH/2.0f,HEIGHT/2.0f}; //It requires casting for some reason that I couldn't grasp
-    pongBall.radius = 3.0f;
-    pongBall.vX = 2.5f;
-    pongBall.vY = 1.5;
-    pongBall.color = (Color){53,13,0,255};
-
-    player p1 = { 0 };
-    p1.size = PADDLE_SIZE;
-    p1.position = (Vector2) {WIDTH/16.0f,HEIGHT/2.0f} ;
-    p1.color = WHITE;
-    p1.speed = SPEED;
-    p1.score = 0;
-
+        
+    player p1 = { 0 };    
     player p2 = { 0 };
 
-    p2.size = PADDLE_SIZE;
-    p2.position = (Vector2) {15.0f*(WIDTH)/16.0f,HEIGHT/2.0f} ;
-    p2.color = WHITE;
-    p2.speed = SPEED; //Man that started to fucking overwhlem me... I should've put those in an array
-    p2.score = 0;
-
     player players[] = {p1,p2};
+
+
+    for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
+        players[i].size = PADDLE_SIZE;
+        players[i].color = WHITE;
+        players[i].speed = PADDLE_SPEED;
+        players[i].score = 0;
+
+    }
+    
+    players[0].position = (Vector2) {WIDTH/18.0f,HEIGHT/2.0f} ;
+    players[1].position = (Vector2) {17*WIDTH/18.0f,HEIGHT/2.0f} ;
+
+    pongBall.position = (Vector2){WIDTH/2.0f,HEIGHT/2.0f}; //It requires casting for some reason that I couldn't grasp
+    pongBall.radius = 3.0f;
+    pongBall.vX = 125.0f;
+    pongBall.vY = 75.0;
+    pongBall.color = (Color){53,13,0,255};
+
+  
+  
+
 
     while (!WindowShouldClose()) {
 
         float dt = GetFrameTime();
 
-
+        //Logic and shit
 
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); } //Raylib does handle that itself for ESC but I love what I'm working with...
-        if (IsKeyDown(KEY_W)) { p1.position.y -= p1.speed*dt; }
-        if (IsKeyDown(KEY_S)) { p1.position.y += p1.speed*dt; }
-        //Frame-rate dependent. tbh 2 people playing on the same rig wouldn't cause any problem but I'll fix it for sake of fixing it anyways
-        if (IsKeyDown(KEY_UP)) { p2.position.y -= p2.speed*dt;}
-        if (IsKeyDown(KEY_DOWN)) { p2.position.y += p2.speed*dt;}  //It does work at the same time on the same keyboard lol YIPPIE!
-
-        pongBall.position.x += pongBall.vX;
-        pongBall.position.y += pongBall.vY;        //Yup it yeets itself now
+        if (IsKeyDown(KEY_W)) { players[0].position.y -= players[0].speed*dt; }
+        if (IsKeyDown(KEY_S)) { players[0].position.y += players[0].speed*dt; }
+        //Frame-rate dependent. tbh 2 people playing on the same rig wouldn't cause any problem but I'll fix it for sake of fixing it anyways (Fixed it ig...)
+        if (IsKeyDown(KEY_UP)) { players[1].position.y -= players[1].speed*dt;}
+        if (IsKeyDown(KEY_DOWN)) { players[1].position.y += players[1].speed*dt;}  //It does work at the same time on the same keyboard lol YIPPIE!
         
+        for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
+            CheckEdges(&players[i],HEIGHT);
+        }
+
+
+        pongBall.position.x += pongBall.vX*dt;
+        pongBall.position.y += pongBall.vY*dt;        //Yup it yeets itself now
+
+        //Drawing
 
         BeginDrawing();
         ClearBackground(BLACK);
+        for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++)
+        {
+            DrawRectangleV(players[i].position,players[i].size,players[i].color);
+        }
+        
         DrawCircleV(pongBall.position,pongBall.radius, pongBall.color);
-        DrawRectangleV(p1.position,p1.size,p1.color);
-        DrawRectangleV(p2.position,p2.size,p2.color);
         EndDrawing();
 
     }
@@ -170,3 +183,15 @@ int main(void)
     return(0);
 }
 
+void CheckEdges(player *p,int height)
+{
+    if (p->position.y <= 0) {
+        p->position.y = 0;
+    }
+
+
+    if (p->position.y+p->size.y >= height) {
+        p->position.y = height-p->size.y;
+    }
+
+}
