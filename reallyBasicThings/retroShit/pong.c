@@ -149,11 +149,12 @@ int main(void)
     if (!IsWindowReady()) { perror("Window may not be ready but Linux is B;) \n"); return(-13); }
     SetTargetFPS(FPS);
 
-    Theme classic = {WHITE,BLACK};
+    Theme classic = {BLACK,WHITE};
+    Theme inverted = {WHITE,BLACK};
     Theme neonLime = {PURPLSIH_BG,NEON_LINE};
     Theme retroWavish = {VIOLET_BG,CRIMSON};
 
-    Theme themes[] = {classic,neonLime,retroWavish};
+    Theme themes[] = {classic,inverted,neonLime,retroWavish};
     ball pongBall = { 0 };
         
     player p1 = { 0 };    
@@ -164,7 +165,6 @@ int main(void)
 
     for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
         players[i].size = PADDLE_SIZE;
-        players[i].color = CRIMSON;
         players[i].speed = PADDLE_SPEED;
         players[i].score = 0;
 
@@ -177,10 +177,18 @@ int main(void)
     pongBall.radius = 3.0f;
     pongBall.vX = 125.0f;
     pongBall.vY = 75.0;
-    pongBall.color = CRIMSON;
 
   
   
+    unsigned int themeChanger = 0;
+    int themeSize = sizeof(themes)/sizeof(themes[0]);
+    
+    Theme selectedTheme = themes[themeChanger];
+    
+    players[0].color = selectedTheme.objectColor;
+    players[1].color = selectedTheme.objectColor;
+    pongBall.color = selectedTheme.objectColor;
+
 
 
     while (!WindowShouldClose()) {
@@ -189,13 +197,25 @@ int main(void)
 
         //Logic and shit
 
+        /* Dunno what to call this part */
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); } //Raylib does handle that itself for ESC but I love what I'm working with...
+        if (IsKeyPressed(KEY_TAB)) {
+            selectedTheme = themes[themeChanger % themeSize];
+            players[0].color = selectedTheme.objectColor;
+            players[1].color = selectedTheme.objectColor;
+            pongBall.color = selectedTheme.objectColor;
+            themeChanger++;
+        }
+
+            /* ======= CONTROLS ========== */
         if (IsKeyDown(KEY_W)) { players[0].position.y -= players[0].speed*dt; }
         if (IsKeyDown(KEY_S)) { players[0].position.y += players[0].speed*dt; }
-        //Frame-rate dependent. tbh 2 people playing on the same rig wouldn't cause any problem but I'll fix it for sake of fixing it anyways (Fixed it ig...)
+        
         if (IsKeyDown(KEY_UP)) { players[1].position.y -= players[1].speed*dt;}
         if (IsKeyDown(KEY_DOWN)) { players[1].position.y += players[1].speed*dt;}  //It does work at the same time on the same keyboard lol YIPPIE!
-        
+
+
+
         for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
             CheckEdges(&players[i],HEIGHT);
         }
@@ -204,10 +224,11 @@ int main(void)
         pongBall.position.x += pongBall.vX*dt*cosf(angle+PI);        //Basic Trigo babyyyyyyyy (and probably all I need )
         pongBall.position.y += pongBall.vY*dt*sinf(angle+PI);        //Yup it yeets itself now
 
+
         //Drawing
 
         BeginDrawing();
-        ClearBackground(VIOLET_BG);
+        ClearBackground(selectedTheme.bgColor);
         for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++)
         {
             DrawRectangleV(players[i].position,players[i].size,players[i].color);
