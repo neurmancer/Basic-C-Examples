@@ -17,6 +17,9 @@
 #define DEPTH_STEP 1
 
 
+#define NEAT_VIOLET (Color){19,9,69,255}
+#define BLOOD (Color){245,31,60,255}
+
 /* ========================== YAPPING  ===================== */
 
             /*
@@ -117,16 +120,22 @@ int main(void)
 
     int iterDepth = 0;
     int depth = 0;
-
+    double lastPrint = 0.0l;
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
-        if (IsKeyPressed(KEY_SPACE)) { iterDepth++; }
+        if (IsKeyPressed(KEY_SPACE)) { iterDepth++;  lastPrint = GetTime(); }
+
+        if (GetTime() - lastPrint >= 10.0l) {
+            iterDepth++;
+            lastPrint = GetTime();
+        }
         
 
         BeginDrawing();
 
-        ClearBackground(BLACK);
-    
+        ClearBackground(NEAT_VIOLET);
+        DrawText("Press ESC to escape", 13,13, 26,BLOOD);
+        DrawText(TextFormat("Current Depth Level: %d",iterDepth),13, 53,26,BLOOD);
         Vector2 vertex = {WIDTH/2.0f,HEIGHT/5.0f};
         recursiveDrawing(vertex,TRIANGLE_SIDE_LENGTH,iterDepth, depth);
         
@@ -150,7 +159,7 @@ void drawItPlease(Vector2 peak,float length)
     Vector2 left = (Vector2){peak.x - length/2,y};
     Vector2 right = (Vector2){peak.x + length/2,y}; 
 
-    DrawTriangle(peak,left,right,VIOLET);
+    DrawTriangle(peak,left,right,BLOOD);
 }
 
 //What should I recurse... tho I hate recursion this shit is 3^n so give it more than 10 and you'll be the first the watch your rig's funeral
