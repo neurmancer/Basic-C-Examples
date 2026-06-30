@@ -41,7 +41,7 @@ float sqrty(unsigned int val)
 {
     if(val == 0){ return(0.0f); } //I can't work with divide by zero lol
     float result = 0;
-    int i = 0;
+    int i = 1;
     
     for(;i <= (float)val/i && (i+1) <= (float)val/(i+1);i++){ }
     
