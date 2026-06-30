@@ -1,7 +1,6 @@
 /*  ======== INCLUDES ============   */
 
 #include <math.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <raylib.h>
 
@@ -71,9 +70,10 @@
 
 #define FPS 60
 
-#define PADDLE_SIZE (Vector2) {WIDTH/120.0f,HEIGHT/15.0f}
+#define PADDLE_SIZE (Vector2) {WIDTH/100.0f,HEIGHT/10.0f}
 #define PADDLE_SPEED 120.0f
 
+#define BALL_RADIUS WIDTH*HEIGHT/200000
 
 /*  ========== COLORS ===========  */
 
@@ -125,6 +125,7 @@ typedef struct{
 
 void checkEdges(player *p,int height);
 
+int isScoreEarned(ball *ball);
 
 typedef struct{
 
@@ -174,7 +175,7 @@ int main(void)
     players[1].position = (Vector2) {17*WIDTH/18.0f,HEIGHT/2.0f} ;
 
     pongBall.position = (Vector2){WIDTH/2.0f,HEIGHT/2.0f}; //It requires casting for some reason that I couldn't grasp
-    pongBall.radius = 3.0f;
+    pongBall.radius = BALL_RADIUS;
     pongBall.vX = 125.0f;
     pongBall.vY = 75.0;
 
@@ -237,6 +238,7 @@ int main(void)
         pongBall.position.x += pongBall.vX*dt*cosf(angle+PI);        //Basic Trigo babyyyyyyyy (and probably all I need )
         pongBall.position.y += pongBall.vY*dt*sinf(angle+PI);        //Yup it yeets itself now
 
+        isScoreEarned(&pongBall);
 
         //Drawing
 
@@ -266,4 +268,20 @@ void checkEdges(player *p,int height)
         p->position.y = height-p->size.y;
     }
 
+}
+
+int isScoreEarned(ball *ball)
+{
+
+    if (ball->position.x <= 0) {
+        ball->position.x = 0;
+        return(-1);
+    }
+
+    if (ball->position.x >= WIDTH) {
+        ball->position.x = WIDTH;
+        return(1);
+    }
+
+    return(0);
 }
