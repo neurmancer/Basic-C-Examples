@@ -15,7 +15,7 @@
 
 #define TRIANGLE_SIDE_LENGTH 530.0f
 #define DEPTH_STEP 1
-
+#define MAX_DEPTH 16
 
 #define NEAT_VIOLET (Color){19,9,69,255}
 #define BLOOD (Color){245,31,60,255}
@@ -88,6 +88,8 @@
                     Repeat step 2 with each of the smaller triangles .
 
 
+                    And yeah... I am working with a notebook (the OG tool) for math lmfao I can't be bothered to use a calculator
+
 
                     FLAG_MSAA_4X_HINT       = 0x00000020 found that for anti-aliasing yk...we're diving into fractions so it's neat to have for you guys...my RX580 won't be able to do much shit anways
 
@@ -123,7 +125,12 @@ int main(void)
     double lastPrint = 0.0l;
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
-        if (IsKeyPressed(KEY_SPACE)) { iterDepth++;  lastPrint = GetTime(); }
+        if (IsKeyPressed(KEY_SPACE)) { 
+            if (iterDepth > MAX_DEPTH) { iterDepth = MAX_DEPTH; /*Do aboso-fucking-lutiely nothing*/}
+            else {
+                iterDepth++;  lastPrint = GetTime();
+            }
+        }
 
         if (GetTime() - lastPrint >= 10.0l) {
             iterDepth++;

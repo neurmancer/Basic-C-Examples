@@ -207,7 +207,7 @@ cc filename.c -o output #To compile
 > I may add basic games either into this repo or I might create another repo for games here are the ones I'd love to build
 
 > - **Galaga** Clone
-> - **Pong** ofc (maybe multiplier with my own server for flex) _Currently Working On (not the online part duh...)_
+> - **Pong** ofc (maybe multiplier with my own server for flex) **DONE**(not the online part duh...)
 > - **Breakout**
 
 (yeah I am a retro guy...and those serves to the purpose of this repo...beginner friendly...no DS emulation yet)
