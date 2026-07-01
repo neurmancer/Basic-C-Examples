@@ -1,6 +1,7 @@
 /*  ======== INCLUDES ============   */
 
 #include <math.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <raylib.h>
 
@@ -73,13 +74,14 @@
 
 #define WIDTH 1200
 #define HEIGHT 900      //Still 4:3 like a CRT monitor...I mean we're building a pong duh...
-#define FPS 60
 
-#define PADDLE_WIDTH (WIDTH / 80.0f)
+#define FPS 120
+
+#define PADDLE_WIDTH (WIDTH / 120.0f)
 #define PADDLE_HEIGHT (HEIGHT / 8.0f)
 #define PADDLE_SPEED 450.0f
 
-#define BALL_RADIUS 12.0f
+#define BALL_RADIUS 6.0f
 #define MAX_SCORE 7 //Seven is good...jackpot
 
 
@@ -138,7 +140,9 @@ int CheckScore(Ball *b);
 void ResetBall(Ball *b);
 
 int main(void) {
-    InitWindow(WIDTH, HEIGHT, "PONG DUH... LET'S FUCKING GOOOOO");
+
+
+    InitWindow(WIDTH, HEIGHT, "PONG DUH... ");
     if (!IsWindowReady()) { printf("Window may not be ready but Linux is B;)\n"); return(-1); }
     SetTargetFPS(FPS);
 
@@ -171,8 +175,11 @@ int main(void) {
     ball.velocity = (Vector2){320.0f, 180.0f};
     ball.color = selected.objectColor;
 
-    bool gameOver = false;
+    bool gameOver = false; //I usually use int for bool but this time I need change lol
+    bool dashed = false;
+
     int winner = 0;
+
 
     while (!WindowShouldClose()) {
         float dt = GetFrameTime();
@@ -185,11 +192,21 @@ int main(void) {
             ball.color = selected.objectColor;
         }
 
+        if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); } //Raylib does handle that itself for ESC but I love what I'm working with...
+        if (IsKeyPressed(KEY_E)) {
+            if(dashed) {dashed = false; } 
+            else { dashed = true; }
+    
+        } //Yk as far as I know og pong doesn't have the dash line but as I said I wanna be extra
+        
         if (!gameOver) {
             
             // === CONTROLS ===
+            
+
             if (IsKeyDown(KEY_W)) p1.position.y -= p1.speed * dt;
             if (IsKeyDown(KEY_S)) p1.position.y += p1.speed * dt;
+            
             if (IsKeyDown(KEY_UP)) p2.position.y -= p2.speed * dt;
             if (IsKeyDown(KEY_DOWN)) p2.position.y += p2.speed * dt;
 
@@ -225,20 +242,21 @@ int main(void) {
         BeginDrawing();
         ClearBackground(selected.bgColor);
 
-        // Dashed center line
-        for (int i = 0; i < HEIGHT; i += 40) {
-            DrawRectangle(WIDTH/2 - 4, i, 8, 20, selected.objectColor);
+        if (dashed) {
+            for (int i = 0; i < HEIGHT; i += 40) {
+                DrawRectangle(WIDTH/2 - 4, i, 8, 20, selected.objectColor);
+            }
         }
-
+        
         DrawRectangleV(p1.position, p1.size, p1.color);
         DrawRectangleV(p2.position, p2.size, p2.color);
         DrawCircleV(ball.position, ball.radius, ball.color);
 
-        DrawText(TextFormat("%d", p1.score), WIDTH/4, 40, 80, selected.objectColor);
-        DrawText(TextFormat("%d", p2.score), 3*WIDTH/4 - 60, 40, 80, selected.objectColor);
+        DrawText(TextFormat("%d", p2.score), WIDTH/4, 40, 80, selected.objectColor);
+        DrawText(TextFormat("%d", p1.score), 3*WIDTH/4 - 60, 40, 80, selected.objectColor);
 
         if (gameOver) {
-            const char* msg = (winner == 1) ? "PLAYER 1 WINS BABY!!!" : "PLAYER 2 WINS, BABY!!!";
+            const char* msg = (winner == 1) ? "PLAYER 2 WINS, BABY!!!" : "PLAYER 1 WINS BABY!!!";
             DrawText(msg, WIDTH/2 - MeasureText(msg, 60)/2, HEIGHT/2 - 80, 60, RED);
             DrawText("PRESS R TO REMATCH", WIDTH/2 - MeasureText("PRESS R TO REMATCH", 40)/2, HEIGHT/2 + 20, 40, selected.objectColor);
         }
@@ -291,8 +309,8 @@ void ResetBall(Ball *b) {
 }
 
 int CheckScore(Ball *b) {
-    if (b->position.x < 0) return -1;   // P1 scores
-    if (b->position.x > WIDTH) return 1; // P2 scores
+    if (b->position.x < 0) return(-1);   // P1 gets score
+    if (b->position.x > WIDTH) return(1); // P2 gets score
     return(0);
 }
 
