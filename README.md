@@ -156,8 +156,8 @@
 
 ## Retro Games
 
-- Pong (Rite of _Passage_) 
-
+- Pong (Rite of _Passage_)  
+- Galaga (_Not started to work on yet_)
 
 ---
 

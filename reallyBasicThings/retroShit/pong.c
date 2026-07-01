@@ -53,6 +53,7 @@
             bool CheckCollisionCircleRec(Vector2 center, float radius, Rectangle rec); //since this one will give me whether ball collides with paddle or not and the other one I can look for each edge seperatly 
 
 
+            This game is finalized (tho I wanna add a few more features in the future but not yet)
 */
 
 
