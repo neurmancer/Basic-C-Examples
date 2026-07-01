@@ -63,23 +63,31 @@
 
 
 
-/*  =========== DEFINES ==========  */
+
+/* ======== INCLUDES ============   */
+#include <math.h>
+#include <stdio.h>
+#include <raylib.h>
+#include <stdlib.h>  // for rand
+
 
 #define WIDTH 1200
-#define HEIGHT 900 //Still 4:3 like a CRT monitor...I mean we're building a pong duh...
-
+#define HEIGHT 900      //Still 4:3 like a CRT monitor...I mean we're building a pong duh...
 #define FPS 60
 
-#define PADDLE_SIZE (Vector2) {WIDTH/100.0f,HEIGHT/10.0f}
-#define PADDLE_SPEED 120.0f
+#define PADDLE_WIDTH (WIDTH / 80.0f)
+#define PADDLE_HEIGHT (HEIGHT / 8.0f)
+#define PADDLE_SPEED 450.0f
 
-#define BALL_RADIUS WIDTH*HEIGHT/200000.0f
+#define BALL_RADIUS 12.0f
+#define MAX_SCORE 7 //Seven is good...jackpot
+
 
 /*  ========== COLORS ===========  */
 
 /*  Backgrounds */
 
-#define PURPLSIH_BG (Color){50,20,45,127}
+#define PURPLISH_BG (Color){50,20,45,127}
 #define VIOLET_BG (Color){12,10,62,255}
 
 /* Paddles & ball*/
@@ -92,196 +100,201 @@
 
 
 
-/*  =========== OBJECTS ============ */
 
-typedef struct{
 
-    Vector2 size;
+/* =========== OBJECTS ============ */
+typedef struct {
     Vector2 position;
+    Vector2 size;
+
+    float speed;        //I may add power ups depending on the flowstate so speed may differ
     
-    float speed; //I may add power ups depending on the flowstate so speed may differ
-
-    int score;  //Shoud I keep score in players? dunno that's my first time making a game lmfao
+    int score;          //Shoud I keep score in players? dunno that's my first time making a game lmfao
     
-    Color color; //Yeah I wanna be that extra
-}player;
+    Color color;        //Yeah I wanna be that extra
 
+} Player;
 
-typedef struct{
-
+typedef struct {
+    Vector2 position;
+    Vector2 velocity; //Pong doesn't have fucking friction right?
+    
     float radius;
     
-    Vector2 position; //Pos X , pos Y
+    Color color;
 
-    float vX; //Pong doesn't have fucking friction right?
-    float vY; //Velocity on X,Y
+} Ball;
 
-
-    Color color; //Color...because I am this extra lol
-}ball;
-
-
-/*  ======= FUNCTION PROTOTYPES ===== */
-
-void checkEdges(player *p,int height);
-
-int isScoreEarned(ball *ball);
-
-typedef struct{
-
+typedef struct {
     Color bgColor;
     Color objectColor;
-}Theme;
 
+} Theme;
 
+/* =============  FUNCTION PROTOTYPES  ============== */
+void UpdateBall(Ball *b, float dt);
+void CheckBallCollisionWithPaddles(Ball *b, Player *p1, Player *p2);
+int CheckScore(Ball *b);
+void ResetBall(Ball *b);
 
-/* =========== GLOBAL VARS ============  */
-
-//In radians 
-
-double angle = (2*PI); //Or Zero degrees 
-
-
-
-int main(void)
-{
-
-    InitWindow(WIDTH,HEIGHT,"Pong Duh...?");
-    if (!IsWindowReady()) { perror("Window may not be ready but Linux is B;) \n"); return(-13); }
+int main(void) {
+    InitWindow(WIDTH, HEIGHT, "PONG DUH... LET'S FUCKING GOOOOO");
+    if (!IsWindowReady()) { printf("Window may not be ready but Linux is B;)\n"); return(-1); }
     SetTargetFPS(FPS);
 
-    Theme classic = {BLACK,WHITE};
-    Theme inverted = {WHITE,BLACK};
-    Theme neonLime = {PURPLSIH_BG,NEON_LINE};
-    Theme retroWavish = {VIOLET_BG,CRIMSON};
+    Theme themes[] = {
+        {BLACK, WHITE},
+        {WHITE, BLACK},
+        {PURPLISH_BG, NEON_LINE},
+        {VIOLET_BG, CRIMSON}
+    };
+    int currentTheme = 0;
+    Theme selected = themes[currentTheme];
 
-    Theme themes[] = {classic,inverted,neonLime,retroWavish};
-    ball pongBall = { 0 };
-        
-    player p1 = { 0 };    
-    player p2 = { 0 };
+    Player p1 = {0};
+    p1.position = (Vector2){40, HEIGHT/2.0f - PADDLE_HEIGHT/2.0f};
+    p1.size = (Vector2){PADDLE_WIDTH, PADDLE_HEIGHT};
+    p1.speed = PADDLE_SPEED;
+    p1.score = 0;
+    p1.color = selected.objectColor;
 
-    player players[] = {p1,p2};
+    Player p2 = {0};
+    p2.position = (Vector2){WIDTH - 40 - PADDLE_WIDTH, HEIGHT/2.0f - PADDLE_HEIGHT/2.0f};
+    p2.size = (Vector2){PADDLE_WIDTH, PADDLE_HEIGHT};
+    p2.speed = PADDLE_SPEED;
+    p2.score = 0;
+    p2.color = selected.objectColor;
 
+    Ball ball = {0};
+    ball.position = (Vector2){WIDTH/2.0f, HEIGHT/2.0f};
+    ball.radius = BALL_RADIUS;
+    ball.velocity = (Vector2){320.0f, 180.0f};
+    ball.color = selected.objectColor;
 
-    for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
-        players[i].size = PADDLE_SIZE;
-        players[i].speed = PADDLE_SPEED;
-        players[i].score = 0;
-
-    }
-    
-    players[0].position = (Vector2) {WIDTH/18.0f,HEIGHT/2.0f} ;
-    players[1].position = (Vector2) {17*WIDTH/18.0f,HEIGHT/2.0f} ;
-
-    pongBall.position = (Vector2){WIDTH/2.0f,HEIGHT/2.0f}; //It requires casting for some reason that I couldn't grasp
-    pongBall.radius = BALL_RADIUS;
-    pongBall.vX = 125.0f;
-    pongBall.vY = 75.0;
-
-  
-  
-    unsigned int themeChanger = 0;
-    int themeSize = sizeof(themes)/sizeof(themes[0]);
-    
-    Theme selectedTheme = themes[themeChanger];
-    
-    players[0].color = selectedTheme.objectColor;
-    players[1].color = selectedTheme.objectColor;
-    pongBall.color = selectedTheme.objectColor;
-
-
+    bool gameOver = false;
+    int winner = 0;
 
     while (!WindowShouldClose()) {
-
         float dt = GetFrameTime();
 
-        //Logic and shit
-
-        /* Dunno what to call this part */
-        if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); } //Raylib does handle that itself for ESC but I love what I'm working with...
         if (IsKeyPressed(KEY_TAB)) {
-            selectedTheme = themes[themeChanger % themeSize];
-            players[0].color = selectedTheme.objectColor;
-            players[1].color = selectedTheme.objectColor;
-            pongBall.color = selectedTheme.objectColor;
-            themeChanger++;
+            currentTheme = (currentTheme + 1) % 4;
+            selected = themes[currentTheme];
+            p1.color = selected.objectColor;
+            p2.color = selected.objectColor;
+            ball.color = selected.objectColor;
         }
 
-            /* ======= CONTROLS ========== */
-        if (IsKeyDown(KEY_W)) { players[0].position.y -= players[0].speed*dt; }
-        if (IsKeyDown(KEY_S)) { players[0].position.y += players[0].speed*dt; }
-        
-        if (IsKeyDown(KEY_UP)) { players[1].position.y -= players[1].speed*dt;}
-        if (IsKeyDown(KEY_DOWN)) { players[1].position.y += players[1].speed*dt;}  //It does work at the same time on the same keyboard lol YIPPIE!
+        if (!gameOver) {
+            
+            // === CONTROLS ===
+            if (IsKeyDown(KEY_W)) p1.position.y -= p1.speed * dt;
+            if (IsKeyDown(KEY_S)) p1.position.y += p1.speed * dt;
+            if (IsKeyDown(KEY_UP)) p2.position.y -= p2.speed * dt;
+            if (IsKeyDown(KEY_DOWN)) p2.position.y += p2.speed * dt;
 
+            // Clamp paddles
+            if (p1.position.y < 0) p1.position.y = 0;
+            if (p1.position.y + p1.size.y > HEIGHT) p1.position.y = HEIGHT - p1.size.y;
+            if (p2.position.y < 0) p2.position.y = 0;
+            if (p2.position.y + p2.size.y > HEIGHT) p2.position.y = HEIGHT - p2.size.y;
 
-         //I'll ditch this part into a funciton don't worry just testing the logic 
-        for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
-            checkEdges(&players[i],HEIGHT);
-        }
+            UpdateBall(&ball, dt);
+            CheckBallCollisionWithPaddles(&ball, &p1, &p2);
 
-        for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++) {
-            Vector2 point1 = (Vector2){players[i].position.x+players[i].size.x,players[i].position.y};
-            Vector2 point2 = {point1.x,point1.y+players[i].size.y};
-            if (i) {
-                point1.x = players[i].position.x;
-                point2.x = players[i].position.x;
+            int scoreChange = CheckScore(&ball);
+            if (scoreChange != 0) {
+                if (scoreChange == 1) { p2.score++; }
+                else { p1.score++; }
+
+                ResetBall(&ball);
+
+                if (p1.score >= MAX_SCORE || p2.score >= MAX_SCORE) {
+                    gameOver = true;
+                    winner = (p1.score >= MAX_SCORE) ? 1 : 2;
+                }
             }
-            if(CheckCollisionCircleLine(pongBall.position,pongBall.radius,point1,point2))
-            {
-                pongBall.vX *= -1;
-                pongBall.vY *= -1;
-            }
+        } else if (IsKeyPressed(KEY_R)) {
+            p1.score = 0;
+            p2.score = 0;
+            gameOver = false;
+            ResetBall(&ball);
         }
 
-        pongBall.position.x += pongBall.vX*dt*cosf(angle+PI);        //Basic Trigo babyyyyyyyy (and probably all I need )
-        pongBall.position.y += pongBall.vY*dt*sinf(angle+PI);        //Yup it yeets itself now
-
-        isScoreEarned(&pongBall);
-
-        //Drawing
-
+        // === DRAWING ===
         BeginDrawing();
-        ClearBackground(selectedTheme.bgColor);
-        for (int i = 0;i < sizeof(players)/sizeof(players[0]);i++)
-        {
-            DrawRectangleV(players[i].position,players[i].size,players[i].color);
+        ClearBackground(selected.bgColor);
+
+        // Dashed center line
+        for (int i = 0; i < HEIGHT; i += 40) {
+            DrawRectangle(WIDTH/2 - 4, i, 8, 20, selected.objectColor);
         }
-        
-        DrawCircleV(pongBall.position,pongBall.radius, pongBall.color);
+
+        DrawRectangleV(p1.position, p1.size, p1.color);
+        DrawRectangleV(p2.position, p2.size, p2.color);
+        DrawCircleV(ball.position, ball.radius, ball.color);
+
+        DrawText(TextFormat("%d", p1.score), WIDTH/4, 40, 80, selected.objectColor);
+        DrawText(TextFormat("%d", p2.score), 3*WIDTH/4 - 60, 40, 80, selected.objectColor);
+
+        if (gameOver) {
+            const char* msg = (winner == 1) ? "PLAYER 1 WINS BABY!!!" : "PLAYER 2 WINS, BABY!!!";
+            DrawText(msg, WIDTH/2 - MeasureText(msg, 60)/2, HEIGHT/2 - 80, 60, RED);
+            DrawText("PRESS R TO REMATCH", WIDTH/2 - MeasureText("PRESS R TO REMATCH", 40)/2, HEIGHT/2 + 20, 40, selected.objectColor);
+        }
+
+        DrawText("TAB = Theme | W/S = P1 | UP/DOWN = P2 | ESC = Quit", 20, 20, 12, selected.objectColor);
+
         EndDrawing();
-
     }
 
+    CloseWindow();
     return(0);
 }
 
-void checkEdges(player *p,int height)
-{
-    if (p->position.y <= 0) {
-        p->position.y = 0;
+void UpdateBall(Ball *b, float dt) {
+    b->position.x += b->velocity.x * dt;
+    b->position.y += b->velocity.y * dt;
+
+    // Top/Bottom bounce
+    if (b->position.y - b->radius <= 0) {
+        b->position.y = b->radius;
+        b->velocity.y = fabsf(b->velocity.y);
     }
-
-
-    if (p->position.y+p->size.y >= height) {
-        p->position.y = height-p->size.y;
+    if (b->position.y + b->radius >= HEIGHT) {
+        b->position.y = HEIGHT - b->radius;
+        b->velocity.y = -fabsf(b->velocity.y);
     }
-
 }
 
-int isScoreEarned(ball *ball)
-{
-
-    if (ball->position.x <= 0) {
-        ball->position.x = 0;
-        return(-1);
+void CheckBallCollisionWithPaddles(Ball *b, Player *p1, Player *p2) {
+    Rectangle p1Rec = {p1->position.x, p1->position.y, p1->size.x, p1->size.y};
+    if (CheckCollisionCircleRec(b->position, b->radius, p1Rec)) {
+        b->velocity.x = fabsf(b->velocity.x) * 1.05f;  // slight speed up
+        float hit = (b->position.y - (p1->position.y + p1->size.y/2)) / (p1->size.y/2);
+        b->velocity.y = hit * 420.0f;
     }
 
-    if (ball->position.x >= WIDTH) {
-        ball->position.x = WIDTH;
-        return(1);
+    Rectangle p2Rec = {p2->position.x, p2->position.y, p2->size.x, p2->size.y};
+    if (CheckCollisionCircleRec(b->position, b->radius, p2Rec)) {
+        b->velocity.x = -fabsf(b->velocity.x) * 1.05f;
+        float hit = (b->position.y - (p2->position.y + p2->size.y/2)) / (p2->size.y/2);
+        b->velocity.y = hit * 420.0f;
     }
+}
 
+void ResetBall(Ball *b) {
+    b->position = (Vector2){WIDTH/2.0f, HEIGHT/2.0f};
+    int dir = (rand() % 2) ? 1 : -1;
+    b->velocity.x = dir * (300.0f + (rand() % 100));
+    b->velocity.y = (rand() % 360) - 180.0f;
+}
+
+int CheckScore(Ball *b) {
+    if (b->position.x < 0) return -1;   // P1 scores
+    if (b->position.x > WIDTH) return 1; // P2 scores
     return(0);
 }
+
+
+
