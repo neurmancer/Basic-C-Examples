@@ -31,7 +31,9 @@
                 if not compatible you may struglle to load module to kernel if not fail to compile instantly package name was something like linux-headers for arch but dunno for others
 
                 I'll be using The Linux Kernel Documentation to get more info about what the fuck I am doing (here is the link : https://docs.kernel.org for nerds ) along with the said PDF
-
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Your Name");
+MODULE_DESCRIPTION("Intro module");
 
                 Final notes before including: 
                     1- It's better to know what is where in your system at least roughly since I presume we'll mention /proc/modules or sbin 
