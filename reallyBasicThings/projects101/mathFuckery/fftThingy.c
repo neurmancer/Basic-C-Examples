@@ -31,6 +31,12 @@ void iterative_fft(complexNum *X, int N);
 double *fill(int sampleSize);
 
 int main(void) {
+
+
+    if (SAMPLE_SIZE % (SAMPLE_SIZE-1) != 0) {
+        printf("Bruh this is not your fancy FFTW\nUse something that's power of 2\n");
+        return(-13);
+    }
     double *x = fill(SAMPLE_SIZE);
     if (x == NULL){ return(-1); }
     complexNum *X = (complexNum *)malloc(SAMPLE_SIZE * sizeof(complexNum));
