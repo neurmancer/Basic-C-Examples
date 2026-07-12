@@ -55,6 +55,8 @@ MODULE_DESCRIPTION("Intro module");
 #include <linux/module.h>           /*Needed by all modules (and this comment started to give me TLDP PTSD already)*/
 #include <linux/printk.h>       //For pr_info
 #include <linux/kernel.h>
+#include <linux/init.h>
+
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Neuro");
