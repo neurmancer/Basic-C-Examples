@@ -45,6 +45,8 @@
     You know what this file needs? Low-level fuckkery... so..we're gonna type everything with write() for the next version (yeah I added this line after saying this project is finished OwO)
 */
 
+volatile sig_atomic_t flag = 0;
+
 typedef struct{
     int x; 
     int y;
@@ -61,7 +63,6 @@ point *shuffle(point *root,int size);
 
 
 void handleSIGINT(int sig);
-void cleanUp(void);
 
 /*Global vars cuz needed*/
 
@@ -81,7 +82,6 @@ int main(void)
     sa.sa_handler = &handleSIGINT;
     sigaction(SIGINT,&sa,NULL); //I use sigaction because linux man page suggests this over signal() due to compability issues https://man7.org/linux/man-pages/man2/signal.2.html <- Here is why nerds
 
-    if (atexit(cleanUp) != 0) { perror("At exit failed...you're probably leaking some memory TnT\n");return(-1); };
 
     srand(time(NULL) ^ getpid()); //Extra entorpy baby... sinec already use unistd for defines (STDOUT_FILENO,TIOCGWINSZ etc.)
 
@@ -128,9 +128,8 @@ int main(void)
 
 
     printf(WIPE_SCREEN);
-    for(int j = 0;j < targetCount;j++) {
+    for(int j = 0;j < targetCount && !flag;j++) {
 
-        
         int rValue = ((primes[j]*13) % 256); 
         int gValue = ((primes[j]*53) % 256);
         int bValue = ((primes[j]*689) % 256);
@@ -140,6 +139,17 @@ int main(void)
 
         usleep(SECOND*0.33);
     }
+
+
+
+    free(primes);
+    free(points);
+
+    primes = NULL;
+    points = NULL;
+
+    printf(WIPE_SCREEN RESET_COLOR RETURN_CURSOR);
+
 
 
     return(0);
@@ -174,7 +184,7 @@ int isPrime(unsigned  int *arr,unsigned int val)
         }
         return(1);
     }
-
+    
     return(0);
 }
 
@@ -210,19 +220,11 @@ point *shuffle(point *root,int size)
 }
 
 
-void cleanUp(void) {
-    free(primes);
-    free(points);
-
-    primes = NULL;
-    points = NULL;
-
-    printf(WIPE_SCREEN RESET_COLOR RETURN_CURSOR);
-}
-
 
 void handleSIGINT(int sig)
 {
-    printf(WIPE_SCREEN RESET_COLOR RETURN_CURSOR);
-    exit(0);
+/*    printf(WIPE_SCREEN RESET_COLOR RETURN_CURSOR);
+    exit(0); printf not beign async and a few complicated shit so we're using a fancy volatile flag
+*/ 
+    flag = 1;
 }
