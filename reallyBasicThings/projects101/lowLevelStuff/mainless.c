@@ -27,7 +27,8 @@
 //void butler(void); that's a basic demo for you if you wanna use atexit() but since I didn't care enough to rewrite flushes in unistd func or from scratch you'll need <stdio.h> for functions in this
 
 
-void _start() {
+//I used gnu::noreturn just to try lol 
+[[gnu::noreturn]] void _start() {
 
     char lulz[] = "MAIN IS FOR THE WEAK\n";  //Mutable char array not (char *) since yk...sizeof() doesn't work with it...well it does but gives you 8(unless you are using a toaster) due to the decay 
     write(1,lulz, sizeof(lulz)-1); //Since we use write you don't need to worry about null terminator (more on that later) I can ditch the last byte  
