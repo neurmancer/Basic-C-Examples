@@ -48,7 +48,7 @@ int main(void)
     ToggleBorderlessWindowed();
     
     while (!WindowShouldClose()) {
-        if (IsKeyPressed(KEY_ESCAPE)) { WindowShouldClose(); }
+        if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
 
         BeginDrawing();
         ClearBackground((Color){22, 16, 1, 2});
