@@ -5,7 +5,7 @@
 ## Table of Contents
 
 - [Basic Projects and Lectures](#basic-projects-and-lectures)
-- [Retro Games](#retro-games)
+- [Retro Games](#retro-shit)
 - [Funny Things](#funny-things)
 - [Spicy C Nudes](#asm-disassemblies-of-files-for-those-low-level-gremlins-like-me-loves-spicy-c-nudes)
 - [Compiling & Running](#compile-and-run)
@@ -154,9 +154,10 @@
 
 ---
 
-## Retro Games
+## Retro Shit
 
 - Pong (Rite of _Passage_)  
+- CRT/VHS filter (at the moment it's just a blue-blocker lol) _In Progress_
 - Galaga (_Not started to work on yet_)
 
 ---
