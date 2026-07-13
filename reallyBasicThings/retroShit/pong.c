@@ -1,9 +1,3 @@
-/*  ======== INCLUDES ============   */
-
-#include <math.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <raylib.h>
 
     /*
         Sup? This is a template for a pong game and my first attempt to build a 'game' if you don't consider dopplerThingy.c
@@ -71,6 +65,7 @@
 #include <stdio.h>
 #include <raylib.h>
 #include <stdlib.h>  // for rand
+#include <time.h>
 
 
 #define WIDTH 1200
@@ -142,6 +137,7 @@ void ResetBall(Ball *b);
 
 int main(void) {
 
+    srand(time(NULL));
 
     InitWindow(WIDTH, HEIGHT, "PONG DUH... ");
     if (!IsWindowReady()) { printf("Window may not be ready but Linux is B;)\n"); return(-1); }
