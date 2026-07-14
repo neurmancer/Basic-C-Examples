@@ -157,7 +157,7 @@
 ## Retro Shit
 
 - Pong (Rite of _Passage_)  
-- CRT/VHS filter (at the moment it's just a blue-blocker lol) _In Progress_
+- CRT/VHS filter (at the moment it's just a blue-blocker lol) _On Standby_
 - Galaga (_Not started to work on yet_)
 
 ---

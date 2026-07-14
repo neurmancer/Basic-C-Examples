@@ -18,6 +18,11 @@
             - Slight curved distortion (since yk... old monitors weren't flat)
 
         but current version is good to work at night so I made a tool for myself (which prbably KDE already has(good thing I use dwm))
+
+
+
+        This project is on stand-by currently due to the shader thingies which I don't know (I guess I gotta smash keys for a .fs with OpenGL thingies(Still...I have no idea what I'm doing))
+
 */
 
 
