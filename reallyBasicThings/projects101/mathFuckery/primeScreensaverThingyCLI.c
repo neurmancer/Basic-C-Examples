@@ -1,3 +1,4 @@
+#include <limits.h> //Yeah I won't remember 2^31-1 no matter what
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -87,6 +88,8 @@ point *points = NULL;
 
 int main(void)
 {
+    int amIFuckedUp = 0;
+
     setvbuf(stdout,NULL, _IONBF,0); //The prayer of a classical CLI tool... turning line buffering off
     printf(HIDE_CURSOR);
 
@@ -112,14 +115,20 @@ int main(void)
     int primeCount = 0;
     int targetCount = width*height;
     primes = (unsigned int *) calloc(targetCount+1,sizeof(unsigned int));
-    if (primes == NULL) { return(-1) ; }
+    points = (point *)calloc(targetCount,sizeof(point));
+    
+    if (primes == NULL) { amIFuckedUp = -1; goto farewell; }
     unsigned int *iter = primes; //To not to loose the root again...
 
-    points = (point *)calloc(targetCount,sizeof(point));
-
-    if (points == NULL){ return(-1); }
+    if (points == NULL){ amIFuckedUp = -1; goto farewell; }
     points = fillTheArray(points,width,height);
     
+    if (INT_MAX / window.ws_row > window.ws_col) {
+        printf("Bruh what's your screensize? Are you on a fucking Times Square billboard or smthng?\n");
+        sleep(SECOND*1.3);
+        amIFuckedUp = INT_MIN+1; //Just to scare the user lmfao
+        goto farewell;
+    }
 
     int index = 0;
     
@@ -127,7 +136,6 @@ int main(void)
 
 
     
-
     for (int i = 0;i < targetCount;i++) {
         int primey = isPrime(primes,i);
         if(primey){
@@ -156,7 +164,7 @@ int main(void)
         usleep(SECOND*0.33);
     }
 
-
+farewell: //uhhh...getting fancier i guess..using goto and shit what's that Windows cmd matrix? using %rand% and goto to get an infinite loop? but it's better to not leak i guess
 
     free(primes);
     free(points);
@@ -165,17 +173,19 @@ int main(void)
     points = NULL;
 
     printf(WIPE_SCREEN RESET_COLOR RETURN_CURSOR);
-    if (flag == 2) {
+    if (flag == 2 || flag == -1) {
         printf("I literally told you not to do that and yet...your great ignorace couldn't resist the temptation...\nNow I am not gonna give you primes hmph...(⸝⸝>w<⸝⸝)"); //Tsundere prime saver lol
         usleep(SECOND*3);
+        if (flag == -1) {
+            printf("Besides...you didn't even resize correctly and ioctl bitched about it lol\n");
+            usleep(SECOND);
+        }
         printf(WIPE_SCREEN RESET_COLOR RETURN_CURSOR);
 
     }
     
 
-
-
-    return(0);
+    return(amIFuckedUp);
 }
 
 
@@ -256,7 +266,8 @@ void handleSIGWINCH(int sig)
 {
     if (sig == SIGWINCH)
     {
-        if(ioctl(STDOUT_FILENO,TIOCGWINSZ,&window) == -1) { perror("Bruh...first I've said don't resize...\nSecond...you even failed it to do properly\n");}
+        if(ioctl(STDOUT_FILENO,TIOCGWINSZ,&window) == -1) { /*No perror since async being a bitch*/ }
+        flag =-1;
     }
     flag = 2;
 }
