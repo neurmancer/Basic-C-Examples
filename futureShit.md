@@ -38,3 +38,9 @@ Yeah all retro... I am a retro guy, after all.
 ## Personal Fuckeries
 
 - [ ] Prime number spitter for dwm status bar for no apperant reason besides being cool
+
+
+## Academic Shit I Guess
+
+This part where I'll take some research paper and try to recreate the findings of the said paper. better if I can change the dataset and hyperparameters to validate findings of the papers
+
