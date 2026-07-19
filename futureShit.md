@@ -1,14 +1,16 @@
 # Project To-Do
 
-This is what I'll do in the future without a particular order nor whether finish it or not just a roadmap ig...
+> This is what I'll do in the future without a particular order nor whether finish it or not just a roadmap ig...I forget shit otherwise
 
 
 ## Table of Contents 
 
-- [Tabe of Contents](#table-of-contents)
+- [Ouroboros](#table-of-contents)
 - [Physics Fuckery](#physics-and-math)
 - [Retro Games](#retro-games)
+- [Tech Concepts](#cs-concepts)
 - [Personal Fuckeries](#personal-fuckeries)
+- [Academic Paper Revision](#academic-shit-i-guess)
 
 ---
  
@@ -17,9 +19,9 @@ This is what I'll do in the future without a particular order nor whether finish
 - [ ] Build more janky physics simulators and math experiments.
 - [ ] Create a Doppler-effect simulator for celestial bodies, including redshift and blueshift.
 - [ ] Build a basic pendulum simulator.
-- [ ] Create a function visualizer.
-- [ ] Render Tupper's self-referential graph (possible, but no promises).
-- [ ] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement.
+- [ ] Create a function visualizer. (I know it's vauge but I don't know what to do...let's say something like Desmos or Wolfram Alpha)
+- [ ] Render Tupper's self-referential graph (possible, but no promises since I haven't implemented big nums in C yet and int overflow bitching about it).
+- [ ] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement('Ehm actually it's typologically 2 Dimensional' I do know Mr...Nerd).
 
 ---
 
@@ -27,7 +29,7 @@ This is what I'll do in the future without a particular order nor whether finish
 
 These may live in this repository or in a separate games repository. The aim is to keep them beginner-friendly; no DS emulation yet.
 
-- [ ] Create a Galaga clone.
+- [ ] Create a Galaga clone. and I might connect this with Celestial Doppler Sim to make an partially physically accurate Galaga lol
 - [x] Create Pong. The online multiplayer/server flex is still pending. (and it'll for at least a year)
 - [ ] Rediscover Breakout.
 
@@ -35,12 +37,28 @@ Yeah all retro... I am a retro guy, after all.
 
 --- 
 
+## CS Concepts
+
+> This is where I'll lay some concepts then pick one when I feel fancy to implent and dive head-first (and yeah I realized that I used 'A' too much in this part)
+
+- [ ] A Bytecode interpreter in C
+- [ ] A Basic Virutal Machine (since that's somehow all related to things I'll list below this one) 
+- [ ] A Garbage Collector (Mark&Sweep yk...the one Lua's using)
+- [ ] A Memory Allocator (always sbrk)
+- [ ] A RegEx 
+- [ ] A TCP/IP Stack
+- [ ] A Basic Shell
+- [ ] A GameBoy Advanced Emulator
+- [ ] A C Compiler 
+
+---
+
 ## Personal Fuckeries
 
 - [ ] Prime number spitter for dwm status bar for no apperant reason besides being cool
-
+- [ ] More experiments for DWM environement 
 
 ## Academic Shit I Guess
 
-This part where I'll take some research paper and try to recreate the findings of the said paper. better if I can change the dataset and hyperparameters to validate findings of the papers
+This part where I'll take some research paper and try to reproduce the findings of the said paper. better if I can change the dataset and hyperparameters to validate findings of the papers
 
