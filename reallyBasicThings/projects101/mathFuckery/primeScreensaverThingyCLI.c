@@ -134,7 +134,15 @@ int main(void)
     if (points == NULL){ amIFuckedUp = -1; goto farewell; }
     points = fillTheArray(points,width,height);
     
-    if (INT_MAX / window.ws_row > window.ws_col) {
+
+    // Basic math don't take this too seriously I need to verify 10 <= 3*2 = 10/2 < 3 INTMAX < row*col = INTMAX/row < col
+
+    if (window.ws_row == 0 || window.ws_col == 0) {
+        perror("Terminal Size is 0? WTF? Are you even gonna see this?\n");
+        goto farewell;
+    }
+
+    if (INT_MAX / window.ws_row < window.ws_col) {
         printf("Bruh what's your screensize? Are you on a fucking Times Square billboard or smthng?\n");
         sleep(SECOND*1.3);
         amIFuckedUp = INT_MIN+1; //Just to scare the user lmfao
