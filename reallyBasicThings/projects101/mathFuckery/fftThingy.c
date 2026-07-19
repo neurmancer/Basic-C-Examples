@@ -32,6 +32,7 @@ double *fill(int sampleSize);
 
 int main(void) {
 
+    int retValue = 0;
 
     if ((SAMPLE_SIZE & (SAMPLE_SIZE-1)) != 0) {
         printf("Bruh this is not your fancy FFTW\nUse something that's power of 2\n");
@@ -39,10 +40,11 @@ int main(void) {
     }
     
     double *x = fill(SAMPLE_SIZE);
-    if (x == NULL){ return(-1); }
     complexNum *X = (complexNum *)malloc(SAMPLE_SIZE * sizeof(complexNum));
 
-    if (X == NULL){return(-1);} //Yeah in my universe every malloc error returns -1 so I can suffer in peace as I debug afterwards
+    if (x == NULL){goto cleanUp; retValue = -1; }
+
+    if (X == NULL){goto cleanUp; retValue = -1; } //Yeah in my universe every malloc error returns -1 so I can suffer in peace as I debug afterwards
 
 
     for (int i = 0; i < SAMPLE_SIZE; i++) {
@@ -61,13 +63,15 @@ int main(void) {
     }
     printf("Mag Total(still no idea what mag is but calculating for the vibes): %2.5lf\n", mag);
 
+cleanUp:
+
     free(x);
     free(X); //Always free your shit 
 
     x = NULL;
     X = NULL;
 
-    return(0);
+    return(retValue);
 
 
     /*
