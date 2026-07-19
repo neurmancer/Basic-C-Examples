@@ -139,6 +139,7 @@ int main(void)
 
     if (window.ws_row == 0 || window.ws_col == 0) {
         perror("Terminal Size is 0? WTF? Are you even gonna see this?\n");
+        amIFuckedUp = 31;
         goto farewell;
     }
 
