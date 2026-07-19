@@ -10,6 +10,7 @@
 - [Retro Games](#retro-games)
 - [Tech Concepts](#cs-concepts)
 - [Personal Fuckeries](#personal-fuckeries)
+- [CLI Tool Clones](#rediscovering-america)
 - [Academic Paper Revision](#academic-shit-i-guess)
 
 ---
@@ -48,9 +49,10 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] A RegEx 
 - [ ] A TCP/IP Stack
 - [ ] A Basic Shell
-- [ ] A GameBoy Advanced Emulator
+- [ ] A GameBoy Advanced Emulator (probably will take a joruney from CHIP-8 to Gameboy to GBA as final destination)
 - [ ] A C Compiler 
-
+- [ ] A Bootloader
+- [ ] And eventually an OS
 ---
 
 ## Personal Fuckeries
@@ -58,7 +60,18 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] Prime number spitter for dwm status bar for no apperant reason besides being cool
 - [ ] More experiments for DWM environement 
 
+
+## Rediscovering America
+
+- [ ] Vim Clone (CLI text editor)
+- [ ] Gotop clone
+- [ ] Neofetch (or fastfetch) clone
+- [ ] cat clone 
+- [ ] echo clone (I mean isn't it just printf?)
+
+
 ## Academic Shit I Guess
 
-This part where I'll take some research paper and try to reproduce the findings of the said paper. better if I can change the dataset and hyperparameters to validate findings of the papers
-
+> This part where I'll take some research paper and try to reproduce the findings of the said paper. better if I can change the dataset and hyperparameters to validate findings of the papers
+>
+> Every project under here will be in a subfolder with the actual PDF of the program original program(if exists and open-sourced) and my implementation with my findings written with LaTex(I don't know LaTex yet) 
