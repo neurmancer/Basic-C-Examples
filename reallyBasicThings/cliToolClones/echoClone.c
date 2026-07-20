@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #define VERSION "Δ" //Well I'll put omega when I finish and Alpha is so 'A' looking-ass 
 //(as if alpha isn't the etymologic origin of 'alphabet'...it comes from alpha et beta) so delta is cool           
@@ -8,28 +9,51 @@
  
         Idea is building a echo clone and this hopefully teach me how to use CLI arguments with C so yeah no main(void) in this one
 
+        sup...it's morning I took the wheels from here
+
 */
 
 //This is where I believe in crt0.o supremacy since...yk I litearlly use CLI arguments for the first time
 
 
-void printHelp(void);       //As a template for morning yeah...I am this tired to parse arguments now
+void printHelp(void);       
+int stringLen(char *str);
 
-int main(int argc,char *argv[]) //Argv is what are the args and argc is how many arguments are there starting from 1 (the program itself)
+
+int main(int argc, char *argv[])
 {
-    setvbuf(stdout, NULL, _IONBF, 0); //so we don't buffer in case of getting flags like -n 
-    if (argc == 1) {
-        printf("\n"); //Standard echo behaviour giving an empty line
-    }
-    
-    else{
-        
-        for (int i = 1;i < argc ;i++) {
-            printf("%s\n",argv[i]);
+
+    setvbuf(stdout, NULL, _IONBF,0); //The prayer (Honestly? I only know flags and io streams the NULL and 0 is me YOLOing (zero is probably buffer size but still vibez))
+
+    int noNewline = 0;
+    int firstText = 1;
+
+    for (int i = 1; i < argc; i++) {
+        if (firstText && strcmp(argv[i], "-n") == 0) {
+            noNewline = 1;
+            continue;
         }
-        printf("\n");
+
+        if (firstText && strcmp(argv[i], "--help") == 0) {
+            printHelp();
+            return 0;
+        }
+
+        if (firstText && strcmp(argv[i], "--version") == 0) {
+            printf("echoClone %s\n", VERSION);
+            return 0;
+        }
+
+        firstText = 0;
+
+        if (i > 1 && strcmp(argv[i - 1], "-n") != 0)
+            putchar(' ');
+
+        fputs(argv[i], stdout); //Feeling ~~fancy~~ (nah just to not type \n and \0 to terminal for no reason)
     }
 
+    if (!noNewline)
+        putchar('\n');
 
     return(0);
 }
@@ -46,6 +70,18 @@ void printHelp(void)
 }   
 
 
+
+int stringLen(char *str)
+{
+    int count = 0;
+    char *strC = str;
+    while (*strC != '\0') {
+        count++;
+        strC++;
+    }
+
+    return(count);
+}
 
 /*
         Here is the fucking man page of echo for reference (I can steal with no problem since it's GPL-3 lol)
