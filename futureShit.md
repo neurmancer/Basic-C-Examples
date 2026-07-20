@@ -67,7 +67,7 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] Gotop clone
 - [ ] Neofetch (or fastfetch) clone
 - [ ] cat clone 
-- [ ] echo clone (I mean isn't it just printf?) _In progress(I'll finish tomorrow)_
+- [X] echo clone (I mean isn't it just printf?)
 - [ ] man clone...since I use this so much and that would be paying homage
 
 
