@@ -30,7 +30,7 @@
 
 #define WIDTH 1200.0
 #define HEIGHT 900.0
-
+#define FPS 120 //I am starting to get used this 120 thing my monitor is 180Hz I should be using that but...
 
 /* ============== OBJECTS ==================== */
 
@@ -42,9 +42,12 @@ int main(void)
 {
 
     InitWindow(WIDTH, HEIGHT, "PI THAT TAKES AN ETERNITY");
+    if(!IsWindowReady()) { return(-1); } 
     
+    SetTargetFPS(FPS);
 
-    Vector2 rectSize = (Vector2){WIDTH/5,(WIDTH/5)*sqrt(2.0)}; //The ususal ratio of A4 1/sqrt(2) which I CAN'T FORGET FOR SOME FUCKING REASON
+    Vector2 rectSize = (Vector2){WIDTH/5,(WIDTH/5)*sqrtf(2.0)}; //The ususal ratio of A4 1/sqrt(2) which I CAN'T FORGET FOR SOME FUCKING REASON
+    Vector2 rectPos = (Vector2){WIDTH/2-rectSize.x/2, HEIGHT/2-rectSize.y/2};
 
     while (!WindowShouldClose()) {
         
@@ -53,7 +56,7 @@ int main(void)
     
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawRectangle(WIDTH/2-rectSize.x/2, HEIGHT/2-rectSize.y/2, rectSize.x,rectSize.y, BEIGE); //I Guess it's centered now... 
+        DrawRectangle(rectPos.x, rectPos.y, rectSize.x,rectSize.y, BEIGE); //I Guess it's centered now... 
         //Note to future Neuro assing the abomination to a var (you know which abomination...besides don't do it in loop you'll recalculate it, if you do so)
         EndDrawing();
     }
