@@ -15,16 +15,22 @@
         And that's how I am gonna remember some math...since right now I don't know how to rotate a fixed size line to 'simulate' random needle drops on the 'paper' 
         probably I'll use cos and sin as always but question is: In which cursed ways?
         
-        And yeah this's gonna use raylib.h for visualization (so compile with -lraylib and have it installed in your system) but as always Imma leave this as a template
+        And yeah this's gonna use raylib.h for visualization (so compile with -lraylib -lm  and have it installed in your system) but as always Imma leave this as a template
         since I Got shit to do beforehand and this is gonna be a quickie...
+
+
+        Man I really can't start to work on something without defining the problem (and investigating) first in a huge comment...
+
 */
 
 /* =================== INCLUDES ================ */
 
-#include <math.h>
-#include <raylib.h>
+/* Neat headers */
+#include <limits.h>
 
-
+/*  Headers that requires flags */
+#include <math.h>    //To math.
+#include <raylib.h>  //For making my life easier
 
 /* ==================== DEFINES ================== */
 
@@ -32,11 +38,15 @@
 #define HEIGHT 900.0
 #define FPS 120 //I am starting to get used this 120 thing my monitor is 180Hz I should be using that but...
 
+#define LINE_AMOUNT 10 //10's good..we have 10 fingers, we use decimal, it's 2*5 both prime
+#define FONT_SIZE 35
+
 /* ============== OBJECTS ==================== */
 
 
 /* ================== GLOBALS ================= */
 
+void piTypeWriter(void);
 
 int main(void)
 {
@@ -48,19 +58,32 @@ int main(void)
 
     Vector2 rectSize = (Vector2){WIDTH/5,(WIDTH/5)*sqrtf(2.0)}; //The ususal ratio of A4 1/sqrt(2) which I CAN'T FORGET FOR SOME FUCKING REASON
     Vector2 rectPos = (Vector2){WIDTH/2-rectSize.x/2, HEIGHT/2-rectSize.y/2};
-
+    
+    float distance = rectSize.y/LINE_AMOUNT;
+    float needleLength = distance/2.0f;
+    
     while (!WindowShouldClose()) {
-        
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
     
     
-        BeginDrawing();
+        BeginDrawing(); //Lol...I've done everything except math
         ClearBackground(BLACK);
+        piTypeWriter();
         DrawRectangle(rectPos.x, rectPos.y, rectSize.x,rectSize.y, BEIGE); //I Guess it's centered now... 
-        //Note to future Neuro assing the abomination to a var (you know which abomination...besides don't do it in loop you'll recalculate it, if you do so)
+        for (int i = 0; i < LINE_AMOUNT;i++) {
+            //This is gonna be hard...actually it's easy but I am making it harder than it should be...so here it'll stay empty like that for a while
+        }
+        
+        
         EndDrawing();
     }
 
 
     return(0);
+}
+
+
+void piTypeWriter(void)
+{
+        DrawText(TextFormat("PI : %.48lf",acos(-1.0)),  32, 10, FONT_SIZE, BEIGE);
 }
