@@ -151,12 +151,15 @@ int main(void)
 
 /*  ################################################################################    */
     
+    int returnValue = 0;
+
+
     flaggedInts *xValues = (flaggedInts *)(malloc(sizeof(flaggedInts)*WIDTH));
     
-    if (xValues == NULL) { return(-1); }
+    if (xValues == NULL) { returnValue = -1; goto rome; }
     
     flaggedInts *yValues = (flaggedInts *)(malloc(sizeof(flaggedInts)*HEIGHT));
-    if (yValues == NULL) { return(-1); }
+    if (yValues == NULL) { returnValue = -1; goto rome; }
 
 
 
@@ -171,12 +174,12 @@ int main(void)
     int target = HEIGHT*WIDTH; //Why tf am I getting segfault?..hmmm
 
     unsigned int *primes = (unsigned int *)malloc(sizeof(unsigned int)*target); //And I abonden the idea of primes UP TO UINT_MAX which is pointless since we don't have that many pixels on screen
-    if (primes == NULL) { return(1); } //I'll probably add perror() later for each check but not now...
+    if (primes == NULL) { returnValue = -1; goto rome;} //I'll probably add perror() later for each check but not now...
     
     unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem
 
     Vector2 *pixels = (Vector2 *)malloc(sizeof(Vector2)*target);
-    if (pixels == NULL) { return(-1); }
+    if (pixels == NULL) { returnValue = -1; goto rome; }
  
     Vector2 *pixelIter = pixels;    //Yeah I am trying to use iters as much as possible...paranoia? Nope never heard of her...
 
@@ -227,6 +230,7 @@ int main(void)
     }
 
 
+rome :
 
     free(primes);
     free(xValues);
@@ -238,9 +242,13 @@ int main(void)
     yValues = NULL;
     pixels = NULL;
 
-    printf("If you can see this after pressing ESC we're memory safe\n");
+    if (returnValue == -1) {
+        perror("One of memory allocations bitched about this\n");
+    }
+    else { printf("If you can see this after pressing ESC we're memory safe\n"); }
+    
 
-    return(0);
+    return(returnValue);
 }
 
 void fillFlaggeds(flaggedInts *arr,int elements)

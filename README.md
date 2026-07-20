@@ -103,6 +103,14 @@
 
 ---
 
+### CLI Tool Clones
+
+> This is where Imma put the CLI Tool implementations from [**Rediscovering America**](futureShit.md#rediscovering-america)
+>
+> - **echo** clone (yeah just printf lol)
+
+--- 
+
 ### Unclassified Math Fuckery
 
 > > All math fuckery files moved into a subfolder in projects101 folder called mathFuckery
