@@ -23,7 +23,7 @@ int stringLen(char *str);
 int main(int argc, char *argv[])
 {
 
-    setvbuf(stdout, NULL, _IONBF,0); //The prayer (Honestly? I only know flags and io streams the NULL and 0 is me YOLOing (zero is probably buffer size but still vibez))
+    setvbuf(stdout, NULL, _IONBF,0); //The prayer (Honestly? I only know flags and io streams the NULL and 0 is me YOLOing (zero is probably buffer size but still vibez...))
 
     int noNewline = 0;
     int firstText = 1;
