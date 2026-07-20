@@ -68,6 +68,7 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] Neofetch (or fastfetch) clone
 - [ ] cat clone 
 - [ ] echo clone (I mean isn't it just printf?) _In progress(I'll finish tomorrow)_
+- [ ] man clone...since I use this so much and that would be paying homage
 
 
 ## Academic Shit I Guess
