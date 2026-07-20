@@ -19,8 +19,8 @@ int main(void)
     number.y = 3.50;
     printf("%f\n",number.y);
     number.z = 12.5;
-    printf("%d\n",number.z);
-    printf("%d\n",number.y);
+    printf("%f\n",number.z);
+    printf("%f\n",number.y);
     printf("%d\n",number.x);
       
 
