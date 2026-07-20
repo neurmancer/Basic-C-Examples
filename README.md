@@ -10,6 +10,7 @@
 - [Spicy C Nudes](#asm-disassemblies-of-files-for-those-low-level-gremlins-like-me-loves-spicy-c-nudes)
 - [Compiling & Running](#compile-and-run)
 - [Future Shit](futureShit.md)
+- [CLI Thingies](#cli-tool-clones)
 - [Books & Learning Sources](#nerdy-part)
 
 ---
@@ -107,7 +108,7 @@
 
 > This is where Imma put the CLI Tool implementations from [**Rediscovering America**](futureShit.md#rediscovering-america)
 >
-> - **echo** clone (yeah just printf lol)
+> - **echo** clone (yeah just printf lol) 
 
 --- 
 
