@@ -128,6 +128,8 @@
 
 > > Sierpinski's triangle visualizer using recursion and raylib (math broke me bad in this one lmfao) 
 
+> > Estimating π with Buffon's needle (I am sure this one is not accurate lmfao)
+
 > > A Discrete Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
 
 > > A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)

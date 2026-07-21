@@ -219,7 +219,7 @@ int main(void)
             pixelIter->y = posY;
             printf("Printed the prime : %u\ton x,y: %3d,%3d\n",primes[printablePrimes],posX,posY);
             printablePrimes++;
-            dLastPrint -= 0.1f;
+            dLastPrint -= 0.5f;
 
             DrawPixelV(*pixelIter,(Color){(primes[printablePrimes]*13) % 255, (primes[printablePrimes]*53) % 255,(primes[printablePrimes]*689) % 255,255}); //Prime based determinism (the best kind in universe)        
             pixelIter++;

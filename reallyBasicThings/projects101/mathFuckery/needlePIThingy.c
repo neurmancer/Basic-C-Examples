@@ -46,7 +46,7 @@
 /* Neat headers */
 
 
-#include <stdio.h>
+
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
@@ -61,7 +61,11 @@
 #define FPS 120 //I am starting to get used this 120 thing my monitor is 180Hz I should be using that but...
 
 #define LINE_AMOUNT 10 //10's good..we have 10 fingers, we use decimal, it's 2*5 both prime
-#define FONT_SIZE 35
+#define INTERVAL 1.0f
+
+#define FONT_SIZE 30
+
+
 
 /* ============== OBJECTS ==================== */
 
@@ -79,6 +83,7 @@ typedef struct{
 /* =========== FUCNTION PROTOTYPES ============ */
 
 void displayPI(void);
+void displayEstimatedPI(float val);
 
 Line randomNeedleDrop(Vector2 rectSize, float needleLength);
 
@@ -114,23 +119,31 @@ int main(void)
     unsigned int intersectionCount = 0;
     unsigned int iter = 0; //Lmfao that's not gonna end but yeah we're still being careful about overflow
     
-    float estimatedPI = 0;
+    float estimatedPI = 0.0;
+    
+    double dt = 0.0;
 
     while (!WindowShouldClose() && iter <= UINT_MAX) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
-        needleDropCount++;
+
+            //Needle shit
         Line needle = randomNeedleDrop(rectSize,needleLength);
+    
         needle.p1.x += rectPos.x;
         needle.p1.y += rectPos.y;
         needle.p2.x += rectPos.x;
         needle.p2.y += rectPos.y;
+    
 
+            //math shit
         bool intersection = false; //Yeah I am now a readibilty gremlin...except the ternary operation below lol 
+        needleDropCount++;
 
         // Collision parameters? I guess...
         float maxY = (needle.p1.y > needle.p2.y) ? needle.p1.y : needle.p2.y;
         float minY = (needle.p1.y < needle.p2.y) ? needle.p1.y : needle.p2.y;
 
+        
         for (int i = 1;i < LINE_AMOUNT;i++) {
             float lineY = lines[i].p1.y;
 
@@ -141,35 +154,38 @@ int main(void)
             }
         }
 
+        
         estimatedPI = (float) needleDropCount/(float) intersectionCount;
 
-        BeginDrawing(); //Lol...I've done everything except math
-
+        
+        BeginDrawing(); //Lol...I've done everything except math (math's done too)
         ClearBackground(BLACK);
         DrawRectangle(rectPos.x, rectPos.y, rectSize.x,rectSize.y, BEIGE); //I Guess it's centered now... 
+            
+
         
         displayPI();
+        displayEstimatedPI(estimatedPI);
+
         for (int i = 1; i < LINE_AMOUNT;i++) {
             DrawLineEx(lines[i].p1, lines[i].p2,2.0, PURPLE); // Dev blog: YOLO        
             //Won't use the upper edge of paper as a collision part and won't use the lower edge either so starting from 1 
             //Check collision accordingly (besides...does thickness fuck with probabilty? Please don't...)
         }
         
-        DrawLineEx(needle.p1,needle.p2,2,GREEN);
-
+            
         if (intersection) {
             DrawLineEx(needle.p1, needle.p2, 2, RED);
         }
-
+            
         else {
             DrawLineEx(needle.p1, needle.p2, 2, GREEN);
         }
-
+  
         EndDrawing();
         iter++;
     }
 
- 
 
     return(0);
 }
@@ -178,6 +194,11 @@ int main(void)
 void displayPI(void)
 {
         DrawText(TextFormat("PI : %.48lf",PI),  32, 10, FONT_SIZE, BEIGE); //Using PI or M_PI is me admiting defeat...
+}
+
+void displayEstimatedPI(float val)
+{
+    DrawText(TextFormat("Estimated PI : %.14f",val),  32, 45, FONT_SIZE, BEIGE);
 }
 
 Line randomNeedleDrop(Vector2 rectSize,float needleLength)
