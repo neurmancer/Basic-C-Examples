@@ -12,7 +12,7 @@
 - [Future Shit](futureShit.md)
 - [CLI Thingies](#cli-tool-clones)
 - [Books & Learning Sources](#nerdy-part)
-
+- [LICENSE](#legal-shit)
 ---
 
 # Basic Projects and Lectures
@@ -151,7 +151,12 @@
 
 > **Functional Files**
 
-> - Non-failed second modern-attempt (_working_) with no tutorial (I'll add shit in the future let me learn first TnT) 
+> - Non-failed second modern-attempt with no tutorial (I'll add shit in the future let me learn first TnT) 
+>
+> - A working 'Hello World' driver with basic troubleshooting
+>
+> - A **FUCKING** RICKROLL MODULE THAT HAUNTS YOUR KERNEL (ffplay on system required...if not anything can happen...it's ring 0 bruh)
+
 
 #### **Networking Projects**
 
@@ -214,3 +219,11 @@ cc filename.c -o output #To compile
 > - **Advanced Bash-Scripting** (haven't started to read yet)
 > - **Clean Archicture**
 > - **Grokking Algorithms** (The classic beginner friendly DSA book)
+
+
+## Legal Shit 
+
+> This is where I legit studied lmfao
+> This repository uses GPL-3.0 (or higher) license to ensure open-source distribution.
+> Don't make me say those as if I am in a tuxedo you got the idea. 
+> For the license details check [**LICENSE**](LICENSE.md)
