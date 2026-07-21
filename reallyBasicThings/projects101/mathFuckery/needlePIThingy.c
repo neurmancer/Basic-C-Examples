@@ -108,11 +108,7 @@ int main(void)
         //It's time for the blind faith babyy
     }
     
-    BeginDrawing();
-    ClearBackground(BLACK);
-    DrawRectangle(rectPos.x, rectPos.y, rectSize.x,rectSize.y, BEIGE); //I Guess it's centered now... 
-        
-    EndDrawing();
+
 
     unsigned int needleDropCount = 0;
     unsigned int intersectionCount = 0;
@@ -140,7 +136,7 @@ int main(void)
 
             if (lineY >= minY && lineY <= maxY) {
                 intersection = true;
-                intersection++;
+                intersectionCount++;
                 break;
             }
         }
@@ -149,6 +145,9 @@ int main(void)
 
         BeginDrawing(); //Lol...I've done everything except math
 
+        ClearBackground(BLACK);
+        DrawRectangle(rectPos.x, rectPos.y, rectSize.x,rectSize.y, BEIGE); //I Guess it's centered now... 
+        
         displayPI();
         for (int i = 1; i < LINE_AMOUNT;i++) {
             DrawLineEx(lines[i].p1, lines[i].p2,2.0, PURPLE); // Dev blog: YOLO        
@@ -170,7 +169,7 @@ int main(void)
         iter++;
     }
 
-debug: 
+ 
 
     return(0);
 }
