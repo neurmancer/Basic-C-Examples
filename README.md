@@ -62,6 +62,7 @@
 > - %.*s format for printf 
 > - Basic FizzBuzz program 
 > - Conditionals intro
+> - Basic calculator
 > - Basic enum101 lectureishy (yeah I started to make words up)
 > - Struct intro 
 > - Unions intro

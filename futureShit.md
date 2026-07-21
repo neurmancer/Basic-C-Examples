@@ -1,4 +1,4 @@
-# Project To-Do
+# Future Shit
 
 > This is what I'll do in the future without a particular order nor whether finish it or not just a roadmap ig...I forget shit otherwise
 
