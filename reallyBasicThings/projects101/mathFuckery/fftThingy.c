@@ -42,9 +42,9 @@ int main(void) {
     double *x = fill(SAMPLE_SIZE);
     complexNum *X = (complexNum *)malloc(SAMPLE_SIZE * sizeof(complexNum));
 
-    if (x == NULL){goto cleanUp; retValue = -1; }
+    if (x == NULL){retValue = -1; goto cleanUp; }
 
-    if (X == NULL){goto cleanUp; retValue = -1; } //Yeah in my universe every malloc error returns -1 so I can suffer in peace as I debug afterwards
+    if (X == NULL){retValue = -1; goto cleanUp; } //Yeah in my universe every malloc error returns -1 so I can suffer in peace as I debug afterwards
 
 
     for (int i = 0; i < SAMPLE_SIZE; i++) {
