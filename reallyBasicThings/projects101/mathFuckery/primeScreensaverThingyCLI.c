@@ -303,7 +303,7 @@ void handleSIGWINCH(int sig)
     if (sig == SIGWINCH)
     {
         if(ioctl(STDOUT_FILENO,TIOCGWINSZ,&window) == -1) { /*No perror since async being a bitch*/ }
-        flag =-1;
+        flag = -1;
     }
     else { flag = 2; }
     }
