@@ -24,8 +24,21 @@
 
         Man I really can't start to work on something without defining the problem (and investigating) first in a huge comment...
 
+            For the record I'll be using DEG2RAD for readibilty even tho I wanna do (M_PI/180.f * rand() % 360) but that's exactly what DEG2RAD does
 
+            What I need to do
+            0- Create the needle using trigo fuckery 
+            1-Draw needles on the screen A4 
+            2- compute the ratio 
+            3- Show the ratio under the M_PI constant (which is our reference)
+            4- Clear the screen partially to print the new estimation (probably with 0.1 interval between each drop)
+            5-Repeat up until UINT_MAX lol 
 
+            Now...how the fuck I can calculate the lines x values won't change (since lines will be separeted on y-axis)
+            p1.x and p2.x will be same for each line... and p1 and p2 will be different for each line but will same for the same line
+             
+            Man I hate analitical geometry I HATE GEOMETRY IN GENERAL
+            
 */
 
 /* =================== INCLUDES ================ */
@@ -49,9 +62,20 @@
 /* ============== OBJECTS ==================== */
 
 
+typedef struct{
+
+    Vector2 p1; //Starting point: x1,y1
+    Vector2 p2; //Second point: x2,y2
+    //Yeah I noted those since I Fucking forget after closing the file
+}Line;
+
 /* ================== GLOBALS ================= */
 
-void piTypeWriter(void);
+
+
+/* =========== FUCNTION PROTOTYPES ============ */
+
+void displayPI(void);
 
 int main(void)
 {
@@ -63,8 +87,19 @@ int main(void)
 
     Vector2 rectSize = (Vector2){WIDTH/5,(WIDTH/5)*sqrtf(2.0)}; //The ususal ratio of A4 1/sqrt(2) which I CAN'T FORGET FOR SOME FUCKING REASON
     Vector2 rectPos = (Vector2){WIDTH/2-rectSize.x/2, HEIGHT/2-rectSize.y/2};
+    if (LINE_AMOUNT == 0) { return(-2); /*0 division check*/}
     
-    float distance = rectSize.y/LINE_AMOUNT;
+    const float distance = rectSize.y / LINE_AMOUNT;
+
+    Line lines[LINE_AMOUNT] = { 0 };     //TO make my job easier with collision detection
+
+    for (int i = 0;i < LINE_AMOUNT;i++) {
+        lines[i].p1 = (Vector2){rectPos.x,(rectPos.y+(i*distance))}; //Is that casting? I mean I am using the (Vector2) and (Line) thing but I feel like that's something different than (float) or (int *)
+        lines[i].p2 = (Vector2){(rectPos.x+rectSize.x),(rectPos.y+(i*distance))};
+        //It's time for the blind faith babyy
+    }
+
+
     float needleLength = distance/2.0f;
     
     while (!WindowShouldClose()) {
@@ -73,10 +108,12 @@ int main(void)
     
         BeginDrawing(); //Lol...I've done everything except math
         ClearBackground(BLACK);
-        piTypeWriter();
+        displayPI();
         DrawRectangle(rectPos.x, rectPos.y, rectSize.x,rectSize.y, BEIGE); //I Guess it's centered now... 
-        for (int i = 0; i < LINE_AMOUNT;i++) {
-            //This is gonna be hard...actually it's easy but I am making it harder than it should be...so here it'll stay empty like that for a while
+        for (int i = 1; i < LINE_AMOUNT;i++) {
+            DrawLineEx(lines[i].p1, lines[i].p2,2.0, PURPLE); // Dev blog: YOLO        
+            //Won't use the upper edge of paper as a collision part and won't use the lower edge either so starting from 1 
+            //Check collision accordingly (besides...does thickness fuck with probabilty? Please don't...)
         }
         
         
@@ -88,7 +125,9 @@ int main(void)
 }
 
 
-void piTypeWriter(void)
+void displayPI(void)
 {
         DrawText(TextFormat("PI : %.48lf",acos(-1.0)),  32, 10, FONT_SIZE, BEIGE);
 }
+
+
