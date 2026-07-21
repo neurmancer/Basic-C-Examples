@@ -44,8 +44,12 @@
 /* =================== INCLUDES ================ */
 
 /* Neat headers */
-#include <limits.h>
 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <time.h>
 /*  Headers that requires flags */
 #include <math.h>    //To math.
 #include <raylib.h>  //For making my life easier
@@ -72,54 +76,101 @@ typedef struct{
 /* ================== GLOBALS ================= */
 
 
-
 /* =========== FUCNTION PROTOTYPES ============ */
 
 void displayPI(void);
 
+Line randomNeedleDrop(Vector2 rectSize, float needleLength);
+
 int main(void)
 {
+
+    srand(time(NULL));
 
     InitWindow(WIDTH, HEIGHT, "PI THAT TAKES AN ETERNITY");
     if(!IsWindowReady()) { return(-1); } 
     
     SetTargetFPS(FPS);
 
-    Vector2 rectSize = (Vector2){WIDTH/5,(WIDTH/5)*sqrtf(2.0)}; //The ususal ratio of A4 1/sqrt(2) which I CAN'T FORGET FOR SOME FUCKING REASON
+    Vector2 rectSize = (Vector2){WIDTH/3,(WIDTH/3)*sqrtf(2.0)}; //The ususal ratio of A4 1/sqrt(2) which I CAN'T FORGET FOR SOME FUCKING REASON
     Vector2 rectPos = (Vector2){WIDTH/2-rectSize.x/2, HEIGHT/2-rectSize.y/2};
     if (LINE_AMOUNT == 0) { return(-2); /*0 division check*/}
     
     const float distance = rectSize.y / LINE_AMOUNT;
+    const float needleLength = distance/2.0f;
+    
 
     Line lines[LINE_AMOUNT] = { 0 };     //TO make my job easier with collision detection
-
+    
     for (int i = 0;i < LINE_AMOUNT;i++) {
         lines[i].p1 = (Vector2){rectPos.x,(rectPos.y+(i*distance))}; //Is that casting? I mean I am using the (Vector2) and (Line) thing but I feel like that's something different than (float) or (int *)
         lines[i].p2 = (Vector2){(rectPos.x+rectSize.x),(rectPos.y+(i*distance))};
         //It's time for the blind faith babyy
     }
-
-
-    float needleLength = distance/2.0f;
     
-    while (!WindowShouldClose()) {
+    BeginDrawing();
+    ClearBackground(BLACK);
+    DrawRectangle(rectPos.x, rectPos.y, rectSize.x,rectSize.y, BEIGE); //I Guess it's centered now... 
+        
+    EndDrawing();
+
+    unsigned int needleDropCount = 0;
+    unsigned int intersectionCount = 0;
+    unsigned int iter = 0; //Lmfao that's not gonna end but yeah we're still being careful about overflow
+    
+    float estimatedPI = 0;
+
+    while (!WindowShouldClose() && iter <= UINT_MAX) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
-    
-    
+        needleDropCount++;
+        Line needle = randomNeedleDrop(rectSize,needleLength);
+        needle.p1.x += rectPos.x;
+        needle.p1.y += rectPos.y;
+        needle.p2.x += rectPos.x;
+        needle.p2.y += rectPos.y;
+
+        bool intersection = false; //Yeah I am now a readibilty gremlin...except the ternary operation below lol 
+
+        // Collision parameters? I guess...
+        float maxY = (needle.p1.y > needle.p2.y) ? needle.p1.y : needle.p2.y;
+        float minY = (needle.p1.y < needle.p2.y) ? needle.p1.y : needle.p2.y;
+
+        for (int i = 1;i < LINE_AMOUNT;i++) {
+            float lineY = lines[i].p1.y;
+
+            if (lineY >= minY && lineY <= maxY) {
+                intersection = true;
+                intersection++;
+                break;
+            }
+        }
+
+        estimatedPI = (float) needleDropCount/(float) intersectionCount;
+
         BeginDrawing(); //Lol...I've done everything except math
-        ClearBackground(BLACK);
+
         displayPI();
-        DrawRectangle(rectPos.x, rectPos.y, rectSize.x,rectSize.y, BEIGE); //I Guess it's centered now... 
         for (int i = 1; i < LINE_AMOUNT;i++) {
             DrawLineEx(lines[i].p1, lines[i].p2,2.0, PURPLE); // Dev blog: YOLO        
             //Won't use the upper edge of paper as a collision part and won't use the lower edge either so starting from 1 
             //Check collision accordingly (besides...does thickness fuck with probabilty? Please don't...)
         }
         
-        
+        DrawLineEx(needle.p1,needle.p2,2,GREEN);
+
+        if (intersection) {
+            DrawLineEx(needle.p1, needle.p2, 2, RED);
+        }
+
+        else {
+            DrawLineEx(needle.p1, needle.p2, 2, GREEN);
+        }
+
         EndDrawing();
+        iter++;
     }
 
+debug: 
 
     return(0);
 }
@@ -127,7 +178,20 @@ int main(void)
 
 void displayPI(void)
 {
-        DrawText(TextFormat("PI : %.48lf",acos(-1.0)),  32, 10, FONT_SIZE, BEIGE);
+        DrawText(TextFormat("PI : %.48lf",PI),  32, 10, FONT_SIZE, BEIGE); //Using PI or M_PI is me admiting defeat...
 }
 
+Line randomNeedleDrop(Vector2 rectSize,float needleLength)
+{
+    Line needlePos = { 0 };
+    needlePos.p1.x = ((float)rand() / RAND_MAX)*rectSize.x;
+    needlePos.p1.y = ((float)rand() / RAND_MAX)*rectSize.y;
 
+    float rangle = ((float)rand() / RAND_MAX)*180;
+    rangle *= DEG2RAD; //Converting to radians
+    //Random+angle = rangle (yeah addition works on words too) 
+    needlePos.p2.x = needlePos.p1.x + needleLength*cosf(rangle);
+    needlePos.p2.y = needlePos.p1.y + needleLength*sinf(rangle);
+    
+    return(needlePos);
+}
