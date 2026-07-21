@@ -15,11 +15,16 @@
         And that's how I am gonna remember some math...since right now I don't know how to rotate a fixed size line to 'simulate' random needle drops on the 'paper' 
         probably I'll use cos and sin as always but question is: In which cursed ways?
         
+        I guss I found out... I mean rotation is just x' = x + r*cos(x) and y' = y + r*sin(x) right? RIGHT? I mean I can do that...but real question is:
+        DO I NEED GRAVITIY simulation to drop the needles? or just nah?...Damn...
+
         And yeah this's gonna use raylib.h for visualization (so compile with -lraylib -lm  and have it installed in your system) but as always Imma leave this as a template
         since I Got shit to do beforehand and this is gonna be a quickie...
 
 
         Man I really can't start to work on something without defining the problem (and investigating) first in a huge comment...
+
+
 
 */
 
