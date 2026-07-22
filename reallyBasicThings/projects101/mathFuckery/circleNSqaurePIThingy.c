@@ -1,6 +1,6 @@
 
 /*
-        Wassup? Today's PI fuckery is... yet another Monter Carlo method to estimate pi which is putting a circle in a square 
+        Wassup? Today's PI fuckery is... yet another Monte Carlo method to estimate pi which is putting a circle in a square 
 
         It's 4AM...I won't even question why I am doing this, this time but here is the Important Shit to Know:
         0- We need a circle (or just ring) with radius of r
@@ -18,9 +18,9 @@
 
         Under construction parts:
 
-            0- Math related parts lol (calculaton for PI/4) 
-            1- Dynamic memory allocation (Realligator coming)
-            2- Explicit error handling
+            0- Math related parts lol (calculaton for PI/4) That remains... 
+            1- Dynamic memory allocation (Realligator came)
+            2- Explicit error handling (On it's way)
 */
 
 
@@ -28,6 +28,8 @@
 
 #include <stdio.h>  //To break Inertia 
 #include <stdlib.h> //for dynamic memory shit 
+#include <err.h>
+#include <sys/errno.h>
 #include <time.h>   //For random seeding...lmfao I really started to write corpo-like
 #include <raylib.h> //For graphics
     
@@ -45,7 +47,8 @@
 #define WIDTH 1200.0f
 #define HEIGHT 900.0f
 
-#define FPS 120     //I fucking swear if I type 120 for FPS one more time I'll reinvent V-sync (or atleast look into raylib.h to see if it has a flag for it)
+#define FPS 180     //I fucking swear if I type 120 for FPS one more time I'll reinvent V-sync (or atleast look into raylib.h to see if it has a flag for it)
+
 
 /* UI Design defines */
 #define BG CLITERAL(Color){56,0,0,255}
@@ -59,8 +62,8 @@
 #define C_CENTER_X (WIDTH/2) //I do not fucking trust the gaslit text substitudes with math priority
 #define C_CENTER_Y (HEIGHT/2)
 
-#define BUFFER 4096
-
+#define BUFFER 1024 //Yeah I love working with a page of bytes even it means nothing 4096 is a neat number
+#define POINTS_PER_SECOND 180.0f
 
 /* =========== OBJECTS ============= */
 
@@ -85,17 +88,30 @@ typedef struct{
 
 /* =========== FUNCTION PROTOTYPES ============ */
 
-/*I have a custom return hierarchy... void, int, other basic types, custom types, and pointer returns*/
+/*I have a custom return hierarchy... void, int, other basic types, custom types, and pointer returns just below the type itself like int and (int *)*/
 void drawShapes(Shapes shapes);
+void drawThePoints(Vector2 *pointArr,size_t size);
 void displayPI(void);
+void displayEstimatedPI(float estPI);
 
 int initEnv(void);
+int isInCircle(Vector2 point,Ring targetCirc);
+float estimatePI(DropCounter dropCount);
+
 
 Shapes setShapes(Vector2 pos,float radius);
+
 Vector2 getRandPoint(Vector2 pos, float radius);
+Vector2 *realligator(Vector2 *arr,int *currentSize );
 
 int main(void)
 {
+
+    //General Init/Set up 
+    int retVal = 0;
+    int currentArrSize = BUFFER;
+
+    printf("This printf here because I want to shut cc warnings\n");
     //Yeah I made the entropy level platform dependent lmfao...even before using it 
     #ifdef WINDOWS_SUX
         srand(time(NULL));
@@ -103,58 +119,95 @@ int main(void)
         srand(time(NULL)^getpid());
     #endif
     
+    Vector2 *points = (Vector2 *)(malloc(sizeof(Vector2)*currentArrSize));
+    if (points == NULL) {
+        retVal = (-1);
+        goto clean;
+    }
     
     //Future me problem : Make this shit full screen
-    if (initEnv()) {return(-1); } //That's why cleaner lmfao why I didn't think of that before
+    if (initEnv()) {retVal = (-13); goto clean; } //That's way cleaner lmfao why I didn't think of that before
     
     Vector2 startPos = (Vector2){C_CENTER_X, C_CENTER_Y};
     
     Shapes shapes = setShapes(startPos,C_RADIUS);
 
     //That's gonna be dynamic 
-    Vector2 points[100000] =  { 0 };
-    for (int i = 0;i < 100000;i++) {
-        points[i] = getRandPoint(startPos,C_RADIUS);
-    }
-    
+
+   
     DropCounter drops = { 0 };
+    float estimatedPI = 0.0f;
 
-/* ======== Debug field ======== */
+    // 4*(in circle) / Total 
 
-
-//    goto debug;
-
-
-/* __________________________*/
-
+    float pointAccumulator = 0.0f;
     int iter = 0;
     //Game loop
-    while (!WindowShouldClose() && iter < 100000) {
-        
+    while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
 
+        pointAccumulator += GetFrameTime() * POINTS_PER_SECOND;
+        int pointsToAdd = (int)pointAccumulator;
+        pointAccumulator -= pointsToAdd;
 
+        for (int i = 0; i < pointsToAdd; ++i) {
+                if (iter >= currentArrSize) {
+                    points = realligator(points,&currentArrSize);
+                    if (currentArrSize == -1) {
+                        retVal = (-1);
+                        goto clean;
+                    }
+
+            }
+
+            points[iter] = getRandPoint(startPos,C_RADIUS);
+            ++drops.totalPoints;
+            if (isInCircle(points[iter], shapes.ring)) {
+                ++drops.inCirclePoints;
+            }
+            ++iter;
+        }
+
+        estimatedPI = estimatePI(drops);
 
         //Draw loop 
         BeginDrawing();
         ClearBackground(BG);
         displayPI();
+        displayEstimatedPI(estimatedPI);
         drawShapes(shapes);
-        //That's gonna be in a function
-        for (int i = 0;i < iter;i++) {
-            DrawPixelV(points[i],PURPLE);
-        }
+        drawThePoints(points,iter);
         EndDrawing();
-        iter++;
-    
     }
 
 
-debug :     //Honest take goto for debugging feels so easy to use... Poor Man's gdb
+clean :     //Honest take goto for debugging feels so easy to use... Poor Man's gdb
 
+    free(points);
+    points = NULL; //Or should I type (void *)0 lmfao
+    CloseWindow();
 
-    return(0);
+    switch (retVal)
+    {
+        case -1:
+            err(ENOMEM,"You ran out of RAM bruh");
+            break;
+        case -13:
+            perror("Window got fucked up\n");
+            break;
+        default:
+            break;
+    }
+    
+    return(retVal);
 }
+
+/*
+    Allocated data by far: 1
+    Frees:1 
+
+    Yeah I am a memory accountant I guess...
+*/
 
 
 void drawShapes(Shapes shapes)
@@ -173,19 +226,57 @@ void displayPI(void)
         DrawText(TextFormat("PI : %.22lf",PI),  32, 10, FONT_SIZE, BEIGE); //Using PI or M_PI is me admiting defeat...
 }
 
+void displayEstimatedPI(float estPI)
+{
+        DrawText(TextFormat("PI : %.15f",estPI),  32, 40, FONT_SIZE, BEIGE); 
+}
+
+void drawThePoints(Vector2 *pointArr,size_t size)    //Lmfao I wanted to be fancy with size_t 
+{   
+    int i = 0;
+    while (i < size) {
+        DrawPixelV(pointArr[i],PURPLE);
+        ++i;
+    }
+} 
 
 
 int initEnv(void)
 {
     //Config flags
-    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    SetConfigFlags(FLAG_MSAA_4X_HINT);    
+    //Bruh fuck V-sync we YOLO
     
     //init win
     InitWindow(WIDTH, HEIGHT,"PI but with Circles");
     if (!IsWindowReady()) { TraceLog(LOG_ERROR,"Something happened?\n"); return(-1); }
     SetTargetFPS(FPS);
-
     return(0);
+}
+
+
+int isInCircle(Vector2 point,Ring targetCirc)
+{
+    float relativeX = point.x - targetCirc.pos.x;
+    float relativeY = point.y - targetCirc.pos.y;
+    float distanceSquared = (relativeX * relativeX) + (relativeY * relativeY);
+    float radiusSquared = targetCirc.radius * targetCirc.radius;
+
+    if (distanceSquared <= radiusSquared) {
+        return(1);
+    }
+    return(0);
+}
+
+float estimatePI(DropCounter dropCount)
+{
+    if (dropCount.totalPoints == 0) {
+        return(0.0f);
+    }
+
+    float estimatedPI = 4.0f*((float) dropCount.inCirclePoints / dropCount.totalPoints);
+
+    return(estimatedPI);
 }
 
 Shapes setShapes(Vector2 pos,float radius)
@@ -217,4 +308,23 @@ Vector2 getRandPoint(Vector2 pos, float radius)
     randPoint.y += leftCorner.y;
 
     return(randPoint);
+}
+
+Vector2 *realligator(Vector2 *arr,int *currentSize)
+{
+    if (arr == NULL) {
+        arr = (Vector2 *)(malloc(sizeof(Vector2)*BUFFER));
+        if (arr == NULL) { *currentSize = -1; return(NULL); }
+    
+        return(arr);
+    }
+
+    size_t newSize = sizeof(Vector2)*((*currentSize)+BUFFER);
+    Vector2 *temp = (Vector2 *)(realloc(arr,newSize));
+
+    if (temp == NULL) { *currentSize = -1; return(arr); }
+    arr = temp;
+    
+    (*currentSize)+=BUFFER;
+    return(arr);
 }
