@@ -18,9 +18,10 @@
 
 ## Parental Advisory
 
-> This repo by its nature('cuz me) **has a lot of inappropriate words and spelling mistakes.**
+> This repo by its nature('cuz me) **has a lot of inappropriate words and spelling mistakes.** <br>
 > And nope I won't fix my spelling mistakes since I'd take so long and I can implement another thingy in that time
-
+<br><br><br>
+---
 
 # Basic Projects and Lectures
 
