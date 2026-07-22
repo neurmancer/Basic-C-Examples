@@ -114,11 +114,11 @@ void recursiveDrawing(Vector2 peak,float length,int maxDepth,int currentDepth);
 
 int main(void)
 {
-
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(WIDTH, HEIGHT,"Thingyangle");
     if (!IsWindowReady()) { perror("Windows suck as always\n"); return(-1); }
     SetTargetFPS(FPS);
-    SetConfigFlags(FLAG_MSAA_4X_HINT);
+
 
     int iterDepth = 0;
     int depth = 0;
