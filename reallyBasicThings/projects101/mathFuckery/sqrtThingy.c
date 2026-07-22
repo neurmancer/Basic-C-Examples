@@ -17,7 +17,7 @@
     5-simplify it, y-3 = 1/2
     6- Add +3 to each side and you'll get y = 3,5 and real answer is = ~3.46410161514
     
-    And I guess this is the simple first degree Taylor series centered at the nearest integer solution
+    And I guess this is the simple first degree Taylor series centered at the nearest integer solution (lie that was an old commit now it's a Newton-Raphson iteration )
     hence I just want to try to implement this nothing crazy and I'll probably fuck up lol
 
 */
@@ -55,18 +55,26 @@ int main(void)
 
 float sqrty(unsigned int val)
 {
-    if(val == 0){ return(0.0f); } //I can't work with divide by zero lol
-    float result = 0;
-    int i = 1;
+    if (val == 0) { return(0.0f); }
+    if (val == 1) { return(1.0f); }
     
-    for(;i <= (float)val/i && (i+1) <= (float)val/(i+1);i++){ }
-    
-    float z = i;
-    float divide = (float)(val-(z*z)) /(float)(2*z);
-    result = z+divide;
+    //find the highest bit pos (I feel like Carmack rn lmfao)
+    int msb = 0;
+    unsigned int temp = val;
+    while (temp >>= 1) msb++;
 
-    return(result);
+    int expon = msb/2;
+
+    float z = (float) (1u << expon);    //u for unsigned ykr?(as if that's the only probelm with this abomination)
+    for (int iter = 0; iter < 4; iter++) {  
+        // 3-4 iterations = stupid accurate (so we're partially abondening the first degree mindeset ig)
+        z = (z + val / z) * 0.5f;
+    }
+    
+    return(z);
 }
+
+
 int floortle(float x)
 {
     int result;
@@ -79,17 +87,20 @@ int floortle(float x)
         : "x" (x)           // Input operand (%1): an SSE/XMM register
     );
     return(result);
+    //and funfact this is just casting (int) over a float I just made it way obsucre for no reason
 }
 
 int ceilchu(float x)
 {
     int result;
+    int temp = x*10;
+    if (!temp%10){
+        result = x;
+        return(result);
+    }
 
-    __asm__ (
-        "cvttss2si %1, %0"  
-        : "=r" (result)     
-        : "x" (x)           
-    );
+    result = floortle(x);
+
     return(result+1);
     //Lol simplest answer isn't it? 'just floor+1 is ceil bruh'
 }
