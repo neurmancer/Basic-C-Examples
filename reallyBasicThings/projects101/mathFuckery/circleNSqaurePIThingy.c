@@ -52,7 +52,8 @@
 
 /* UI Design defines */
 #define BG CLITERAL(Color){56,0,0,255}
-#define ANTI_BG CLITERAL(Color){0,56,56,255} //I guess CLITERAL is a post-C99 thing but not sure yet
+#define ANTI_BG CLITERAL(Color){0,28,56,255} //I guess CLITERAL is a post-C99 thing but not sure yet
+#define I_RAN_OUT_OF_COLOR_NAME (Color){0,56,28,255}
 #define FONT_SIZE 30
 
 //To future me: Do the thing (nah just kidding just make the color palette look beautiful for now it's just random colors...my eyes are bleeding) 
@@ -217,25 +218,25 @@ void drawShapes(Shapes shapes)
         DrawRectangleLines(shapes.rect.x, shapes.rect.y, shapes.rect.width, shapes.rect.height,BLACK); //Contrast is cool shit ngl
         
         //Circ and contrast
-        DrawCircle(shapes.ring.pos.x,shapes.ring.pos.y,shapes.ring.radius,BEIGE);
+        DrawCircle(shapes.ring.pos.x,shapes.ring.pos.y,shapes.ring.radius,ANTI_BG);
         DrawCircleLines(shapes.ring.pos.x,shapes.ring.pos.y,shapes.ring.radius,BLACK);
 }
 
 void displayPI(void)
 {
-        DrawText(TextFormat("PI : %.22lf",PI),  32, 10, FONT_SIZE, BEIGE); //Using PI or M_PI is me admiting defeat...
+        DrawText(TextFormat("PI : %.22lf",PI),  32, 10, FONT_SIZE, I_RAN_OUT_OF_COLOR_NAME); //Using PI or M_PI is me admiting defeat...
 }
 
 void displayEstimatedPI(float estPI)
 {
-        DrawText(TextFormat("PI : %.15f",estPI),  32, 40, FONT_SIZE, BEIGE); 
+        DrawText(TextFormat("PI : %.15f",estPI),  32, 40, FONT_SIZE, I_RAN_OUT_OF_COLOR_NAME); 
 }
 
 void drawThePoints(Vector2 *pointArr,size_t size)    //Lmfao I wanted to be fancy with size_t 
 {   
     int i = 0;
     while (i < size) {
-        DrawPixelV(pointArr[i],PURPLE);
+        DrawPixelV(pointArr[i],I_RAN_OUT_OF_COLOR_NAME);
         ++i;
     }
 } 

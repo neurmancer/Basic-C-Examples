@@ -4,6 +4,7 @@
 
 ## Table of Contents
 
+- [Disclaimer](#parental-advisory)
 - [Basic Projects and Lectures](#basic-projects-and-lectures)
 - [Retro Games](#retro-shit)
 - [Funny Things](#funny-things)
@@ -14,6 +15,12 @@
 - [Books & Learning Sources](#nerdy-part)
 - [LICENSE](#legal-shit)
 ---
+
+## Parental Advisory
+
+> This repo by its nature('cuz me) **has a lot of inappropriate words and spelling mistakes.**
+> And nope I won't fix my spelling mistakes since I'd take so long and I can implement another thingy in that time
+
 
 # Basic Projects and Lectures
 
@@ -29,6 +36,7 @@
 > - Handle subfoldering better shit is growing so fast...
 > - Maybe...just maybe *slow down turbo*  **NAH** go for it
 
+> - Sup? Future me from 2 days after the self-note...I really fucking need to re-organize every subfolder
 ---
 
 ### PRNGForBeginners
@@ -121,7 +129,7 @@
 
 > > Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
 
-> > A sqrt function approximation attempt to scratch my curious itch (it's not accurate)
+> > A sqrt function approximation attempt to scratch my curious itch (it's not accurate but kinda is atp...)
 
 > > Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 
@@ -131,7 +139,7 @@
 
 > > Estimating π with Buffon's needle (I am sure this one is not accurate lmfao)
 
-> > Estimating π with Monte Carlo Square and Circle Type Shit (I must change the colors it's fucking eye-bleeding)
+> > Estimating π with Monte Carlo Square and Circle type shit 
 
 > > A Discrete Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
 
