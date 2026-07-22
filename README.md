@@ -131,6 +131,8 @@
 
 > > Estimating π with Buffon's needle (I am sure this one is not accurate lmfao)
 
+> > Estimating π with Monte Carlo Square and Circle Type Shit (I must change the colors it's fucking eye-bleeding)
+
 > > A Discrete Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
 
 > > A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)
