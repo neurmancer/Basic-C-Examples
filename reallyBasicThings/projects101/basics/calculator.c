@@ -50,6 +50,9 @@
 
             this is the shitties calc you can see, go buy a casio one they have fancy graphs and shit
 
+
+            Here is a bug full-filled (by copy-paste shit) calculator implementation where I didn't evne try to run...
+            This is an explanation why I don't do those kind of things...because I FUCKING CAN'T
 */
 
 

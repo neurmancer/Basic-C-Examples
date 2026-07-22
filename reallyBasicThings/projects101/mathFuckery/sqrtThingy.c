@@ -22,14 +22,30 @@
 
 */
 
-
+// don't take the shiny pokemons too seriously they have vulns (due the the conversiton from IEEE754 to two's complement convention)
+//but still better than gets() tho (that's why they've removed the gets() abomination in C99 standard)
+//And if you can't tell the shiny ones ARE architecture dependent(x86_64 to be specific so no ARM toaster can use my shiny ones)
 float sqrty(unsigned int val); //To avoid conflict with math.h
 
+//Yk what?...while we're at it let's build round(), ceil() and floor() too
+int floortle(float x);
+int ceilchu(float x);
+int roundizard(float x);
 
 int main(void)
 {
 
     printf("%3.5f",sqrty(689));
+    float a = 13.53;
+    float b = 53.13;
+    printf("%d\n",floortle(a));
+    printf("%d\n",floortle(b));
+
+    printf("%d\n",ceilchu(a));
+    printf("%d\n",ceilchu(b));
+
+    printf("%d\n",roundizard(a));
+    printf("%d\n",roundizard(b));
 
 
 
@@ -50,4 +66,40 @@ float sqrty(unsigned int val)
     result = z+divide;
 
     return(result);
+}
+int floortle(float x)
+{
+    int result;
+    
+    //Spoiler here is an abomination just for you lmfao
+    
+    __asm__ (
+        "cvttss2si %1, %0"  // Instruction: convert float to truncated(shortened) int
+        : "=r" (result)     // Output operand (%0): an integer register You can think it as stdin and stdout(Which is 0,1 macros for stdio)
+        : "x" (x)           // Input operand (%1): an SSE/XMM register
+    );
+    return(result);
+}
+
+int ceilchu(float x)
+{
+    int result;
+
+    __asm__ (
+        "cvttss2si %1, %0"  
+        : "=r" (result)     
+        : "x" (x)           
+    );
+    return(result+1);
+    //Lol simplest answer isn't it? 'just floor+1 is ceil bruh'
+}
+
+int roundizard(float x)
+{
+    int temp = floortle(x);
+    if (x - temp < 0.5) {
+        return(temp);
+    }
+
+    return(temp+1);
 }
