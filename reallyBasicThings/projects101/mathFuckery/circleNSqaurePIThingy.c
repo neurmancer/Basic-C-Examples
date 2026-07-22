@@ -14,6 +14,8 @@
 
         this file also requires -lraylib as you compile
 
+        I probably need to hold previous points generated to display them...so DYANMIC MEMORY SHIT IT IS
+
 */
 
 
@@ -25,9 +27,10 @@
 #include <raylib.h> //For graphics
     //For getpid 
 #ifdef __unix__
+
 #include <unistd.h>
 
-#elif defined(__WIN32)
+#elif (__WIN32)
 
 #define WINDOWS_SUX 1
 
