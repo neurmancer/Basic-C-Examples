@@ -11,7 +11,7 @@
 - [Retro Games](#retro-shit)
 - [Funny Things](#funny-things)
 - [Spicy C Nudes](#asm-disassemblies-of-files-for-those-low-level-gremlins-like-me-loves-spicy-c-nudes)
-- [Compiling & Running](#compile-and-run)
+- [Compiling & Running](#dependencies-compile-and-run)
 - [Future Shit](futureShit.md)
 - [CLI Thingies](#cli-tool-clones)
 - [Books & Learning Sources](#nerdy-part)
@@ -66,6 +66,7 @@
 
 > - [Intro Lectures](reallyBasicThings/basics/)
 <br>
+
 > - Hello, world program
 > - %.*s format for printf 
 > - Basic FizzBuzz program 
@@ -87,6 +88,7 @@
 
 > - [Lectures](reallyBasicThings/pointerHell)
 <br> 
+
 > - Basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
 > - Second pointer lecture about array navigation and fucking with .rodata 
 > - Pointer&function relation lecture
@@ -204,6 +206,8 @@
 
 > - [Kernel Drivers](/reallyBasicThings/projects101/lowLevelStuff/kernelStuff/)
 <br>
+
+> Well...if you're here you should know that those kernel drivers can fuck your system bad...I mean Eldritch Horrors levels of bad so first, execute at your own risk and use Virtual Machines (but it works on bare metal too tho...) but anyways use QEMU or smthng 
 
 > Baby's Kernel Drivers (We'll learn together)
 
