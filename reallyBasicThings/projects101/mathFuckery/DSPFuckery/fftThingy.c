@@ -3,6 +3,8 @@
 #include <math.h>
 
 #define SAMPLE_SIZE 128 //Mandatory
+#define INVERSE 0       //Just a test case won't be using in this program (addition for speeding up my big num implementations)
+
 
 /*      Here we are implementing FFT out of blue as I promised... in the DFT file...first don't fucking expect descriptions 
         Even I don't even fucking know how tf I've achieved this but I did...
@@ -26,7 +28,7 @@ typedef struct {
 #define PI acos(-1.0) //I am not wrapping that this time since I can't be bothered by it (note to future self: STOP PUTTING ';'s on defines FOR FUCK SAKE )
 
 void bit_reverse(complexNum *X, int N); //The index swapper thingy
-void iterative_fft(complexNum *X, int N);
+void iterative_fft(complexNum *X, int N,int inverse);
 
 double *fill(int sampleSize);
 
@@ -52,7 +54,7 @@ int main(void) {
         X[i].im = 0.0;
     }
 
-    iterative_fft(X, SAMPLE_SIZE);
+    iterative_fft(X, SAMPLE_SIZE,INVERSE);
 
     double mag = 0.0;
     for (int i = 0; i < SAMPLE_SIZE; i++) {
@@ -113,27 +115,29 @@ void bit_reverse(complexNum *X, int N) {
     }
 }
 
-void iterative_fft(complexNum *X, int N) {
+void iterative_fft(complexNum *X, int N, int inverse) {
     bit_reverse(X, N);
 
-    //That's where I lost control...verbose begins
     for (int len = 2; len <= N; len <<= 1) {           
-        double angle = -2.0 * PI / len;                 
+        double angle = -2.0 * PI / len * (inverse ? -1.0 : 1.0);  // <-- THIS IS THE FIX
         complexNum wlen = {cos(angle), sin(angle)};    
 
         for (int i = 0; i < N; i += len) {             
             complexNum w = {1.0, 0.0};                 
 
-            for (int j = 0; j < len/2; j++) {          // butterfly (or intersection idk. Tho it really looks like a street intersection if you look it up going like the fancy S we used to draw on the notebooks)
+            for (int j = 0; j < len/2; j++) {          
                 complexNum u = X[i + j];
-                complexNum v = {X[i + j + len/2].re * w.re - X[i + j + len/2].im * w.im,
-                                X[i + j + len/2].re * w.im + X[i + j + len/2].im * w.re};
+                complexNum v = {
+                    X[i + j + len/2].re * w.re - X[i + j + len/2].im * w.im,
+                    X[i + j + len/2].re * w.im + X[i + j + len/2].im * w.re
+                };
+
                 X[i + j].re = u.re + v.re;
                 X[i + j].im = u.im + v.im;
                 X[i + j + len/2].re = u.re - v.re;
                 X[i + j + len/2].im = u.im - v.im;
 
-                // w*wlen for next butterfly
+                // Update twiddle
                 double t_re = w.re * wlen.re - w.im * wlen.im;
                 double t_im = w.re * wlen.im + w.im * wlen.re;
                 w.re = t_re;
@@ -141,9 +145,16 @@ void iterative_fft(complexNum *X, int N) {
             }
         }
     }
+//      Lmfao I came back and added inverse so I can use my own FFT for big num thingies 
+    if (inverse) {
+        for (int i = 0; i < N; i++) {
+            X[i].re /= N;
+            X[i].im /= N;
+        }
+    }
 }
 
-
+   
 /*Same experimental function from dftThingy.c since I even forgot how the fuck I coded it but changed the freq to 7Hz to make it closer to 7.83Hz (For the vibez...iykyk)
     Tho that felt so 'new-agist'...what's next? an OS? I'd probably be omw Terry Davis'ing it too...to create BrothelOS using UnholyC lol
 */
