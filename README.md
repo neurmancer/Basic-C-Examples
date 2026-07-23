@@ -36,11 +36,7 @@
 
 > First if you are not me you shall pass
 
-> - Handle subfoldering better shit is growing so fast...
-> - Maybe...just maybe *slow down turbo*  **NAH** go for it
-
-> - Sup? Future me from 2 days after the self-note...I really fucking need to re-organize every subfolder 
-> - Fine..I've done it mostly it's much cleaner now...(1 more day future me) but add a ERROR_CODES.md just to try unifying a error notation
+> add a ERROR_CODES.md just to try unifying an error notation through out the files 
 ---
 
 ### PRNGForBeginners

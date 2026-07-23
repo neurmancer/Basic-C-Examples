@@ -7,6 +7,9 @@
         
         So...here's the tea: We'll get 2 blocks, one big and one small then make the big one bully small one 
         Question is 'how?'
+
+
+            Yk? let's leave it like that for a while...I've burnt out again
 */
 
 /* =========== INCLUDES ============== */
