@@ -57,7 +57,7 @@
 > Lecturish part Table of Contents
 
 - [Intro](#intro-lectures)
-- [Pointer Inferno](#pointerhell)
+- [Pointer Inferno](#pointer-inferno)
 - [DynamicMemoryShit](#dynamicmemoryshit)
 - [Preprocessors](#_ifnwin32-yippie-part)
 - [UNCLASSIFED MATH FUCKERY](#unclassified-math-fuckery)
@@ -68,7 +68,7 @@
 ### Intro Lectures
 
 > - [Intro Lectures](reallyBasicThings/basics/)
-
+<br>
 > - Hello, world program
 > - %.*s format for printf 
 > - Basic FizzBuzz program 
@@ -86,8 +86,10 @@
 
 ---
 
-### PointerHell 
+### Pointer Inferno 
 
+> - [Lectures](reallyBasicThings/pointerHell)
+<br> 
 > - Basic pointer101 lecture with syntax and detailed explanations without making it scary (yet)
 > - Second pointer lecture about array navigation and fucking with .rodata 
 > - Pointer&function relation lecture
@@ -101,6 +103,9 @@
 
 ### DynamicMemoryShit
 
+> - [Dynamic Memory Shit](reallyBasicThings/DynamicMemoryShit/)
+<br> 
+
 > - Subfolder for dynamic memory allocation
 > - Introduction for malloc() 
 > - Simple malloc usage with arrays 
@@ -111,12 +116,18 @@
 
 ### _IFNWIN32 "Yippie" Part
 
+> - [Preprocessor Lectures](preprocessor/)
+<br> 
+
 > - First lecture using define and macros
 > - Second lecture Conditional blocks (IFDEF,IFNDEF,ELIF)
 
 ---
 
 ### CLI Tool Clones
+
+> - [Lectures](reallyBasicThings/cliToolClones/)
+<br> 
 
 > This is where Imma put the CLI Tool implementations from [**Rediscovering America**](futureShit.md#rediscovering-america)
 >
@@ -126,46 +137,73 @@
 
 ### Unclassified Math Fuckery
 
-> > All math fuckery files moved into a subfolder in projects101 folder called mathFuckery
+#### Mini Math Fuckery ToC 
 
+* [CLI Math Fuckery](#cli-math-fuckery)
+
+* [Geometry Fuckery](#geomoetry-fuckery)
+
+* [CLI Math Fuckery](#cli-math-fuckery)
+
+
+#### CLI math fuckery
 > > Fibonacci sequence function (with loops and recursion)
+
+> > A sqrt function approximation attempt to scratch my curious itch (it's not accurate but kinda is atp...and the others are just there for no reason)
 
 > > Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
 
-> > A sqrt function approximation attempt to scratch my curious itch (it's not accurate but kinda is atp...)
+> > Screensaver that paints screen from scratch using primes  with ANSI for CLI 
 
 > > Koch Curve from Binary interpretation I made (not sure if it's accurate) 
+
+#### Geomoetry Fuckery 
 
 > > Koch Snowflake using Thue-Morse Sequence (same thing with Koch Curve file but with graphics(raylib required) and yeah still not sure if it's accurate)
 
 > > Sierpinski's triangle visualizer using recursion and raylib (math broke me bad in this one lmfao) 
 
-> > Estimating π with Buffon's needle (I am sure this one is not accurate lmfao)
+##### PI fuckery
 
-> > Estimating π with Monte Carlo Square and Circle type shit 
+> > - Estimating π with Buffon's needle (I am sure this one is not accurate lmfao)
+
+> > - Estimating π with Monte Carlo Square and Circle type shit 
+
+#### DSP Fuckery
 
 > > A Discrete Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
 
 > > A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)
 
+#### Physics Fuckery
+
 > > Doppler Effect Simulator (using raylib.h so you gotta have it too)
 
 > > Screensaver that paints screen from scratch using primes  with raylib 
 
-> > Screensaver that paints screen from scratch using primes  with ANSI for CLI 
+
 
 ---
 
 ### Low-Level Stuff
 
+> - [Kernel Drivers](/reallyBasicThings/projects101/lowLevelStuff/kernelStuff/)
+<br>
+
 > Baby's Kernel Drivers (We'll learn together)
 
 > **None-functional Attempt files** (whether not compiling or fucking your kernel they'll be here)
+
+> - [Kernel Drivers](/reallyBasicThings/projects101/lowLevelStuff/kernelStuff/notWorking/)
+<br>
 
 > - First failed attempt added(using TLDP's old sources)
 > - A kernel driver that attempts to haunt you with pirated rickroll and ffplay
 
 > **Functional Files**
+
+> - [Kernel Drivers](/reallyBasicThings/projects101/lowLevelStuff/kernelStuff/working/)
+<br>
 
 > - Non-failed second modern-attempt with no tutorial (I'll add shit in the future let me learn first TnT) 
 >
@@ -174,7 +212,9 @@
 > - A **FUCKING** RICKROLL MODULE THAT HAUNTS YOUR KERNEL (ffplay on system required...if not anything can happen...it's ring 0 bruh)
 
 
-#### **Networking Projects**
+### Networking Projects
+> - [Networking](reallyBasicThings/projects101/lowLevelStuff/networking/)
+<br> 
 
 > - _**Networking**_ Files has their own [README](/reallyBasicThings/projects101/lowLevelStuff/networking/README.md) in the networking subfolder for lecture descritions this part will only be used to display my cursed projects 
 > - A basic HTTP TCP server using sockets (pure C...no external libs) **Will be Developed Further**
@@ -186,6 +226,9 @@
 
 ## Retro Shit
 
+> - [Retro shit...](reallyBasicThings/retroShit/)
+<br> 
+
 - Pong (Rite of _Passage_)  
 - CRT/VHS filter (SUMMONS CTHULHU **DO NOT APPROACH**) __ABONDENED__
 - Galaga (_Not started to work on yet_)
@@ -194,6 +237,8 @@
 
 ## Funny Things
 
+- [Funny Things](thingsThatSupposedToBasicButOverengineeredForNothing/)
+
 - Bring Me To Life lyrics spitter for CLI (prototype shitty jukebox from day 3)
 - A program that gives you an output file and spits a text on terminal anyways because I used stderr instead of stdout
 - Added a walking segfault PTSD on purpose 
@@ -201,6 +246,8 @@
 ---
 
 ## ASM DISASSEMBLIES OF FILES FOR THOSE LOW-LEVEL GREMLINS LIKE ME LOVES SPICY C NUDES
+
+- [C Nudes](asmCNudes/)
 
 - Basically Every script I'll put in the repo will get it's assembly file with the same name 
 - I may add -O2 flag to make it torturing to get what even the program was in the first place if I feel like it
@@ -250,6 +297,10 @@ cc filename.c -o output -lraylib -lm    #or one of them...if needed, source file
 
 ## Nerdy Part
 
+> - [**PDFS**](NerdyShit/)
+<br> 
+
+
 > Those are the books I've digged and wanna read/ already read and think would help anyone. Here're the ***PDFs*** for each
 
 > - **The C Programming Language 2nd Edition** by K&R (The Holy Bible...ehm acktually it's Old Testament)
@@ -262,7 +313,8 @@ cc filename.c -o output -lraylib -lm    #or one of them...if needed, source file
 
 ## Legal Shit 
 
-> This is where I legit studied lmfao
+> This is where I legit studied to make it 'legally binding' lmfao
 > This repository uses GPL-3.0 (or higher) license to ensure open-source distribution.
 > Don't make me say those as if I am in a tuxedo you got the idea. 
 > For the license details check [**LICENSE**](LICENSE.md)
+
