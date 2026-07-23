@@ -144,8 +144,9 @@
 
 * [Geometry Fuckery](#geomoetry-fuckery)
 
-* [CLI Math Fuckery](#cli-math-fuckery)
+* [Digital Signal Processing Fuckery](#dsp-fuckery)
 
+* [Physics Fuckery](#physics-fuckery)
 
 #### CLI math fuckery
 
