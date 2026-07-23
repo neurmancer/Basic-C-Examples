@@ -16,7 +16,7 @@
 - [CLI Thingies](#cli-tool-clones)
 - [Books & Learning Sources](#nerdy-part)
 - [LICENSE](#legal-shit)
-- [Farewell](#i-will-be-back-eventuallyk)
+- [Farewell](#i-will-be-back-eventually)
 ---
 
 ## Parental Advisory
