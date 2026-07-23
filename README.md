@@ -67,7 +67,7 @@
 
 ### Intro Lectures
 
-- **Now projects101 got a renewed folder tree for math fuckery and low-level stuff**
+> - [Intro Lectures](reallyBasicThings/basics/)
 
 > - Hello, world program
 > - %.*s format for printf 
@@ -187,7 +187,7 @@
 ## Retro Shit
 
 - Pong (Rite of _Passage_)  
-- CRT/VHS filter (SUMMONS CTHULHU **DO NOT APPROACH**) __ABONDEDED__
+- CRT/VHS filter (SUMMONS CTHULHU **DO NOT APPROACH**) __ABONDENED__
 - Galaga (_Not started to work on yet_)
 
 ---
@@ -209,14 +209,37 @@
 
 ---
 
-## Compile and Run
+## Dependencies Compile and Run
+
+- This part is where I list shit so your compiler won't scream 
+
+``` bash
+
+# Ubunut / Debian
+
+sudo apt install libraylib-dev clang
+
+# Arch 
+
+sudo pacman -Syu raylib clang
+
+# Fedora
+
+sudo dnf install raylib-devel clang
+
+```
+
+
+- - -
 
 ```bash
 #For the ones don't know how to compile and run 
 #if there is additional lib/flag for any specific file it will be commented within file itself.
 #Mostly used one being -lm to link math.h (future update some of them requires raylib for graphs so you gotta use -lraylib too for said files)
 
-cc filename.c -o output #To compile
+cc filename.c -o output #To compile basic files 
+
+cc filename.c -o output -lraylib -lm    #or one of them...if needed, source file will specify the needed linking flags
 
 ./output 
 #To run (but since all the files written for 
@@ -227,7 +250,7 @@ cc filename.c -o output #To compile
 
 ## Nerdy Part
 
-> Those are the books I've digged and wanna read/ already read and think would help anyones here's the ***PDFs*** for each
+> Those are the books I've digged and wanna read/ already read and think would help anyone. Here're the ***PDFs*** for each
 
 > - **The C Programming Language 2nd Edition** by K&R (The Holy Bible...ehm acktually it's Old Testament)
 > - **Linux System Programming**

@@ -43,7 +43,7 @@ Yeah all retro... I am a retro guy, after all.
 > This is where I'll lay some concepts then pick one when I feel fancy to implent and dive head-first (and yeah I realized that I used 'A' too much in this part)
 
 - [ ] A Bytecode interpreter in C
-- [ ] A Basic Virutal Machine (since that's somehow all related to things I'll list below this one) 
+- [ ] A Basic Virtual Machine (since that's somehow all related to things I'll list below this one) 
 - [ ] A Garbage Collector (Mark&Sweep yk...the one Lua's using)
 - [ ] A Memory Allocator (always sbrk)
 - [ ] A RegEx 
