@@ -22,7 +22,7 @@
 - [ ] Build a basic pendulum simulator.
 - [ ] Create a function visualizer. (I know it's vauge but I don't know what to do...let's say something like Desmos or Wolfram Alpha)
 - [ ] Render Tupper's self-referential graph (possible, but no promises since I haven't implemented big nums in C yet and int overflow bitching about it).
-- [ ] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement('Ehm actually it's typologically 2 Dimensional' I do know Mr...Nerd).
+- [ ] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement('Ehm actually it's topologically 2 Dimensional' I do know Mr...Nerd).
 
 ---
 
