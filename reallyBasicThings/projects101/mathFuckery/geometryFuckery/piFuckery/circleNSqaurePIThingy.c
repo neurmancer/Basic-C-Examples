@@ -63,7 +63,7 @@
 #define C_CENTER_X (WIDTH/2) //I do not fucking trust the gaslit text substitudes with math priority
 #define C_CENTER_Y (HEIGHT/2)
 
-#define BUFFER 1024 //Yeah I love working with a page of bytes even it means nothing 4096 is a neat number
+#define BUFFER 4096 //Yeah I love working with a page of bytes even it means nothing 4096 is a neat number
 #define POINTS_PER_SECOND 180.0f
 
 /* =========== OBJECTS ============= */
