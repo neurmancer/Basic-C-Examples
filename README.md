@@ -147,6 +147,10 @@
 
 
 #### CLI math fuckery
+
+> - [Kernel Drivers](/reallyBasicThings/projects101/mathFuckery/)
+<br>
+
 > > Fibonacci sequence function (with loops and recursion)
 
 > > A sqrt function approximation attempt to scratch my curious itch (it's not accurate but kinda is atp...and the others are just there for no reason)
@@ -159,11 +163,18 @@
 
 #### Geomoetry Fuckery 
 
+> - [Geometry Fuckery](/reallyBasicThings/projects101/mathFuckery/geometryFuckery/)
+<br>
+
 > > Koch Snowflake using Thue-Morse Sequence (same thing with Koch Curve file but with graphics(raylib required) and yeah still not sure if it's accurate)
 
 > > Sierpinski's triangle visualizer using recursion and raylib (math broke me bad in this one lmfao) 
 
 ##### PI fuckery
+* <p>Yeah it needs its own sub-sub folder since I can't stop building estimators for π...(gamba addict) </p>
+
+> - [π Fuckery](/reallyBasicThings/projects101/mathFuckery/geometryFuckery/piFuckery/)
+<br>
 
 > > - Estimating π with Buffon's needle (I am sure this one is not accurate lmfao)
 
@@ -171,11 +182,17 @@
 
 #### DSP Fuckery
 
+> - [Fucking with Digital Signal Processing](/reallyBasicThings/projects101/mathFuckery/DSPFuckery/)
+<br>
+
 > > A Discrete Fourier Transform with cosine samples as a placeholder for a future FFT implamentation (no libs except math.h) 
 
 > > A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)
 
 #### Physics Fuckery
+
+> - [Physics Fuckery](/reallyBasicThings/projects101/mathFuckery/physicsFuckery/)
+<br>
 
 > > Doppler Effect Simulator (using raylib.h so you gotta have it too)
 
