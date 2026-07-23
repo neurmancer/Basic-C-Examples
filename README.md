@@ -174,7 +174,7 @@
 
 #### **Networking Projects**
 
-> - _**Networking**_ Files has their own readme in the networking subfolder for lecture descritions this part will only be used to display my cursed projects 
+> - _**Networking**_ Files has their own [README](/reallyBasicThings/projects101/lowLevelStuff/networking/README.md) in the networking subfolder for lecture descritions this part will only be used to display my cursed projects 
 > - A basic HTTP TCP server using sockets (pure C...no external libs) **Will be Developed Further**
 > - Other Low-Level Stuff
 > - A mainless C file that you can run (for no apperant reason)

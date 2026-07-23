@@ -4,7 +4,7 @@ This readme exists for classification sake or I'll loose my mind dwelling into f
 
 # Table Of Contents
 
-* [ToC](#table-of-content)
+* [ToC](#table-of-contents)
 
 * [Why this readme exists?](#purpose-of-this-folder)
 
