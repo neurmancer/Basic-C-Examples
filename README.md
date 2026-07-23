@@ -20,7 +20,7 @@
 
 > This repo by its nature('cuz me) **has a lot of inappropriate words and spelling mistakes.** <br>
 > And nope I won't fix my spelling mistakes since I'd take so long and I can implement another thingy in that time
-<br><br><br>
+<br><br>
 ---
 
 # Basic Projects and Lectures
@@ -185,7 +185,7 @@
 ## Retro Shit
 
 - Pong (Rite of _Passage_)  
-- CRT/VHS filter (at the moment it's just a blue-blocker lol) _On Standby_
+- CRT/VHS filter (SUMMONS CTHULHU **DO NOT APPROACH**) __ABONDEDED__
 - Galaga (_Not started to work on yet_)
 
 ---

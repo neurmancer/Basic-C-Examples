@@ -477,7 +477,7 @@ void updateAudioPanAndVolume(AudioStream stream, const Vehicle* car, const Recta
                        (carPos.y - obsPos.y)*(carPos.y - obsPos.y));
 
 
-    float pan = 0.5f + (xDiff / (WIDTH * 0.6f));   // 0.6 is a tuning factor
+    float pan = 0.0f + (xDiff / (WIDTH * 0.6f));   // 0.6 is a tuning factor (no shit Sherlock)
 
     if (pan < -1.0f) pan = -1.0f;
     if (pan > 1.0f) pan = 1.0f;
