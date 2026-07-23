@@ -25,15 +25,16 @@
 
 //Physics Object defines 
 
-#define SIZE_SMALL 13.0f       //They're square so... one side is enough
-#define SIZE_BIG 53.0f
+#define SIZE_SMALL 130.0f       //They're square so... one side is enough
+#define SIZE_BIG 250.0f
 
 
 
 /* ================== STRUCTS ================= */
 
 typedef struct{
-    double x, vx, m;        // X : POS | VX: Velocity | m: Mass (not slope lol) 
+    Vector2 pos;
+    double  vx, m;        // X : POS | VX: Velocity | m: Mass (not slope lol) 
     double edgeSize;        //Again...they're square
     //Yeah since I don't plan to move on Y axis one 1 dimensional position and vel would work Ig...
 }Block;
@@ -102,12 +103,13 @@ int setUpWindow(void)
 
 void setBlocks(Block *bigOne, Block *lessBigOne)
 {
-    bigOne->x = WIDTH/3;
+    bigOne->pos = (Vector2){WIDTH/3,HEIGHT/4};       //Lol I learned what the cast looking as thing is btw it's a C compound literal  
     bigOne->vx = -0.5f;      //Towards left  (I lowkey really started to type like a corpo but better than forcing jokes)
     bigOne->m = 100.0f;
     bigOne->edgeSize = SIZE_BIG;
 
-    lessBigOne->x = (2*WIDTH)/3;
+    float offset = SIZE_BIG-SIZE_SMALL;
+    lessBigOne->pos = (Vector2){(2*WIDTH)/3,(HEIGHT/4)+offset};
     lessBigOne->vx = 0.0f;  
     lessBigOne->m = 10.0f;
     lessBigOne->edgeSize = SIZE_SMALL;
@@ -116,6 +118,6 @@ void setBlocks(Block *bigOne, Block *lessBigOne)
 void drawBlocks(Block blockArr[2])
 {
     for (int i = 0;i < 2;i++) {
-        DrawRectangle(blockArr[i].x,HEIGHT/4, blockArr[i].edgeSize , blockArr[i].edgeSize, WHITE);
+        DrawRectangle(blockArr[i].pos.x,blockArr[i].pos.y, blockArr[i].edgeSize , blockArr[i].edgeSize, WHITE);
     }
 }
