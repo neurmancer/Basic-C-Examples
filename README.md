@@ -39,7 +39,8 @@
 > - Handle subfoldering better shit is growing so fast...
 > - Maybe...just maybe *slow down turbo*  **NAH** go for it
 
-> - Sup? Future me from 2 days after the self-note...I really fucking need to re-organize every subfolder
+> - Sup? Future me from 2 days after the self-note...I really fucking need to re-organize every subfolder 
+> - Fine..I've done it mostly it's much cleaner now...(1 more day future me) but add a ERROR_CODES.md just to try unifying a error notation
 ---
 
 ### PRNGForBeginners
@@ -148,7 +149,7 @@
 
 #### CLI math fuckery
 
-> - [Kernel Drivers](/reallyBasicThings/projects101/mathFuckery/)
+> - [CLI Math Fuckery](/reallyBasicThings/projects101/mathFuckery/)
 <br>
 
 > > Fibonacci sequence function (with loops and recursion)
