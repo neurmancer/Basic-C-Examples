@@ -16,6 +16,7 @@
 - [CLI Thingies](#cli-tool-clones)
 - [Books & Learning Sources](#nerdy-part)
 - [LICENSE](#legal-shit)
+- [Farewell](#i-will-be-back-eventuallyk)
 ---
 
 ## Parental Advisory
@@ -338,3 +339,9 @@ cc filename.c -o output -lraylib -lm    #or one of them...if needed, source file
 > Don't make me say those as if I am in a tuxedo you got the idea. 
 > For the license details check [**LICENSE**](LICENSE.md)
 
+
+### I will be back (eventually)
+
+> All my github repos will be at a complete halt 'till next summer...
+> I'll try to add new things as well but if you see less commit than 10 in a week
+> Just so you know that...I am not working on a project so...fare well

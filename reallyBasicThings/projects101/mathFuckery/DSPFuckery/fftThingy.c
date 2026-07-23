@@ -3,8 +3,11 @@
 #include <math.h>
 
 #define SAMPLE_SIZE 128 //Mandatory
-#define INVERSE 0       //Just a test case won't be using in this program (addition for speeding up my big num implementations)
 
+#ifndef INVERSE
+    #define INVERSE 0       //Just a test case won't be using in this program (addition for speeding up my big num implementations)
+    //Yeah I did this to be able to try invese 1 and 0 at compile time with -DINVERSE=0 (or 1) flag without touching code
+#endif
 
 /*      Here we are implementing FFT out of blue as I promised... in the DFT file...first don't fucking expect descriptions 
         Even I don't even fucking know how tf I've achieved this but I did...
@@ -36,7 +39,7 @@ int main(void) {
 
     int retValue = 0;
 
-    if ((SAMPLE_SIZE & (SAMPLE_SIZE-1)) != 0) {
+    if ((SAMPLE_SIZE & (SAMPLE_SIZE-1)) != 0 || SAMPLE_SIZE != 0) {
         printf("Bruh this is not your fancy FFTW\nUse something that's power of 2\n");
         return(-13);
     }
