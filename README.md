@@ -281,19 +281,22 @@
 
 - This part is where I list shit so your compiler won't scream 
 
+- For raylib dependencies check their original guideline *[Raylib Linux Setup](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux)
+
 ``` bash
 
-# Ubunut / Debian
 
-sudo apt install libraylib-dev clang
+# Ubuntu / Debian
+
+sudo apt install clang
 
 # Arch 
 
-sudo pacman -Syu raylib clang
+sudo pacman -Syu clang
 
 # Fedora
 
-sudo dnf install raylib-devel clang
+sudo dnf install  clang
 
 ```
 
