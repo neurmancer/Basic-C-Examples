@@ -39,7 +39,7 @@ int main(void) {
 
     int retValue = 0;
 
-    if ((SAMPLE_SIZE & (SAMPLE_SIZE-1)) != 0 || SAMPLE_SIZE != 0) {
+    if ((SAMPLE_SIZE & (SAMPLE_SIZE-1)) != 0 || SAMPLE_SIZE == 0) {
         printf("Bruh this is not your fancy FFTW\nUse something that's power of 2\n");
         return(-13);
     }
