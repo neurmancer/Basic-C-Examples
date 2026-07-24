@@ -16,6 +16,9 @@
 
         Limitations: I'll be using Newtonian mechanics so...accuracy is an unknown to me 'till I finish and evaluate accuracy 
         and probably calculation efficiency will be O(n^2) at least for my initial draft  
+
+
+        and while we're on this... I lowkey wanna merge this with c*t effect attempt... it would look beautiful
 */
 
 /* ============ INCLUDES ============ */
@@ -23,13 +26,14 @@
 #include <raylib.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 /*=============== DEFINES ============== */
 
-#define WIDTH 1200
-#define HEIGHT 900
+#define WIDTH 1280
+#define HEIGHT 1080
 
-#define COLOR_ARR_SIZE 24
+#define COLOR_ARR_SIZE 3
 
 #ifndef VSYNC 
     #define VSYNC 0 //If you want VSYNC type -DVSYNC=1 as you compile
@@ -88,12 +92,18 @@ typedef struct{
 
 /* ============= FUNCTION PROTOTYPES ============= */
 
+//Setup 
 void generateParticle(Particle *particle, Config *config);    //I wanna call it particle instead of body regardless of the terminology
 void setParticles(Particle *particle, int particleAmount, Config *config);
+
+//Render
+void displayParticles(Particle *particles, int particleAmount);
+
 
 int setupEnv(void);     //Raylib Window manager wrapper 
 
 double randDouble(double min, double max);
+double calculateDiagonal(Particle *p1, Particle *p2);              //Actually it's hypothenus but I can't spell that right consecutively so I'll use 'diagonal' 
 
 
 Color randColor();
@@ -109,16 +119,28 @@ int main(void)
         return(-1); //Change error codes as you go
     }
 
+    int particleAmount = 100;
+    Particle *particles = (Particle *)(malloc(sizeof(Particle)*particleAmount));
+    if (particles == NULL) { free(particles); return(-1); }
+    Config cfg = {  .minRadius=1, 
+                    .maxRadius=10, 
+                    .initVelocity=20,
+                };
+
+    setParticles(particles, particleAmount, &cfg);
+
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
     
         //Drawing
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawFPS(10, 10);    
+        displayParticles(particles, particleAmount);
         EndDrawing();
 
     }
+
+    free(particles);
 
     return(0);
 }
@@ -156,8 +178,19 @@ void setParticles(Particle *particle, int particleAmount, Config *config)
         generateParticle(&particle[i],config);
     }
 
+
 }
 
+
+void displayParticles(Particle *particles, int particleAmount)
+{
+
+    for (int i = 0; i < particleAmount; i++) {
+        if (particles[i].status) {
+            DrawCircle((float)particles[i].position.x, (float)particles[i].position.y, (float)particles[i].r, particles[i].color);
+        }
+    }
+}
 
 int setupEnv(void)
 {
@@ -192,10 +225,20 @@ double randDouble(double min, double max)
     return(value);
 }
 
+double calculateDiagonal(Particle *p1, Particle *p2)
+{
+    //2D analytical axis notation 
+    double x = p1->position.x - p2->position.x;
+    double y = p1->position.y - p2->position.y;
+    
+    return(sqrt((x*x)+(y*y)));
+}
+
+
 
 
 Color randColor(void)
 {
-    Color colors[COLOR_ARR_SIZE] = { 0 };
+    Color colors[COLOR_ARR_SIZE] = { RED,GREEN,BLUE };
     return(colors[rand()%COLOR_ARR_SIZE]);
 }
