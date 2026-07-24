@@ -181,6 +181,10 @@
 
 > > - Estimating π with Monte Carlo Square and Circle type shit 
 
+> > - Calculating π using two boxes and collision (yk...the 3Blue1Brown video)
+
+> > - **Spoiler Alert**:Next π fuckery will be, Ramanujan-type series for calculating 1/π
+
 #### DSP Fuckery
 
 > - [Fucking with Digital Signal Processing](/reallyBasicThings/projects101/mathFuckery/DSPFuckery/)

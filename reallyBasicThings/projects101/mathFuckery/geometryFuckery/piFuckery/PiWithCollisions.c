@@ -20,7 +20,11 @@
         
 
         It does work...
-        
+        Now time for important shit to know:
+            1- I won't explain anything you can check the video for yourself
+            2- If you tweak the ratio make sure you gota a 1/100 ratio or you'll get half-assed answers
+            3- I do know this is not how I usually comment...but it works lol
+
 
 
 */
