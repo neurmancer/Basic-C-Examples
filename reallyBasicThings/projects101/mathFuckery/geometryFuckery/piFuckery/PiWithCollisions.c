@@ -19,6 +19,9 @@
         I guess that's correct 
         
 
+        It does work...
+        
+
 
 */
 
@@ -44,14 +47,21 @@
 #define BASE_VEL_SMALL 0.0f
 #define BASE_VEL_BIG -100.00f       //Was it 1m/s in the video? should I coin a pixel to meter function...or simply growing vel won't fuck the system? Fuck... 
 
-#define BIG_MASS 10000.0f
-#define SMALL_MASS 10.0f
+#define BIG_MASS 1000000.0f     // 10,000:1 mass ratio -> 314 collisions
+#define SMALL_MASS 1.0f
 
 #define BLOCK_AMOUNT 2
 
 #define WALL_X (WIDTH/10)
 
 #define LINE_THICKNESS 3.5f
+
+// UI Design Defines
+
+#define TEXT_SIZE 30.0f
+#define TEXT_SPACING 2.5f
+
+
 
 /* ================== STRUCTS ================= */
 
@@ -74,7 +84,6 @@ typedef struct{
     
     Line wall;
     Line floor;     //I don't want globals in this project so setObject function gonna be a huge one and I don't wanna send every object pointer seperately
-
 }Objects;
 
 /* ================== GLOBALS ================= */
@@ -87,9 +96,11 @@ typedef struct{
 // Drawing functions
 void drawBlocks(Block blockArr[BLOCK_AMOUNT]);
 void drawWallandFloor(Line wall,Line floor);
+void drawCollisionCounter(int collisionAmount);
+
 
 // Game state? Physics state? 
-void updateBlocks(Block blocks[BLOCK_AMOUNT],float dt);
+void updateBlocks(Block blocks[BLOCK_AMOUNT],float dt,int *collisionCounter);
 
 
 
@@ -102,6 +113,7 @@ int setObjects(Objects *objects);
 
 int main(void)
 {
+
 
     Block bully = { 0 };        //Big one 
     Block nerd = { 0 };         //Small one (if you can't tell duh)
@@ -122,18 +134,21 @@ int main(void)
         return(-1);
     }
 
+    int collisionCount = 0;
 
     float dt = 0.0f;
     while (!WindowShouldClose()) {
         dt = GetFrameTime();
 
-        updateBlocks(objectArray.blocks, dt);
-
+        for (int i = 0; i < 1000; i++) {
+            //To simulate smaller steps; To prevent phasing through left wall
+            updateBlocks(objectArray.blocks, dt/1000.0f,&collisionCount);
+        }
         BeginDrawing();
         ClearBackground(BLACK);
         drawWallandFloor(objectArray.wall,objectArray.floor);
         drawBlocks(objectArray.blocks);
-        DrawText("This place gonna show collision amount", (WIDTH)/3, (HEIGHT/1.50), 20, WHITE);
+        drawCollisionCounter(collisionCount);
 
         EndDrawing();
     }
@@ -143,6 +158,8 @@ int main(void)
     return(0);
 }
 
+
+/* ==================================== FUNCTION BODIES ====================== */
 
 int setUpWindow(void)
 {
@@ -189,6 +206,8 @@ int setObjects(Objects *object)
     return(0);
 }
 
+
+/*=============== DRAWING FUNCTIONS ====================*/
 void drawBlocks(Block blockArr[BLOCK_AMOUNT])
 {
     for (int i = 0;i < BLOCK_AMOUNT;i++) {
@@ -203,26 +222,26 @@ void drawWallandFloor(Line wall,Line floor)
     
 }
 
-void updateBlocks(Block *blocks, float dt)
+void drawCollisionCounter(int collisionAmount)
+{
+    const char *text = TextFormat("Collision Counter: %d",collisionAmount);
+    Font defult = GetFontDefault();
+    Vector2 textSize = MeasureTextEx(defult, text, TEXT_SIZE, TEXT_SPACING);
+    Vector2 textPosition = (Vector2){((WIDTH-textSize.x)/2),(HEIGHT-textSize.y)/3};
+    DrawTextEx(defult, text, textPosition,TEXT_SIZE, TEXT_SPACING, VIOLET);
+}
+
+//State handler 
+
+void updateBlocks(Block blocks[BLOCK_AMOUNT], float dt, int *collisionCount)
 {
     //Again... blocks[0] is big, blocks[1] is small one... and BLOCK_AMOUNT instead of hard-coding for not writing on top random addresses
     //Pos update
     for(int i = 0; i < BLOCK_AMOUNT; i++) {
         blocks[i].pos.x += blocks[i].vx * dt; 
     }
-    //This might be unncessary verbose but for legibility, might change...might leave like that dunno
-    Rectangle bigOne = (Rectangle){blocks[0].pos.x, blocks[0].pos.y, blocks[0].edgeSize, blocks[0].edgeSize};
-    Rectangle smallOne = (Rectangle){blocks[1].pos.x, blocks[1].pos.y, blocks[1].edgeSize, blocks[1].edgeSize};
-    
+
     //To make the equation easier I'll format the things with the said v1,v2, u1,u2, and m1,m2 values
-
-    //New velocities
-    double v1 = 0.0;
-    double v2 = 0.0;
-
-    //Old velocities
-    double u1 = blocks[0].vx;
-    double u2 = blocks[1].vx;
 
     double m1 = blocks[0].m;
     double m2 = blocks[1].m;
@@ -234,34 +253,60 @@ void updateBlocks(Block *blocks, float dt)
 
             for reference
     */
+    int isCollison = 0;
+    //Running infinitely... I gotta solve this
+    while (1) {
+        isCollison = 0;
 
-    //Raylib's built-in rectangle-rectangle collision detection 
-    if(CheckCollisionRecs(bigOne, smallOne))
-    {        
-        //Velocity of big one?
-        v1 = ((m1-m2)/(m1+m2))*u1 + (2*m2)/(m1+m2)*u2;
+        // Only collide if the big block is overlapping the small block while
+        // moving toward it.  Otherwise a just-resolved overlap gets counted again.
+        if (blocks[0].pos.x < blocks[1].pos.x + blocks[1].edgeSize &&
+            blocks[0].vx < blocks[1].vx)
+        {        
+            isCollison = 1;
+            (*collisionCount)++;
+                //Preventing block penetration (Fuck I really started to type corpo like...)
+                double shift = blocks[1].m / blocks[0].m; 
+                double distance = blocks[0].pos.x -
+                                  (blocks[1].pos.x + blocks[1].edgeSize);
+                
+                blocks[1].pos.x += distance * (1-shift);
+                blocks[0].pos.x -= distance * shift;
 
-        //New Velocity of small one?
-        v2 = ((2*m1)/(m1+m2))*u1 + (m2-m1)/(m1+m2)*u2;
-        
-        blocks[0].vx = v1;
-        blocks[1].vx = v2;
 
-        //Dev Blog: Somewhat worked for a few seconds then nerd left the screen like a crackhead on an an 'cid trip 
-        // Ideas to prevent : 
-        // 1- hardcode if past wall pos.x = wall 
-        // 2- Calculate multiple steps of simulation but give output for the last point of the blocks (Seperate calculation and visualization I guess)
-        // 3- Abonden the project lol
-        // 4- Before all that...go eat smthg.
+            //Velocities immediately before this collision.
+            double u1 = blocks[0].vx;
+            double u2 = blocks[1].vx;
 
-    }
+            //Velocity of big one?
+            double v1 = ((m1-m2)/(m1+m2))*u1 + (2*m2)/(m1+m2)*u2;
+            //New Velocity of small one?
+            double v2 = ((2*m1)/(m1+m2))*u1 + (m2-m1)/(m1+m2)*u2;
+            
+            blocks[0].vx = v1;
+            blocks[1].vx = v2;
 
-    //Wall collisions
-    for (int i = 0;i < BLOCK_AMOUNT;i++) {
-        if (blocks[i].pos.x <= WALL_X || blocks[i].pos.x+blocks[i].edgeSize >= WIDTH) {
+            //Dev Blog: Somewhat worked for a few seconds then nerd left the screen like a crackhead on an an 'cid trip 
+            // Ideas to prevent : 
+            // 1- hardcode if past wall pos.x = wall 
+            // 2- Calculate multiple steps of simulation but give output for the last point of the blocks (Seperate calculation and visualization I guess)
+            // 3- Abonden the project lol
+            // 4- Before all that...go eat smthg.
 
-            blocks[i].vx = (-blocks[i].vx); //Yeah I burned by the =- operator...never again
         }
 
+        //Wall collisions
+        for (int i = 0;i < BLOCK_AMOUNT;i++) {
+            if (blocks[i].pos.x < WALL_X) {
+                isCollison = 1;
+                (*collisionCount)++;
+                blocks[i].pos.x = WALL_X;
+                blocks[i].vx = (-blocks[i].vx); 
+            }
+        }
+        if (!isCollison) {
+            break;
+        }
     }
+    
 }
