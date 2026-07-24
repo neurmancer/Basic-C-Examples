@@ -123,7 +123,7 @@ int main(void)
     
     double dt = 0.0;
 
-    while (!WindowShouldClose() && iter <= UINT_MAX) {
+    while (!WindowShouldClose() && iter < UINT_MAX) {
         if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
 
             //Needle shit

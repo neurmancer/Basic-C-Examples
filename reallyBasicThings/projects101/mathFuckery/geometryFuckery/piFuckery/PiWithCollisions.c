@@ -144,6 +144,8 @@ int main(void)
     while (!WindowShouldClose()) {
         dt = GetFrameTime();
 
+        if(IsKeyPressed(KEY_ESCAPE)){ CloseWindow(); }
+
         for (int i = 0; i < 1000; i++) {
             //To simulate smaller steps; To prevent phasing through left wall
             updateBlocks(objectArray.blocks, dt/1000.0f,&collisionCount);
@@ -158,7 +160,6 @@ int main(void)
     }
 
     CloseWindow();
-
     return(0);
 }
 
