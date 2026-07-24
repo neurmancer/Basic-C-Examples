@@ -19,6 +19,7 @@
 
 - [ ] Build more janky physics simulators and math experiments.
 - [ ] Create a Doppler-effect simulator for celestial bodies, including redshift and blueshift.
+- [ ] Create 3 body simulation (or maybe 4? Idk...)
 - [ ] Build a basic pendulum simulator.
 - [ ] Create a function visualizer. (I know it's vauge but I don't know what to do...let's say something like Desmos or Wolfram Alpha. yeah, yeah sure also solve P = NP by next tuesday too while you are at it nerd!)
 - [ ] Build an big-num lib(Yeah I didn't build that FFT for nothing)
@@ -48,6 +49,7 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] A Garbage Collector (Mark&Sweep yk...the one Lua's using)
 - [ ] A Memory Allocator (always sbrk)
 - [ ] A RegEx 
+- [ ] CLI Chat App
 - [ ] A TCP/IP Stack
 - [ ] A Basic Shell
 - [ ] A GameBoy Advanced Emulator (probably will take a joruney from CHIP-8 to Gameboy to GBA as final destination)
@@ -59,7 +61,7 @@ Yeah all retro... I am a retro guy, after all.
 ## Personal Fuckeries
 
 - [ ] Prime number spitter for dwm status bar for no apperant reason besides being cool
-- [ ] More experiments for DWM environement 
+- [ ] More experiments for DWM environment 
 
 
 ## Rediscovering America
