@@ -44,6 +44,8 @@
 #define BASE_VEL_SMALL 0.0f
 #define BASE_VEL_BIG -100.00f       //Was it 1m/s in the video? should I coin a pixel to meter function...or simply growing vel won't fuck the system? Fuck... 
 
+#define BIG_MASS 10000.0f
+#define SMALL_MASS 10.0f
 
 #define BLOCK_AMOUNT 2
 
@@ -163,13 +165,13 @@ int setObjects(Objects *object)
     
     object->blocks[0].pos = (Vector2){2*WIDTH/3,HEIGHT/2};       //Lol I learned what the cast looking ass thing is btw it's a C compound literal  
     object->blocks[0].vx = BASE_VEL_BIG;      //Towards left  (I lowkey really started to type like a corpo but better than forcing jokes)
-    object->blocks[0].m = 100.0f;
+    object->blocks[0].m = BIG_MASS;
     object->blocks[0].edgeSize = SIZE_BIG;
 
     float offset = SIZE_BIG-SIZE_SMALL;
     object->blocks[1].pos = (Vector2){(WIDTH)/3,(HEIGHT/2)+offset};
     object->blocks[1].vx = BASE_VEL_SMALL;  
-    object->blocks[1].m = 10.0f;
+    object->blocks[1].m = SMALL_MASS;
     object->blocks[1].edgeSize = SIZE_SMALL;
 
     object->wall.p1.x = WALL_X; 
@@ -237,22 +239,27 @@ void updateBlocks(Block *blocks, float dt)
     if(CheckCollisionRecs(bigOne, smallOne))
     {        
         //Velocity of big one?
-        v1 = (2*m2)/(m1+m2)*u1 + ((m2-m1)/(m1+m2))*u2;
+        v1 = ((m1-m2)/(m1+m2))*u1 + (2*m2)/(m1+m2)*u2;
 
         //New Velocity of small one?
-        v2 = ((m2-m1)/(m1+m2))*u2 + (2*m1)/(m1+m2)*u1;
+        v2 = ((2*m1)/(m1+m2))*u1 + (m2-m1)/(m1+m2)*u2;
         
         blocks[0].vx = v1;
         blocks[1].vx = v2;
 
-        //Dev Blog: Somewhat worked for a few seconds then both left the screen like a crackhead on an an 'cid trip 
+        //Dev Blog: Somewhat worked for a few seconds then nerd left the screen like a crackhead on an an 'cid trip 
+        // Ideas to prevent : 
+        // 1- hardcode if past wall pos.x = wall 
+        // 2- Calculate multiple steps of simulation but give output for the last point of the blocks (Seperate calculation and visualization I guess)
+        // 3- Abonden the project lol
+        // 4- Before all that...go eat smthg.
 
     }
 
     //Wall collisions
     for (int i = 0;i < BLOCK_AMOUNT;i++) {
         if (blocks[i].pos.x <= WALL_X || blocks[i].pos.x+blocks[i].edgeSize >= WIDTH) {
-            blocks[i].pos.x < WIDTH ? WALL_X : WIDTH;
+
             blocks[i].vx = (-blocks[i].vx); //Yeah I burned by the =- operator...never again
         }
 
