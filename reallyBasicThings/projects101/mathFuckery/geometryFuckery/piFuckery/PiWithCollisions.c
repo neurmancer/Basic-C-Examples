@@ -1,6 +1,6 @@
 
 /*
-        Sup? You watch 3 Blue 1 Brown right? Yeah me too... I saw a video: https://www.youtube.com/watch?v=HEfHFsfGXjs <- This one to be specific...
+        Sup? You watch 3Blue1Brown right? Yeah me too... I saw a video: https://www.youtube.com/watch?v=HEfHFsfGXjs <- This one to be specific...
         So...here we are with more Pi fuckery even tho my promise about continuing with futureShit but...Pi fuckery needs its own subfolder
 
         Dunno anything yet...Imma watch the video and start coding but as always that's a template for tomorrow I guess...
@@ -36,7 +36,7 @@
 /* ================== STRUCTS ================= */
 
 typedef struct{
-    Vector2 pos;
+    Vector2 pos;            //I love having everything I need in structs despite y value being fixed for both squares
     double  vx, m;        // X : POS | VX: Velocity | m: Mass (not slope lol) 
     double edgeSize;        //Again...they're square
     //Yeah since I don't plan to move on Y axis one 1 dimensional position and vel would work Ig...

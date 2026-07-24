@@ -97,7 +97,7 @@ cleanUp:
 }
 
 /* Bit reversal permutation thingy crucial for iterative FFT (at least that's what I told lol) 
-    Simply seperating the the odds and evens so the inner butterfly shit happens (I AM NOT A MATHAMATICIAN OK?)
+    making 0001  1000  so the inner butterfly shit happens (I AM NOT A MATHAMATICIAN OK?)
 */ 
 
 void bit_reverse(complexNum *X, int N) {
