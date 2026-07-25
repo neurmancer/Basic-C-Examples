@@ -41,7 +41,7 @@ int main(void) {
 
     if ((SAMPLE_SIZE & (SAMPLE_SIZE-1)) != 0 || SAMPLE_SIZE == 0) {
         printf("Bruh this is not your fancy FFTW\nUse something that's power of 2\n");
-        return(-13);
+        return(13);
     }
     
     double *x = fill(SAMPLE_SIZE);
@@ -168,6 +168,5 @@ double *fill(int sampleSize)
     for (int n = 0;n < sampleSize;n++) {
         x[n] = cos(2.0* PI * 7.0 * (double)n/(double) sampleSize); 
     }
-
     return(x);
 }

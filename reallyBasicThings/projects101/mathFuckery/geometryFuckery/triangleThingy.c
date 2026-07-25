@@ -1,14 +1,15 @@
 /* ==================   INCLUDES   ================  */
 
-#include <linux/limits.h>
+
 #include <stdio.h>
+//Requires linking (-lm , -lraylib)
 #include <raylib.h>
 #include <math.h>
 
 /* =================== DEFINES   ====================  */
 
-#define WIDTH 1200
-#define HEIGHT 900 //Yup I love 4:3 
+#define WIDTH 1200.0f
+#define HEIGHT 900.0f //Yup I love 4:3 
 
 #define FPS 120
 

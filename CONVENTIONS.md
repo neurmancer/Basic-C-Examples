@@ -14,6 +14,7 @@
 > But usually I document what went wrong quite good so you don't need this for the most of the time and as a repo for beginners I don't want a custom header to deal with in case of moving the indiviual source file to somewhere else where the header no longer exists 
 
 > I tend to use 13, 53 and 689 so much in my old code so we're building on top of it
+> And keep that in mind that is a rough take, use case may differ in projects but perror() or err() will tell you what went wrong exactly within the given program/context
 
 - (-1) For Allocation related problems (malloc,realloc,calloc etc. even mmem or sbrk if exists)
 - (-13) Multi-purpose errors (depending on the project) may be syscall errors, may be fork() failures etc...
@@ -41,10 +42,12 @@
 //Yapping structure is usually: 
 /*
     Greeting
-    Concept
-    Required flags for compiling if needed 
-    Tangents 
-    Implementation details
+    Concept 
+    Brief explanation of the Concept(aka 'Important Shit to Know')
+    Citation -if used any-  
+    Required flags for compiling -if needed- 
+    Tangents (can be anything)
+    Implementation details and internal discussion
     and Known Weaknesses or Bugs
 */
 
@@ -165,6 +168,9 @@ int main(void)
 
 
 //Programs with more than 3 error paths will use retValue + goto cleanUp pattern, if less than 3 they'll be returning inline instead of clean up pattern
+//Haven't needed any more than 10 allocations but if needed in the future you may encounter a :
+
+int *allocatedMemories[ALLOCATED_AMOUNT] = { 0 }; //To keep track of the all memory to free and NULLify with a for loop 
 cleanUp: 
 //And fyi: 'Go To Statement Considered Harmful by Dijkstra (1968) isn't about C clean-up pattern but more about the time's assembly goto abuse 
 
@@ -176,6 +182,7 @@ cleanUp:
     p2 = NULL;
     p3 = NULL;
     
+
     return(retValue); //This is a stylistic choice that I inhabited
     //return and sizeof operator uses () explicitly even though not being a necessity
 }

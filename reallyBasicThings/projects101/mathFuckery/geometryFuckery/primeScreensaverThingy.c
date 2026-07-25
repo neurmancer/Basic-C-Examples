@@ -4,9 +4,11 @@
 
 #include <stdio.h> //For I/O duh...
 #include <stdlib.h> //For Dynamic Shit
-#include <raylib.h> // For Graphs
-#include <limits.h> //For UINT_MAX (yeah I ain't still gonna remember how much 2^32-1 or shit)
 #include <time.h>   //Yeah Include army getting bigger and bigger...I miss the glorious days only me, unistd and math...
+
+//Requires (-lraylib)
+#include <raylib.h> // For Graphs
+
  
 
 /*
@@ -144,7 +146,7 @@ int main(void)
     if (HEIGHT <= 0) { HEIGHT = 900; }
 
     
-    if(!IsWindowReady()) { return(-1); }
+    if(!IsWindowReady()) { return(-53); }
     SetTargetFPS(FPS);
 
     ToggleBorderlessWindowed();
@@ -174,13 +176,12 @@ int main(void)
     int target = HEIGHT*WIDTH; //Why tf am I getting segfault?..hmmm
 
     unsigned int *primes = (unsigned int *)malloc(sizeof(unsigned int)*target); //And I abonden the idea of primes UP TO UINT_MAX which is pointless since we don't have that many pixels on screen
-    if (primes == NULL) { returnValue = -1; goto rome;} //I'll probably add perror() later for each check but not now...
-    
-    unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem
-
     Vector2 *pixels = (Vector2 *)malloc(sizeof(Vector2)*target);
+    
+    if (primes == NULL) { returnValue = -1; goto rome;} //I'll probably add perror() later for each check but not now...
     if (pixels == NULL) { returnValue = -1; goto rome; }
  
+    unsigned int *iter = primes;       //I'll use pointer walks probably so much so... I gotta keep primes as a constant so I can free without problem   
     Vector2 *pixelIter = pixels;    //Yeah I am trying to use iters as much as possible...paranoia? Nope never heard of her...
 
     int posX = 0, posY = 0;
@@ -198,7 +199,7 @@ int main(void)
         dLastPrint += GetFrameTime();
         
         //Keyboard conditions
-        if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
+        if (IsKeyPressed(KEY_ESCAPE)) { break; }
 
         //Logic
         while (isPrime(primes,primeCount) == 0 && primeCount < target) {
@@ -241,6 +242,9 @@ rome :
     xValues = NULL;
     yValues = NULL;
     pixels = NULL;
+    
+
+    CloseWindow();
 
     if (returnValue == -1) {
         perror("One of memory allocations bitched about this\n");

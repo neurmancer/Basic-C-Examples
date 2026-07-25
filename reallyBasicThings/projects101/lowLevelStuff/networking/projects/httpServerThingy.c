@@ -68,16 +68,16 @@ int main(void)
                 getaddrinfo() returns 0 if it succeeds, or one of the following nonzero error codes:
             so I can't blindly check for -1
     */
-    if (res) { perror("You got ghosted\n"); return(-1); } //I mean you'd probably know that if you are looking at a http server but C returns true for each non-zero value
+    if (res) { perror("You got ghosted\n"); return(-53); } //I mean you'd probably know that if you are looking at a http server but C returns true for each non-zero value
 
     int fd = socket(AF_INET,SOCK_STREAM,0 ); //fd's short for file descriptor  0 and IPPROTO_TCP for tcp(7) stream sockets that explains why I have 0 as protocol it is TCP as I want
-    if(fd == -1) {perror("Socket, sucked it"); return(-1); }
+    if(fd == -1) {perror("Socket, sucked it"); return(-53); }
 
     int option = 1;
     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 
     int bindStatus = bind(fd, result->ai_addr,result->ai_addrlen); //   Upon successful completion, bind() shall return 0; otherwise, -1 shall be returned and errno set to indicate the error. (man bind page)
-    if (bindStatus == -1) {perror("Avoidant attachment issue, see a therapist ASAP\n"); return(-1); }
+    if (bindStatus == -1) {perror("Avoidant attachment issue, see a therapist ASAP\n"); return(-53); }
     int clientFD = 0;
     //Now since I've arrived to...yk acutal networking part I gotta listen() and accept() right...do I need fork()s? or is listen() a non-blocking function 
 
@@ -113,18 +113,18 @@ int main(void)
 
         int listenStatus = listen(fd,BACKLOG); 
 
-        if (listenStatus == -1) {perror("Port is like Beethoven after 1817 you know what I am saying?\n"); return(-1);}
+        if (listenStatus == -1) {perror("Port is like Beethoven after 1817 you know what I am saying?\n"); return(-53);}
 
         struct sockaddr_storage clientAddr = { 0 };
         socklen_t clientAddrSize = sizeof(clientAddr);
 
         clientFD = accept(fd, (struct sockaddr *)&clientAddr,&clientAddrSize); //As I thought blocks the shit...Lol purists say 'Casting is BAD! UnU' untill it isn't and man pages say to do so lol
-        if (clientFD == -1) { perror("Failed proposal attempt\n"); return(-1); } //Yeah I am running out of error jokes slowly
+        if (clientFD == -1) { perror("Failed proposal attempt\n"); return(-53); } //Yeah I am running out of error jokes slowly
 
 
         char httpRequest[RECV_BUFFER] = { 0 };
         int recievedBytes = recv(clientFD,httpRequest,sizeof(httpRequest),0); //These calls return the number of bytes received, or -1 if an error occurred.  In the event of an error, errno is set to indicate the error.
-        if (recievedBytes == -1) { perror("I couldn't find a joke to suit recv lol\n"); return(-1); }
+        if (recievedBytes == -1) { perror("I couldn't find a joke to suit recv lol\n"); return(-53); }
     
         printf("Working\n");
         sleep(1);

@@ -1,9 +1,10 @@
 /*  Includes    */
 
-
-#include <stdlib.h> //For malloc and free
-#include <raylib.h> //For everything?
 #include <stdio.h> //For moral support
+#include <stdlib.h> //For malloc and free
+
+//Includes that need linking (-lm and -lraylib)
+#include <raylib.h> //For everything?
 #include <math.h> //For math...yk
 
 /*  Defines     */
@@ -115,7 +116,7 @@ int main(void)
 
     //Setting up the window and OpenGL(at least that's what I heard from raylib) 
     InitWindow(WIDTH, HEIGHT, "Koch Thingy");
-    if (!IsWindowReady()) {perror("Something bad occured\n"); return(-1);}
+    if (!IsWindowReady()) {perror("Something bad occured\n"); return(-53);}
     SetTargetFPS(FPS);
     if (!IsWindowFullscreen()) { ToggleBorderlessWindowed(); }
     instructions = instructor(instructions, &instructionSize, maxSteps);

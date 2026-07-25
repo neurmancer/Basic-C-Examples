@@ -140,7 +140,7 @@ int main(void) {
     srand(time(NULL));
 
     InitWindow(WIDTH, HEIGHT, "PONG DUH... ");
-    if (!IsWindowReady()) { printf("Window may not be ready but Linux is B;)\n"); return(-1); }
+    if (!IsWindowReady()) { printf("Window may not be ready but Linux is B;)\n"); return(-53); }
     SetTargetFPS(FPS);
 
     Theme themes[] = {

@@ -42,14 +42,14 @@ int main(int argc, char **argv)
 
     if (filePath == NULL) {
         fprintf(stderr, "kitty: no input file\n");
-        return(1);
+        return(13);
     }
 
     FILE *fp = fopen(filePath, "rb");
 
     if (!fp) {
         perror(filePath);
-        return(1);
+        return(-13);
     }
 
     char buffer[BUFFER_SIZE] = { 0 };
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     if (ferror(fp)) {
         perror("fread");
         fclose(fp);
-        return(1);
+        return(-13);
     }
 
     fclose(fp); //Close the file bruh
