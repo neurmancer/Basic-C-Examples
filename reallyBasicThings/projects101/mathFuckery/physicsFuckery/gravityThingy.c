@@ -35,7 +35,7 @@
 #define HEIGHT 900
 
 #define COLOR_ARR_SIZE 24
-#define LAST_POS_BUFFER 10 
+#define LAST_POS_BUFFER 25
 
 //Config defines
 #ifndef VSYNC 
