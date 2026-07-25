@@ -34,7 +34,7 @@
 #define WIDTH 1200
 #define HEIGHT 900
 
-#define COLOR_ARR_SIZE 3
+#define COLOR_ARR_SIZE 24
 #define LAST_POS_BUFFER 10 
 
 //Config defines
@@ -47,39 +47,38 @@
 #endif
 
 //Phyiscal constant
-#define G (59.8)   //For test purpose (earth's g) real capital G's value is approximately 6.6743×10^-11 can double hold that? I'll check
-#define SOFTNESS (7.5)
+#define G (9.8)   //For test purpose (earth's g) real capital G's value is approximately 6.6743×10^-11 can double hold that? I'll check
+#define SOFTNESS (13.53)
 
-static const char *CRT_FRAGMENT_SHADER =
-    "#version 330\n"
-    "in vec2 fragTexCoord;\n"
-    "uniform sampler2D texture0;\n"
-    "uniform float uTime;\n"
-    "uniform vec2 uResolution;\n"
-    "out vec4 finalColor;\n"
-    "\n"
-    "void main()\n"
-    "{\n"
-    "    vec2 uv = fragTexCoord * 2.0 - 1.0;\n"
-    "    vec2 bentUv = uv * (1.0 + 0.16 * vec2(uv.y * uv.y, uv.x * uv.x));\n"
-    "    vec2 sourceUv = bentUv * 0.5 + 0.5;\n"
-    "    float inScreen = step(0.0, sourceUv.x) * step(sourceUv.x, 1.0)\n"
-    "                   * step(0.0, sourceUv.y) * step(sourceUv.y, 1.0);\n"
-    "    float vignette = smoothstep(0.40, 1.15, length(bentUv));\n"
-    "\n"
-    "    float scanline = 0.5 + 0.5 * sin(fragTexCoord.y * uResolution.y * 3.14159265);\n"
-    "    float rollingBar = smoothstep(0.03, 0.0, abs(fragTexCoord.y - fract(uTime * 0.16)));\n"
-    "    float flicker = 0.985 + 0.015 * sin(uTime * 55.0);\n"
-    "\n"
-    "    vec3 color = texture(texture0, sourceUv).rgb;\n"
-    "    color *= mix(0.92, 1.0, scanline) * flicker;\n"
-    "    color += rollingBar * 0.012;\n"
-    "    color *= 1.0 - vignette * 0.18;\n"
-    "\n"
-    "    finalColor = vec4(color * inScreen, 1.0);\n"
-    "}\n";
+//Colors
+
+#define SKY_BLUE        CLITERAL(Color){  79, 195, 247, 255 }  // #4FC3F7
+#define AZURE           CLITERAL(Color){  41, 182, 246, 255 }  // #29B6F6
+#define ELECTRIC_CYAN   CLITERAL(Color){   0, 229, 255, 255 }  // #00E5FF
+#define TURQUOISE       CLITERAL(Color){  38, 198, 218, 255 }  // #26C6DA
+#define NEON_GREEN      CLITERAL(Color){   0, 230, 118, 255 }  // #00E676
+#define EMERALD         CLITERAL(Color){ 102, 187, 106, 255 }  // #66BB6A
+#define LIME_GREEN      CLITERAL(Color){ 156, 204, 101, 255 }  // #9CCC65
+#define YELLOW_GREEN    CLITERAL(Color){ 212, 225,  87, 255 }  // #D4E157
+#define BRIGHT_YELLOW   CLITERAL(Color){ 255, 235,  59, 255 }  // #FFEB3B
+#define GOLDY            CLITERAL(Color){ 255, 213,  79, 255 }  // #FFD54F
+#define AMBER           CLITERAL(Color){ 255, 183,  77, 255 }  // #FFB74D
+#define ORANGEY          CLITERAL(Color){ 255, 152,   0, 255 }  // #FF9800
+#define CORAL           CLITERAL(Color){ 255, 112,  67, 255 }  // #FF7043
+#define DEEP_ORANGE     CLITERAL(Color){ 244,  81,  30, 255 }  // #F4511E
+#define REDISH             CLITERAL(Color){ 239,  83,  80, 255 }  // #EF5350
+#define MAGENTA_DUH         CLITERAL(Color){ 233,  30,  99, 255 }  // #E91E63
+#define PINKY            CLITERAL(Color){ 240,  98, 146, 255 }  // #F06292
+#define HOT_PINK        CLITERAL(Color){ 236,  64, 122, 255 }  // #EC407A
+#define SHE_LOVES_PURLE          CLITERAL(Color){ 171,  71, 188, 255 }  // #AB47BC
+#define SO_DO_I          CLITERAL(Color){ 126,  87, 194, 255 }  // #7E57C2
+#define INDIGO          CLITERAL(Color){  92, 107, 192, 255 }  // #5C6BC0
+#define BLUE_GRAY       CLITERAL(Color){ 144, 164, 174, 255 }  // #90A4AE
+#define SILVER          CLITERAL(Color){ 207, 216, 220, 255 }  // #CFD8DC
+#define RED_AF          CLITERAL(Color){  41,   3,   0, 255 }  // #290300
 
 
+#define BG              CLITERAL(Color){7,0,5,255}
 /*================= OBJECTS =============== */
 
 /*
@@ -178,27 +177,11 @@ int main(void)
 
     int returnCode = 0;    
     int particleAmount = 100;
-    int crtEnabled = 0;
-    Particle *particles = NULL;
-    RenderTexture2D simulationTarget = {0};
-    Shader crtShader = {0};
-    int crtTimeLocation = -1;
-    int crtResolutionLocation = -1;
-    float crtResolution[2] = { WIDTH, HEIGHT };
         
-    //Error handling
+    Particle *particles = (Particle *)(malloc(sizeof(Particle)*particleAmount));
+    
+        //Error handling
     if (setupEnv()) { returnCode = (-13); goto clean; }
-
-    simulationTarget = LoadRenderTexture(WIDTH, HEIGHT);
-    crtShader = LoadShaderFromMemory(NULL, CRT_FRAGMENT_SHADER);
-    if (simulationTarget.id == 0 || crtShader.id == 0) { returnCode = (-14); goto clean; }
-
-    crtTimeLocation = GetShaderLocation(crtShader, "uTime");
-    crtResolutionLocation = GetShaderLocation(crtShader, "uResolution");
-    if (crtTimeLocation < 0 || crtResolutionLocation < 0) { returnCode = (-14); goto clean; }
-    SetShaderValue(crtShader, crtResolutionLocation, crtResolution, SHADER_UNIFORM_VEC2);
-
-    particles = malloc(sizeof(*particles) * (size_t)particleAmount);
     if (particles == NULL) { returnCode = (-1); goto clean; }
     
  
@@ -214,7 +197,6 @@ int main(void)
     while (!WindowShouldClose()) {
         //Key interrupt handling
         if (IsKeyPressed(KEY_ESCAPE)) { break; }
-        if (IsKeyPressed(KEY_C)) { crtEnabled = !crtEnabled; }
     
         cfg.dt = GetFrameTime();
 
@@ -247,35 +229,19 @@ int main(void)
             updatePos(&particles[i], cfg.dt);
         }
 
-        // Draw the simulation to a texture so it can be presented normally or through the CRT shader.
-        BeginTextureMode(simulationTarget);
-        ClearBackground(BLACK);
+        //Drawing
+        BeginDrawing();
+        ClearBackground(BG);
         displayTailing(particles, particleAmount);
         displayParticles(particles, particleAmount);
-        EndTextureMode();
-
-        BeginDrawing();
-        ClearBackground(BLACK);
-        Rectangle source = { 0.0f, 0.0f, (float)simulationTarget.texture.width, -(float)simulationTarget.texture.height };
-        if (crtEnabled) {
-            float crtTime = (float)GetTime();
-            SetShaderValue(crtShader, crtTimeLocation, &crtTime, SHADER_UNIFORM_FLOAT);
-            BeginShaderMode(crtShader);
-            DrawTextureRec(simulationTarget.texture, source, (Vector2){ 0.0f, 0.0f }, WHITE);
-            EndShaderMode();
-        }
-        else {
-            DrawTextureRec(simulationTarget.texture, source, (Vector2){ 0.0f, 0.0f }, WHITE);
-        }
         EndDrawing();
 
     }
 
 clean:
 
-    if (crtShader.id != 0) { UnloadShader(crtShader); }
-    if (simulationTarget.id != 0) { UnloadRenderTexture(simulationTarget); }
     free(particles);
+    particles = NULL;
     CloseWindow();
     switch (returnCode) {
         case -1:
@@ -283,9 +249,6 @@ clean:
             break;
         case -13:
             perror("Graphics problem");
-            break;
-        case -14:
-            fprintf(stderr, "Could not create the CRT render target or shader.\n");
             break;
 
         default:
@@ -477,8 +440,33 @@ double calculateAttraction(Particle *p1, Particle *p2)
 
 Color randColor(void)
 {
-    Color colors[COLOR_ARR_SIZE] = { RED,GREEN,BLUE };
-    return(colors[rand()%COLOR_ARR_SIZE]);
+    static const Color COLOR_PALETTE[COLOR_ARR_SIZE] = {
+    SKY_BLUE,
+    AZURE,
+    ELECTRIC_CYAN,
+    TURQUOISE,
+    NEON_GREEN,
+    EMERALD,
+    LIME_GREEN,
+    YELLOW_GREEN,
+    BRIGHT_YELLOW,
+    GOLDY,
+    AMBER,
+    ORANGEY,
+    CORAL,
+    DEEP_ORANGE,
+    REDISH,
+    MAGENTA_DUH,
+    PINKY,
+    HOT_PINK,
+    SHE_LOVES_PURLE,
+    SO_DO_I,
+    INDIGO,
+    BLUE_GRAY,
+    SILVER,
+    RED_AF
+};
+    return(COLOR_PALETTE[rand()%COLOR_ARR_SIZE]);
 }
 
 

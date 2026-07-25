@@ -19,7 +19,7 @@
 
 - [ ] Build more janky physics simulators and math experiments.
 - [ ] Create a Doppler-effect simulator for celestial bodies, including redshift and blueshift.
-- [ ] Create 3 body simulation (or maybe 4? Idk...)
+- [x] Create 3 body simulation (or maybe 4? Idk...(turned out to be N body lol))
 - [ ] Build a basic pendulum simulator.
 - [ ] Create a function visualizer. (I know it's vauge but I don't know what to do...let's say something like Desmos or Wolfram Alpha. yeah, yeah sure also solve P = NP by next tuesday too while you are at it nerd!)
 - [ ] Build an big-num lib(Yeah I didn't build that FFT for nothing)
