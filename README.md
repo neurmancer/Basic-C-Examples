@@ -160,6 +160,8 @@
 
 > > Screensaver that paints screen from scratch using primes  with ANSI for CLI 
 
+> > Screensaver that paints screen from scratch using primes  with raylib 
+
 > > Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 
 #### Geomoetry Fuckery 
@@ -201,8 +203,7 @@
 
 > > Doppler Effect Simulator (using raylib.h so you gotta have it too)
 
-> > Screensaver that paints screen from scratch using primes  with raylib 
-
+> > N Body(Particle) Simulation with Newtonian Gravity (using raylib.h)
 
 
 ---
