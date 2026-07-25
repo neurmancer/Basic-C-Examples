@@ -7,12 +7,13 @@
 ## Table of Contents
 
 - [Disclaimer](#parental-advisory)
+- [Project Structures and Error Handling Conventions](CONVENTIONS.md)
+- [Future Shit](futureShit.md)
 - [Basic Projects and Lectures](#basic-projects-and-lectures)
 - [Retro Games](#retro-shit)
 - [Funny Things](#funny-things)
 - [Spicy C Nudes](#asm-disassemblies-of-files-for-those-low-level-gremlins-like-me-loves-spicy-c-nudes)
 - [Compiling & Running](#dependencies-compile-and-run)
-- [Future Shit](futureShit.md)
 - [CLI Thingies](#cli-tool-clones)
 - [Books & Learning Sources](#nerdy-part)
 - [LICENSE](#legal-shit)
@@ -33,12 +34,6 @@
 
 ---
 
-### Note to myself
-
-> First if you are not me you shall pass
-
-> add a ERROR_CODES.md just to try unifying an error notation through out the files 
----
 
 ### PRNGForBeginners
 
