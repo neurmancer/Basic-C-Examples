@@ -127,6 +127,8 @@
 > This is where Imma put the CLI Tool implementations from [**Rediscovering America**](futureShit.md#rediscovering-america)
 >
 > - **echo** clone (yeah just printf lol) 
+>
+> - **cat** clone(kitty)
 
 --- 
 

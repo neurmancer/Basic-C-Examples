@@ -1,56 +1,122 @@
 #include <stdio.h>
 #include <string.h>
 
-
-    /*
-        Sup? Continuing to reinvent the wheel yk... this one's a cat clone. I mean isn't it just fopen?
-        and yeah these clones not about perfect replication but a little concept attempts I usally don't get into lots of flags only a few
-    */
-
-#define VERSION "Ω" //Yeah this time I'll use Ω
+#define VERSION "Ω"
+#define BUFFER_SIZE 8192        //Yup 2 page worth of bytes lol
 
 void printHelp(void);
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    
     setvbuf(stdout, NULL, _IONBF, 0);
 
-    int fileName = 1;   //Same parsing logic with echo clone(resonate) since I didn't learn much after it
-    int numberLines = 0;
+    int numberNonEmptyLines = 0;
     int showEnds = 0;
+    char *filePath = NULL;
 
-    for (int i = 1;i < argc;i++) {
-        if (fileName && strcmp(argv[i], "--help") == 0) {
+    for (int i = 1; i < argc; i++) {
+
+        if (strcmp(argv[i], "--help") == 0) {
             printHelp();
             return(0);
         }
-        if (fileName && strcmp(argv[i], "--version") == 0) {
-            printf("Kitty Version: %s\n",VERSION);
+
+        if (strcmp(argv[i], "--version") == 0) {
+            printf("Kitty Version: %s\n", VERSION);
             return(0);
         }
 
-        if (fileName && strcmp(argv[i], "-E") == 0) {
+        if (strcmp(argv[i], "-E") == 0) {
             showEnds = 1;
             continue;
         }
 
-        if (fileName && strcmp(argv[i], "-b") == 0) {
-            numberLines = 1;
+        if (strcmp(argv[i], "-b") == 0) {
+            numberNonEmptyLines = 1;
             continue;
         }
 
+        if (filePath == NULL)
+            filePath = argv[i];
     }
-    
-    
+
+    if (filePath == NULL) {
+        fprintf(stderr, "kitty: no input file\n");
+        return(1);
+    }
+
+    FILE *fp = fopen(filePath, "rb");
+
+    if (!fp) {
+        perror(filePath);
+        return(1);
+    }
+
+    char buffer[BUFFER_SIZE] = { 0 };
+    int bytesRead = 0;
 
 
+    if (!numberNonEmptyLines && !showEnds) {
+
+        while ((bytesRead = fread(buffer, 1, BUFFER_SIZE, fp)) > 0)
+            fwrite(buffer, 1, bytesRead, stdout);
+
+        fclose(fp);
+        return(0);
+    }
 
 
-    return(0);
+    int line = 1;
+    int atLineStart = 1;
+
+    while ((bytesRead = fread(buffer, 1, BUFFER_SIZE, fp)) > 0) {
+
+        for (int i = 0; i < bytesRead; i++) {
+
+            char c = buffer[i];
+
+            if (atLineStart) {
+
+                if (numberNonEmptyLines && c != '\n')
+                    printf("%6d\t", line++);
+
+                atLineStart = 0;
+            }
+
+            if (c == '\n') {
+
+                if (showEnds)
+                    putchar('$');
+
+                putchar('\n');
+                atLineStart = 1;
+            }
+            else {
+                putchar(c);
+            }
+        }
+    }
+
+    if (ferror(fp)) {
+        perror("fread");
+        fclose(fp);
+        return(1);
+    }
+
+    fclose(fp); //Close the file bruh
+    return (0);
 }
 
 void printHelp(void)
 {
-    printf("Boilerplate\n");
+    puts("kitty - tiny cat clone");
+    puts("");
+    puts("Usage:");
+    puts("    kitty [OPTION]... FILE");
+    puts("");
+    puts("Options:");
+    puts("    -b          number non-blank output lines");
+    puts("    -E          display $ at end of each line");
+    puts("    --help      for I got you bruh' ");
+    puts("    --version   display version bruh");
 }
