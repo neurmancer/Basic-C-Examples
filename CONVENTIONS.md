@@ -11,7 +11,9 @@
 ## Error Codes 
 
 > I'll be using the integer values in the code since I don't wanna copy paste/include a header for just <custom_err.h> and you can check it from here
-> But usually I document what went wrong quite good so you don't need this for the most of the time
+> But usually I document what went wrong quite good so you don't need this for the most of the time and as a repo for beginners I don't want a custom header to deal with in case of moving the indiviual source file to somewhere else where the header no longer exists 
+
+> I tend to use 13, 53 and 689 so much in my old code so we're building on top of it
 
 - (-1) For Allocation related problems (malloc,realloc,calloc etc. even mmem or sbrk if exists)
 - (-13) Multi-purpose errors (depending on the project) may be syscall errors, may be fork() failures etc...
@@ -46,14 +48,16 @@
     and Known Weaknesses or Bugs
 */
 
+//Includes with specific goals will have their use-case noted next to them such as following
+
 /*INCLUDES*/
 //libc headers 
 #include <stdio.h> //Standard headers will be adjacent to each other
-#include <stdlib.h>
-#include <time.h>
+#include <stdlib.h> //Dynamic Memory Allocation + rand()
+#include <time.h>   //time(NULL)
 //Headers that require external linking (such as -lm, -lraylib)
-#include <raylib.h>
-#include <math.h>
+#include <raylib.h>     //For everything graphical
+#include <math.h>      //sqrt(), cos(), sin(), etc. depending on the project
 
 //Platform specific headers
 #ifdef (__WIN32)
@@ -112,6 +116,12 @@ typedef{
 }Physics;
 
 //... etc..
+
+//I try to avoid usage of global vars but if needed they'll be here between function prototypes and objects with this flag such as:
+/* GLOBAL VARS  */
+
+volatile sig_atomic_t flag = 0;
+//Some obscure concepts for beginners such as signal handling will have comment blocks to explain the idea roughly 
 
 /*FUNCTION PROTOTYPES*/
 //void returns
