@@ -46,7 +46,7 @@
 /* Neat headers */
 
 
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
@@ -56,8 +56,8 @@
 
 /* ==================== DEFINES ================== */
 
-#define WIDTH 1200.0
-#define HEIGHT 900.0
+#define WIDTH 1200.0f
+#define HEIGHT 900.0f
 #define FPS 120 //I am starting to get used this 120 thing my monitor is 180Hz I should be using that but...
 
 #define LINE_AMOUNT 10 //10's good..we have 10 fingers, we use decimal, it's 2*5 both prime
@@ -93,7 +93,7 @@ int main(void)
     srand(time(NULL));
 
     InitWindow(WIDTH, HEIGHT, "PI THAT TAKES AN ETERNITY");
-    if(!IsWindowReady()) { return(-1); } 
+    if(!IsWindowReady()) { printf("Window fucked up\n"); return(-53); } 
     
     SetTargetFPS(FPS);
 
@@ -124,7 +124,7 @@ int main(void)
     double dt = 0.0;
 
     while (!WindowShouldClose() && iter < UINT_MAX) {
-        if (IsKeyPressed(KEY_ESCAPE)) { CloseWindow(); }
+        if (IsKeyPressed(KEY_ESCAPE)) { break; }
 
             //Needle shit
         Line needle = randomNeedleDrop(rectSize,needleLength);
@@ -186,7 +186,7 @@ int main(void)
         iter++;
     }
 
-
+    CloseWindow();
     return(0);
 }
 

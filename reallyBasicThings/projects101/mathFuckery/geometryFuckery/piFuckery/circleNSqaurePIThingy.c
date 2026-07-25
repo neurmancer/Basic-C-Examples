@@ -31,6 +31,8 @@
 #include <err.h>
 #include <sys/errno.h>
 #include <time.h>   //For random seeding...lmfao I really started to write corpo-like
+
+//requires -lraylib
 #include <raylib.h> //For graphics
     
     //For getpid in case of Unix 
@@ -127,7 +129,7 @@ int main(void)
     }
     
     //Future me problem : Make this shit full screen
-    if (initEnv()) {retVal = (-13); goto clean; } //That's way cleaner lmfao why I didn't think of that before
+    if (initEnv()) {retVal = (-53); goto clean; } //That's way cleaner lmfao why I didn't think of that before
     
     Vector2 startPos = (Vector2){C_CENTER_X, C_CENTER_Y};
     
@@ -193,7 +195,7 @@ clean :     //Honest take goto for debugging feels so easy to use... Poor Man's 
         case -1:
             err(ENOMEM,"You ran out of RAM bruh");
             break;
-        case -13:
+        case -53:
             perror("Window got fucked up\n");
             break;
         default:

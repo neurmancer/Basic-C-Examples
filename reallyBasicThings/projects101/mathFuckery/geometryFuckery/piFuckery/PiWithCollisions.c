@@ -31,8 +31,11 @@
 
 /* =========== INCLUDES ============== */
 
-#include <raylib.h>     //When raylib started being the first lib I include...I realized I have become a changed man...
+
 #include <stdio.h>
+//Requires -lraylib
+#include <raylib.h>     //When raylib started being the first lib I include...I realized I have become a changed man...
+
 
 /* ================== DEFINES ================= */
 
@@ -110,8 +113,9 @@ void updateBlocks(Block blocks[BLOCK_AMOUNT],float dt,int *collisionCounter);
 
 
 int setUpWindow(void);
-
 int setObjects(Objects *objects);           
+
+double calculateElasticCollision();
 
 /* ================== MAIN ================= */
 
@@ -135,7 +139,7 @@ int main(void)
 
 
     if (setUpWindow() == -1) {
-        return(-1);
+        return(-53);
     }
 
     int collisionCount = 0;

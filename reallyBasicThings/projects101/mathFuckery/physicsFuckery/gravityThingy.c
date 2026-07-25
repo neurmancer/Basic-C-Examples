@@ -22,10 +22,13 @@
 
 /* ============ INCLUDES ============ */
 
+
+#include <stdio.h>  
+#include <stdlib.h> //For Dynamic Memory Shit + rand()
+#include <time.h>   //For random seeding
+
+//Requires -lrayib, -lm
 #include <raylib.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include <math.h>
 
 /*=============== DEFINES ============== */
@@ -153,12 +156,11 @@ void updateVelocity(Particle *p, double dT);
 void updatePos(Particle *p, double dT);
 void updateLastPos(Particle *p);
 
-int setupEnv(void);     //Raylib Window manager wrapper 
-
 //Helpers
 void mergeParticles(Particle *p1, Particle *p2);
 void updateActiveParticles(Particle *particles, int particleCount, Config *config);
 
+int setupEnv(void);     //Raylib Window manager wrapper 
 int detectCollision(Particle *p1, Particle *p2);   //raylib CheckCollisonCircles wrapper 
 
 double randDouble(double min, double max);
@@ -166,7 +168,7 @@ double randDouble(double min, double max);
 double calculateDiagonal(Particle *p1, Particle *p2);              //Actually it's hypothenus but I can't spell that right consecutively so I'll use 'diagonal' 
 double calculateAttraction(Particle *p1, Particle *p2);
 
-Color randColor();
+Color randColor(void);
 
 /* ============= MAIN ============= */
 
@@ -181,7 +183,7 @@ int main(void)
     Particle *particles = (Particle *)(malloc(sizeof(Particle)*particleAmount));
     
         //Error handling
-    if (setupEnv()) { returnCode = (-13); goto clean; }
+    if (setupEnv()) { returnCode = (-53); goto clean; }
     if (particles == NULL) { returnCode = (-1); goto clean; }
     
  
@@ -247,7 +249,7 @@ clean:
         case -1:
             perror("Allocation problem\n");
             break;
-        case -13:
+        case -53:
             perror("Graphics problem");
             break;
 

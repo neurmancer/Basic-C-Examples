@@ -90,6 +90,7 @@ int floortle(float x)
     //and funfact this is just casting (int) over a float I just made it way obsucre for no reason
 }
 
+//Broken
 int ceilchu(float x)
 {
     int result;
