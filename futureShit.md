@@ -17,7 +17,7 @@
  
 ## Physics and Math
 
-- [ ] Build more janky physics simulators and math experiments.
+- [X] Build more janky physics simulators and math experiments.
 - [ ] Create a Doppler-effect simulator for celestial bodies, including redshift and blueshift.
 - [x] Create 3 body simulation (or maybe 4? Idk...(turned out to be N body lol))
 - [ ] Build a basic pendulum simulator.
@@ -70,7 +70,7 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] Vim Clone (CLI text editor)
 - [ ] Gotop clone
 - [ ] Neofetch (or fastfetch) clone
-- [ ] cat clone 
+- [X] cat clone 
 - [X] echo clone (I mean isn't it just printf?)
 - [ ] man clone...since I use this so much and that would be paying homage
 
