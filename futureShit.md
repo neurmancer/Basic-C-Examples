@@ -43,6 +43,7 @@ Yeah all retro... I am a retro guy, after all.
 ## CS Concepts
 
 > This is where I'll lay some concepts then pick one when I feel fancy to implent and dive head-first (and yeah I realized that I used 'A' too much in this part)
+> And you'll laugh your ass off for the ambition but trust me bruh... I have the Dragon book, Dino Book and K&R and a great ignorance so I can pull this off
 
 - [ ] A Bytecode interpreter in C
 - [ ] A Basic Virtual Machine (since that's somehow all related to things I'll list below this one) 
