@@ -610,38 +610,55 @@ int bigFloatSub(BigFloat *result, const BigFloat *a, const BigFloat *b) {
 }
 
 /* ---------- Reciprocal, division, sqrt ---------- */
-int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs) {
+int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs)
+{
     if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0)
         return INT_MAX;  // division by zero
 
     if (target_limbs < 1) target_limbs = 1;
     if (target_limbs > MAX_LIMBS) target_limbs = MAX_LIMBS;
 
-    uint32_t high = x->mantissa.limbs[x->mantissa.size - 1];
-    // Initial guess: y = floor(2^32 / high) * 2^(-32*(exp + size))
     BigFloat y;
     bigFloatZero(&y);
-    uint32_t guess = (high == 0) ? 1 : (uint32_t)(0xFFFFFFFFu / high);
-    printf("DEBUG: guess = 0x%08x\n", guess);
-    if (guess == 0) guess = 1;
-    y.mantissa.limbs[0] = guess;
-    y.mantissa.size = 1;
-    y.exp = -x->exp - x->mantissa.size;
-    y.sign = x->sign;
 
-    // Newton: y = y * (2 - x*y)
+    // --- NEW BULLETPROOF BITWISE SEED BITCH ---
+    // Mathematically guarantees 1 <= x * y < 2
+    uint32_t high = x->mantissa.limbs[x->mantissa.size - 1];
+    int total_bits = 32 * (x->mantissa.size - 1) + (32 - clz32(high));
+
+    y.mantissa.limbs[0] = 1;
+    y.mantissa.size     = 1;
+    y.exp               = -total_bits + 1 - x->exp;
+    y.sign              = x->sign;
+
+    // ---------- Newton: y = y * (2 - x*y) ----------
+// ---------- Newton: y = y * (2 - x*y) ----------
     BigFloat two, t1, t2, t3;
     bigFloatFromUint32(&two, 2);
-    int current = 1;
-    while (current < target_limbs) {
-        current *= 2;
-        if (current > target_limbs) current = target_limbs;
-        if (bigFloatMul(&t1, x, &y) != 0) return INT_MAX;
-        if (bigFloatSub(&t2, &two, &t1) != 0) return INT_MAX;
-        if (bigFloatMul(&t3, &y, &t2) != 0) return INT_MAX;
+
+    // 6 base iterations guarantees 32-bit precision from the seed, 
+    // plus log2(target) iterations to scale up to massive sizes.
+    int required_iters = 6; 
+    int temp = 1;
+    while (temp < target_limbs) {
+        required_iters++;
+        temp *= 2;
+    }
+
+    for (int i = 0; i < required_iters; i++) {
+        int rc = bigFloatMul(&t1, x, &y);
+        if (rc != 0) return(rc);
+
+        rc = bigFloatSub(&t2, &two, &t1);
+        if (rc != 0) return(rc);
+
+        rc = bigFloatMul(&t3, &y, &t2);
+        if (rc != 0) return(rc);
+
         bigFloatCopy(&y, &t3);
     }
     bigFloatCopy(result, &y);
+
     return bigFloatNormalize(result);
 }
 
@@ -653,46 +670,52 @@ int bigFloatDiv(BigFloat *result, const BigFloat *a, const BigFloat *b, int targ
 }
 
 
-int bigFloatSqrt(BigFloat *result, const BigFloat *x, int target_limbs) {
-    if (x->sign < 0) return -1;
+int bigFloatSqrt(BigFloat *result, const BigFloat *x, int target_limbs)
+{
+    if (x->sign < 0){ return(-1); } // negative
+
     if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0) {
         bigFloatZero(result);
-        return 0;
+        return(0);
     }
+
     if (target_limbs < 1) target_limbs = 1;
     if (target_limbs > MAX_LIMBS) target_limbs = MAX_LIMBS;
 
-    // Make exponent even (so that exp/2 is integer)
-    BigFloat tmp;
-    bigFloatCopy(&tmp, x);
-    if (tmp.exp & 1) {   // odd exponent
-        // multiply mantissa by 2^32 and decrement exponent to make it even
-        if (bigIntShiftLeft(&tmp.mantissa, 32) != 0) return INT_MAX;
-        tmp.exp--;
-    }
-
-    // Initial guess: y = sqrt(mantissa high limb) with exponent = exp/2
     BigFloat y;
     bigFloatZero(&y);
-    uint32_t high = tmp.mantissa.limbs[tmp.mantissa.size - 1];
-    uint32_t g = 1;
-    while ((uint64_t)(g+1)*(g+1) <= high)
-        g++;
-    y.mantissa.limbs[0] = g;
+
+    // --- NEW BULLETPROOF BITWISE SEED ---
+    uint32_t high = x->mantissa.limbs[x->mantissa.size - 1];
+    int total_bits = 32 * (x->mantissa.size - 1) + (32 - clz32(high));
+    
+    // Calculate the exact true exponent of the magnitude
+    int true_exp = total_bits - 1 + x->exp;
+
+    y.mantissa.limbs[0] = 1;
     y.mantissa.size = 1;
-    y.exp = tmp.exp / 2;
+    // Floor division for negative odd numbers requires a tiny tweak
+    y.exp = (true_exp >= 0) ? (true_exp / 2) : ((true_exp - 1) / 2);
     y.sign = 1;
 
-    // Newton: y = (y + x/y) / 2
+// ---------- Newton: y = (y + x/y) / 2 ----------
     BigFloat t1, t2;
-    int current = 1;
-    while (current < target_limbs) {
-        current *= 2;
-        if (current > target_limbs) current = target_limbs;
-        if (bigFloatDiv(&t1, x, &y, current) != 0) return -1;
-        if (bigFloatAdd(&t2, &y, &t1) != 0) return -1;
-        // divide by 2 = multiply by 0.5 (keeps fraction bits)
-        if (bigFloatMul(&t2, &t2, &half_const) != 0) return -1;
+    
+    int required_iters = 6;
+    int temp = 1;
+    while (temp < target_limbs) {
+        required_iters++;
+        temp *= 2;
+    }
+
+    for (int i = 0; i < required_iters; i++) {
+        // We pass MAX_LIMBS to division here so it doesn't artificially truncate 
+        // intermediate steps, giving us a perfect root!
+        if (bigFloatDiv(&t1, x, &y, MAX_LIMBS) != 0) return(-1);
+        if (bigFloatAdd(&t2, &y, &t1) != 0) return(-1);
+
+        t2.exp -= 1; 
+
         bigFloatCopy(&y, &t2);
     }
     bigFloatCopy(result, &y);
