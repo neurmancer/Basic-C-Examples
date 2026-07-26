@@ -19,7 +19,7 @@
 
 - [X] Build more janky physics simulators and math experiments.
 - [ ] Create a Doppler-effect simulator for celestial bodies, including redshift and blueshift.
-- [x] Create 3 body simulation (or maybe 4? Idk...(turned out to be N body lol))
+- [X] Create 3 body simulation (or maybe 4? Idk...(turned out to be N body lol))
 - [ ] Build a basic pendulum simulator.
 - [ ] Create a function visualizer. (I know it's vauge but I don't know what to do...let's say something like Desmos or Wolfram Alpha. yeah, yeah sure also solve P = NP by next tuesday too while you are at it nerd!)
 - [ ] Build an big-num lib(Yeah I didn't build that FFT for nothing)
@@ -33,8 +33,9 @@
 These may live in this repository or in a separate games repository. The aim is to keep them beginner-friendly; no DS emulation yet.
 
 - [ ] Create a Galaga clone. and I might connect this with Celestial Doppler Sim to make an partially physically accurate Galaga lol
-- [x] Create Pong. The online multiplayer/server flex is still pending. (and it'll wait for at least a year)
+- [X] Create Pong. The online multiplayer/server flex is still pending. (and it'll wait for at least a year)
 - [ ] Rediscover Breakout.
+- [ ] Tetris (ofc Tetris duh)
 
 Yeah all retro... I am a retro guy, after all.
 
@@ -62,7 +63,7 @@ Yeah all retro... I am a retro guy, after all.
 ## Personal Fuckeries
 
 - [ ] Prime number spitter for dwm status bar for no apperant reason besides being cool
-- [ ] More experiments for DWM environment 
+- [ ] More experiments for DWM environment(My idea well ran dry...I know it's vague)
 
 
 ## Rediscovering America
@@ -79,4 +80,4 @@ Yeah all retro... I am a retro guy, after all.
 
 > This part where I'll take some research paper and try to reproduce the findings of the said paper. better if I can change the dataset and hyperparameters to validate findings of the papers
 >
-> Every project under here will be in a subfolder with the actual PDF of the program original program(if exists and open-sourced) and my implementation with my findings written with LaTex(I don't know LaTex yet) 
+> Every project under here will be in a subfolder with the actual PDF of the program original program(if exists and open-sourced) and my implementation with my findings written with LaTeX(I don't know LaTeX yet) 
