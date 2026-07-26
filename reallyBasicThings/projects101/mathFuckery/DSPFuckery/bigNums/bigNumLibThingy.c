@@ -141,35 +141,38 @@ int bigIntMulFFT(BigInt *result, const BigInt *a, const BigInt *b) {
     /* 1. Convert each limb into TWO 16-bit digits (low, high) */
     int digitsA = la * 2;
     int digitsB = lb * 2;
-    int convLen = digitsA + digitsB - 1;     // convolution length
-    int N = next_pow2(convLen);              // FFT size (power of two)
+    int convLen = digitsA + digitsB - 1;     // linear convolution length
+    int N = next_pow2(convLen);              // still pad to power-of-2 for speed
+                                              // (fft_arbitrary will just call the fast path)
 
     /* 2. Allocate zero-padded complex arrays */
     complexNum *A = calloc(N, sizeof(complexNum));
     complexNum *B = calloc(N, sizeof(complexNum));
     if (!A || !B) {
         free(A); free(B);
-        return(-1);                     // failure
+        return(-1);
     }
 
-    // Fill A
+    // Fill A (little-endian 16-bit digits)
     for (int i = 0; i < la; i++) {
         uint32_t limb = a->limbs[i];
-        A[2*i].re   = (double)(limb & 0xFFFF);          // low 16 bits
-        A[2*i+1].re = (double)((limb >> 16) & 0xFFFF);  // high 16 bits
+        A[2*i].re     = (double)(limb & 0xFFFF);
+        A[2*i + 1].re = (double)((limb >> 16) & 0xFFFF);
     }
     // Fill B
     for (int i = 0; i < lb; i++) {
         uint32_t limb = b->limbs[i];
-        B[2*i].re   = (double)(limb & 0xFFFF);
-        B[2*i+1].re = (double)((limb >> 16) & 0xFFFF);
+        B[2*i].re     = (double)(limb & 0xFFFF);
+        B[2*i + 1].re = (double)((limb >> 16) & 0xFFFF);
     }
 
     /* 3. Forward FFT */
-    fft(A, N, 0);
-    fft(B, N, 0);
+    if (fft_arbitrary(A, N, 0) != 0 || fft_arbitrary(B, N, 0) != 0) {
+        free(A); free(B);
+        return(-1);
+    }
 
-    /* 4. Pointwise multiply (complex) */
+    /* 4. Pointwise multiply */
     for (int i = 0; i < N; i++) {
         double re = A[i].re * B[i].re - A[i].im * B[i].im;
         double im = A[i].re * B[i].im + A[i].im * B[i].re;
@@ -178,58 +181,62 @@ int bigIntMulFFT(BigInt *result, const BigInt *a, const BigInt *b) {
     }
 
     /* 5. Inverse FFT */
-    fft(A, N, 1);
+    if (fft_arbitrary(A, N, 1) != 0) {
+        free(A); free(B);
+        return(-1);
+    }
 
-    /* 6. Allocate temporary array for convolution result (uint64_t for carry) */
-    uint64_t *temp = calloc(convLen + 2, sizeof(uint64_t)); // +2 for overflow
+    /* 6. Temp buffer for rounded convolution + carry room */
+    uint64_t *temp = calloc(convLen + 2, sizeof(uint64_t));
     if (!temp) {
         free(A); free(B);
-        return(-1);                     // failure
+        return(-1);
     }
 
-    /* 7. Round real parts to nearest integer */
+    /* 7. Round (numbers are positive so +0.5 is fine) */
     for (int i = 0; i < convLen; i++) {
-        temp[i] = (uint64_t)(A[i].re + 0.5);
+        // defensive: clamp tiny negative noise from floating-point error
+        double v = A[i].re;
+        if (v < 0.0) v = 0.0;
+        temp[i] = (uint64_t)(v + 0.5);
     }
 
-    /* 8. Carry propagation (base 2^16) */
+    /* 8. Carry propagation base 2^16 (one forward pass is enough) */
     for (int i = 0; i < convLen + 1; i++) {
-        if (temp[i] >= 0x10000) {
-            temp[i+1] += temp[i] >> 16;
-            temp[i] &= 0xFFFF;
+        if (temp[i] >= 0x10000ULL) {
+            temp[i + 1] += temp[i] >> 16;
+            temp[i] &= 0xFFFFULL;
         }
     }
 
-    // Find highest non‑zero digit
+    // Find highest non-zero digit
     int lastDigit = convLen + 1;
-    while (lastDigit > 0 && temp[lastDigit-1] == 0)
+    while (lastDigit > 0 && temp[lastDigit - 1] == 0)
         lastDigit--;
 
-    /* --- Handle product = zero immediately --- */
+    /* Product is zero */
     if (lastDigit == 0) {
-        bigIntZero(result);           // sets size=1, limbs[0]=0
-        free(temp);
-        free(A);
-        free(B);
+        bigIntZero(result);
+        free(temp); free(A); free(B);
         return(0);
     }
 
-    /* 9. Pack two 16‑bit digits into one 32‑bit limb */
+    /* 9. Pack two 16-bit digits → one 32-bit limb */
     int outSize = (lastDigit + 1) / 2;
     if (outSize > MAX_LIMBS) {
         free(temp); free(A); free(B);
-        return(-1);                     // overflow
+        return(-1);      // overflow
     }
 
     memset(result->limbs, 0, sizeof(result->limbs));
     for (int i = 0; i < lastDigit; i += 2) {
         uint32_t low  = (uint32_t)(temp[i] & 0xFFFF);
-        uint32_t high = (i+1 < lastDigit) ? (uint32_t)(temp[i+1] & 0xFFFF) : 0;
-        result->limbs[i/2] = low | (high << 16);
+        uint32_t high = (i + 1 < lastDigit) ? (uint32_t)(temp[i + 1] & 0xFFFF) : 0;
+        result->limbs[i / 2] = low | (high << 16);
     }
 
     result->size = outSize;
-    while (result->size > 1 && result->limbs[result->size-1] == 0)
+    while (result->size > 1 && result->limbs[result->size - 1] == 0)
         result->size--;
 
     free(temp);
