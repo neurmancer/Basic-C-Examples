@@ -20,7 +20,7 @@
 - [X] Build more janky physics simulators and math experiments.
 - [ ] Create a Doppler-effect simulator for celestial bodies, including redshift and blueshift.
 - [X] Create 3 body simulation (or maybe 4? Idk...(turned out to be N body lol))
-- [ ] Build a basic pendulum simulator.
+- [X] Build a basic pendulum simulator.
 - [ ] Create a function visualizer. (I know it's vauge but I don't know what to do...let's say something like Desmos or Wolfram Alpha. yeah, yeah sure also solve P = NP by next tuesday too while you are at it nerd!)
 - [X] Build an big-num lib(Yeah I didn't build that FFT for nothing)
 - [ ] Render Tupper's self-referential graph (possible, but no promises since I haven't implemented big nums in C yet and int overflow bitching about it).
@@ -73,7 +73,7 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] Neofetch (or fastfetch) clone
 - [X] cat clone 
 - [X] echo clone (I mean isn't it just printf?)
-- [ ] man clone...since I use this so much and that would be paying homage
+- [ ] man clone...since I use this so much and that would be paying homage(_You're next bruh_)
 
 
 ## Academic Shit I Guess

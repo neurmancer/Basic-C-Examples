@@ -213,6 +213,7 @@
 
 > > N Body(Particle) Simulation with Newtonian Gravity (using raylib.h)
 
+> > Added a Basic Frictionless Environment Pendulum (yeah after those two this is nothing appealing IK)
 
 ---
 
