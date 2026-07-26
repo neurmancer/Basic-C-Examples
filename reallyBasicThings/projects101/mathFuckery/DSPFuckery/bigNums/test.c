@@ -39,16 +39,7 @@
 void bigIntPrintHex(const BigInt *a);
 
 /* helper to print a BigFloat (sign + mantissa hex + exp) */
-void bigFloatPrint(const BigFloat *x) {
-    if (x->sign < 0) printf("-");
-    else             printf("+");
-
-    printf("0x");
-    for (int i = x->mantissa.size - 1; i >= 0; i--) {
-        printf("%08x", x->mantissa.limbs[i]);
-    }
-    printf(" * 2^(%d*32)  (size=%d)\n", x->exp, x->mantissa.size);
-}
+void bigFloatPrint(const BigFloat *x);
 
 int main(void) {
     BigInt a, b, res, copy;
@@ -243,4 +234,14 @@ void bigIntPrintHex(const BigInt *a) {
         printf("%08x", a->limbs[i]);
     }
     printf("  (size=%d)\n", a->size);
+}
+
+void bigFloatPrint(const BigFloat *x) {
+    if (x->sign < 0) printf("-");
+    else             printf("+");
+
+    printf("0x");
+    for (int i = x->mantissa.size - 1; i >= 0; i--)
+        printf("%08x", x->mantissa.limbs[i]);
+    printf(" * 2^(%d)  (size=%d)\n", x->exp, x->mantissa.size);
 }

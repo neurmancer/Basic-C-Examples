@@ -16,7 +16,6 @@
 
 #include "complexFFT.h"
 #include "bignums.h"
-#include <stdio.h>  //Debug only
 
 #define MAX_LIMBS 64 // 64 * 32bits (int standard) = 2048 bits...hope that's gonna be enough
 #ifndef INT_MAX
@@ -50,7 +49,6 @@ static const BigFloat half_const = {
     .exp = -1,
     .sign = 1
 };
-
 
 void bigIntZero(BigInt *a) {
     memset(a->limbs, 0, sizeof(a->limbs));
@@ -449,17 +447,28 @@ void bigFloatFromUint32(BigFloat *x, uint32_t v) {
     x->mantissa.size     = 1;
     x->exp               = 0;
     x->sign              = 1;
+    bigFloatNormalize(x);   
 }
 
 /* Normalize: only remove leading zero limbs (no bit‑level shifting).*/
 
 int bigFloatNormalize(BigFloat *x) {
+    // trim leading zero limbs
     while (x->mantissa.size > 1 &&
            x->mantissa.limbs[x->mantissa.size-1] == 0)
         x->mantissa.size--;
     if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0) {
         bigFloatZero(x);
+        return 0;
     }
+
+    uint32_t high = x->mantissa.limbs[x->mantissa.size-1];
+    int shift = clz32(high);
+    if (shift == 0) return 0;
+
+    // shift mantissa left by 'shift' bits
+    if (bigIntShiftLeft(&x->mantissa, shift) != 0) return INT_MAX;
+    x->exp -= shift;
     return 0;
 }
 
@@ -467,13 +476,16 @@ int bigFloatNormalize(BigFloat *x) {
  * Actually shift the mantissa bits. */
 int bigFloatShiftLeft(BigFloat *x, int bits) {
     if (bits == 0) return 0;
-    return bigIntShiftLeft(&x->mantissa, bits);
+    int rc = bigIntShiftLeft(&x->mantissa, bits);
+    if (rc != 0) return rc;
+    return bigFloatNormalize(x);
 }
 
-/* Shift the whole float right by 'bits' bits (truncation). */
 int bigFloatShiftRight(BigFloat *x, int bits) {
     if (bits == 0) return 0;
-    return bigIntShiftRight(&x->mantissa, bits);
+    int rc = bigIntShiftRight(&x->mantissa, bits);
+    if (rc != 0) return rc;
+    return bigFloatNormalize(x);
 }
 
 /* Compare absolute values (ignore sign). */
@@ -484,7 +496,6 @@ int bigFloatCmpAbs(const BigFloat *a, const BigFloat *b) {
     if (a_zero) return -1;
     if (b_zero) return 1;
 
-    // Compare exponents (word exponents)
     if (a->exp != b->exp)
         return (a->exp > b->exp) ? 1 : -1;
     return bigIntCmp(&a->mantissa, &b->mantissa);
@@ -523,36 +534,30 @@ int bigFloatMul(BigFloat *result, const BigFloat *a, const BigFloat *b) {
 
 /* ---------- BigFloat addition ---------- */
 int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b) {
-    // Handle zeros
     if (a->mantissa.size == 1 && a->mantissa.limbs[0] == 0) {
-        bigFloatCopy(result, b);
-        return 0;
+        bigFloatCopy(result, b); return 0;
     }
     if (b->mantissa.size == 1 && b->mantissa.limbs[0] == 0) {
-        bigFloatCopy(result, a);
-        return 0;
+        bigFloatCopy(result, a); return 0;
     }
 
-    // Same sign – add magnitudes
     if (a->sign == b->sign) {
         BigFloat tmp_a, tmp_b;
         bigFloatCopy(&tmp_a, a);
         bigFloatCopy(&tmp_b, b);
 
-        // Align by shifting the smaller exponent's mantissa right
+        // align by shifting the smaller exponent's mantissa right
         if (tmp_a.exp > tmp_b.exp) {
-            int shift_bits = (tmp_a.exp - tmp_b.exp) * 32;
-            bigFloatShiftRight(&tmp_b, shift_bits);
+            int shift = tmp_a.exp - tmp_b.exp;
+            if (bigIntShiftRight(&tmp_b.mantissa, shift) != 0) return -1;
             tmp_b.exp = tmp_a.exp;
         } else if (tmp_b.exp > tmp_a.exp) {
-            int shift_bits = (tmp_b.exp - tmp_a.exp) * 32;
-            bigFloatShiftRight(&tmp_a, shift_bits);
+            int shift = tmp_b.exp - tmp_a.exp;
+            if (bigIntShiftRight(&tmp_a.mantissa, shift) != 0) return -1;
             tmp_a.exp = tmp_b.exp;
         }
 
-        // Add aligned mantissas
-        BigInt sum;
-        bigIntZero(&sum);
+        BigInt sum; bigIntZero(&sum);
         uint64_t carry = 0;
         int max_size = (tmp_a.mantissa.size > tmp_b.mantissa.size) ?
                         tmp_a.mantissa.size : tmp_b.mantissa.size;
@@ -566,17 +571,13 @@ int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b) {
             sum.size = i + 1;
         }
         result->mantissa = sum;
-        result->exp      = tmp_a.exp;
-        result->sign     = a->sign;
+        result->exp  = tmp_a.exp;
+        result->sign = a->sign;
         return bigFloatNormalize(result);
     }
 
-    // Different signs – subtract smaller magnitude from larger
     int cmp = bigFloatCmpAbs(a, b);
-    if (cmp == 0) {
-        bigFloatZero(result);
-        return 0;
-    }
+    if (cmp == 0) { bigFloatZero(result); return 0; }
     const BigFloat *larger  = (cmp > 0) ? a : b;
     const BigFloat *smaller = (cmp > 0) ? b : a;
 
@@ -584,14 +585,13 @@ int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b) {
     bigFloatCopy(&tmp_large, larger);
     bigFloatCopy(&tmp_small, smaller);
 
-    // Align
     if (tmp_large.exp > tmp_small.exp) {
-        int shift_bits = (tmp_large.exp - tmp_small.exp) * 32;
-        bigFloatShiftRight(&tmp_small, shift_bits);
+        int shift = tmp_large.exp - tmp_small.exp;
+        if (bigIntShiftRight(&tmp_small.mantissa, shift) != 0) return -1;
         tmp_small.exp = tmp_large.exp;
     } else if (tmp_small.exp > tmp_large.exp) {
-        int shift_bits = (tmp_small.exp - tmp_large.exp) * 32;
-        bigFloatShiftRight(&tmp_large, shift_bits);
+        int shift = tmp_small.exp - tmp_large.exp;
+        if (bigIntShiftRight(&tmp_large.mantissa, shift) != 0) return -1;
         tmp_large.exp = tmp_small.exp;
     }
 
@@ -601,7 +601,6 @@ int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b) {
     result->sign = larger->sign;
     return bigFloatNormalize(result);
 }
-
 /* result = a - b */
 int bigFloatSub(BigFloat *result, const BigFloat *a, const BigFloat *b) {
     BigFloat neg_b;

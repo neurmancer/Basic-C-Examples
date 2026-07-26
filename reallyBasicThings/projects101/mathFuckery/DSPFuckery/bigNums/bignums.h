@@ -10,13 +10,11 @@ typedef struct {
     int size;
 } BigInt;
 
-typedef struct
-{
+typedef struct {
     BigInt mantissa;
-    int32_t exp;      // exponent IN BITS (*redefined )
+    int32_t exp;      // exponent in BITS (not words)
     int sign;
 } BigFloat;
-
 
 void bigIntZero(BigInt *a);
 
