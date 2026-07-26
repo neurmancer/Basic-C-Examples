@@ -200,6 +200,7 @@
 > - A Makefile for making compilation easier with MAIN=src.c and TARGET=target.o compile-time parameters
 > - And all of those are just...placeholders for future math fuckery 
 > - test.c is in the said subfolder for checking results 
+> - IT FUCKING PASSED THE TESTS and yeah I am taking rest of today as **off day** since I've been working on this like for the last 21 hours Ramanujan and Tupper can wait
 
 > - DOCUMENTATION.md is in same folder but empty till I unify all error conventions for API and test passes
 

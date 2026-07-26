@@ -479,50 +479,58 @@ void bigFloatTruncate(BigFloat *x, int target_limbs) {
 int bigFloatNormalize(BigFloat *x) {
     // trim leading zero limbs
     while (x->mantissa.size > 1 &&
-           x->mantissa.limbs[x->mantissa.size-1] == 0)
+           x->mantissa.limbs[x->mantissa.size-1] == 0){
         x->mantissa.size--;
+    }
+    
     if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0) {
         bigFloatZero(x);
-        return 0;
+        return(0);
     }
 
     uint32_t high = x->mantissa.limbs[x->mantissa.size-1];
     int shift = clz32(high);
-    if (shift == 0) return 0;
+    if (shift == 0){ return(0); }
 
     // shift mantissa left by 'shift' bits
     if (bigIntShiftLeft(&x->mantissa, shift) != 0) return INT_MAX;
     x->exp -= shift;
-    return 0;
+    
+    return(0);
 }
 
 /* Shift the whole float left by 'bits' bits.
  * Actually shift the mantissa bits. */
 int bigFloatShiftLeft(BigFloat *x, int bits) {
-    if (bits == 0) return 0;
+    if (bits == 0){ return(0); }
     int rc = bigIntShiftLeft(&x->mantissa, bits);
-    if (rc != 0) return rc;
-    return bigFloatNormalize(x);
+    
+    if (rc != 0){ return(rc); }
+    
+    return(bigFloatNormalize(x));
 }
 
 int bigFloatShiftRight(BigFloat *x, int bits) {
-    if (bits == 0) return 0;
+    if (bits == 0){ return(0); }
     int rc = bigIntShiftRight(&x->mantissa, bits);
-    if (rc != 0) return rc;
-    return bigFloatNormalize(x);
+    if (rc != 0){ return(rc); }
+    return(bigFloatNormalize(x));
 }
 
 /* Compare absolute values (ignore sign). */
 int bigFloatCmpAbs(const BigFloat *a, const BigFloat *b) {
     int a_zero = (a->mantissa.size == 1 && a->mantissa.limbs[0] == 0);
     int b_zero = (b->mantissa.size == 1 && b->mantissa.limbs[0] == 0);
-    if (a_zero && b_zero) return 0;
-    if (a_zero) return -1;
-    if (b_zero) return 1;
+    
+    if (a_zero && b_zero){ return(0); }
+    
+    if (a_zero){ return(-1); }
+    
+    if (b_zero){ return(-1); }
 
-    if (a->exp != b->exp)
-        return (a->exp > b->exp) ? 1 : -1;
-    return bigIntCmp(&a->mantissa, &b->mantissa);
+    if (a->exp != b->exp) { return((a->exp > b->exp) ? 1 : -1); }
+    
+    return(bigIntCmp(&a->mantissa, &b->mantissa));
 }
 
 void bigFloatCopy(BigFloat *dst, const BigFloat *src) {
@@ -542,25 +550,27 @@ int bigFloatMul(BigFloat *result, const BigFloat *a, const BigFloat *b) {
     if ((a->mantissa.size == 1 && a->mantissa.limbs[0] == 0) ||
         (b->mantissa.size == 1 && b->mantissa.limbs[0] == 0)) {
         bigFloatZero(result);
-        return 0;
+        return(0);
     }
 
     int rc = bigIntMulFFT(&result->mantissa, &a->mantissa, &b->mantissa);
-    if (rc != 0) return INT_MAX;
+    if (rc != 0){ return(INT_MAX); }
 
     int64_t new_exp = (int64_t)a->exp + (int64_t)b->exp;
-    if (new_exp > INT32_MAX || new_exp < INT32_MIN) return INT_MAX;
+    if (new_exp > INT32_MAX || new_exp < INT32_MIN){ return(INT_MAX); }
 
     result->exp  = (int32_t)new_exp;
     result->sign = a->sign * b->sign;
-    return bigFloatNormalize(result);
+    return(bigFloatNormalize(result));
 }
+//Make it work first...then format as you please 
 
 /* ---------- BigFloat addition ---------- */
 int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b) {
     if (a->mantissa.size == 1 && a->mantissa.limbs[0] == 0) {
         bigFloatCopy(result, b); return 0;
     }
+
     if (b->mantissa.size == 1 && b->mantissa.limbs[0] == 0) {
         bigFloatCopy(result, a); return 0;
     }
@@ -597,7 +607,7 @@ int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b) {
         result->mantissa = sum;
         result->exp  = tmp_a.exp;
         result->sign = a->sign;
-        return bigFloatNormalize(result);
+        return(bigFloatNormalize(result));
     }
 
     int cmp = bigFloatCmpAbs(a, b);
@@ -619,28 +629,29 @@ int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b) {
         tmp_large.exp = tmp_small.exp;
     }
 
-    if (bigIntSub(&result->mantissa, &tmp_large.mantissa, &tmp_small.mantissa) != 0)
-        return -1;
+    if (bigIntSub(&result->mantissa, &tmp_large.mantissa, &tmp_small.mantissa) != 0){ return(-1); }
+    
     result->exp  = tmp_large.exp;
     result->sign = larger->sign;
-    return bigFloatNormalize(result);
+    return(bigFloatNormalize(result));
 }
+
+
 /* result = a - b */
 int bigFloatSub(BigFloat *result, const BigFloat *a, const BigFloat *b) {
     BigFloat neg_b;
     bigFloatCopy(&neg_b, b);
     neg_b.sign = -b->sign;
-    return bigFloatAdd(result, a, &neg_b);
+    return(bigFloatAdd(result, a, &neg_b));
 }
 
 /* ---------- Reciprocal, division, sqrt ---------- */
 int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs)
 {
-    if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0)
-        return INT_MAX;  // division by zero
+    if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0) { return INT_MAX; }  // division by zero
 
-    if (target_limbs < 1) target_limbs = 1;
-    if (target_limbs > MAX_LIMBS) target_limbs = MAX_LIMBS;
+    if (target_limbs < 1){ target_limbs = 1; }
+    if (target_limbs > MAX_LIMBS){ target_limbs = MAX_LIMBS; }
 
     BigFloat y;
     bigFloatZero(&y);
@@ -656,7 +667,7 @@ int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs)
     y.sign              = x->sign;
 
     // ---------- Newton: y = y * (2 - x*y) ----------
-// ---------- Newton: y = y * (2 - x*y) ----------
+
     BigFloat two, t1, t2, t3;
     bigFloatFromUint32(&two, 2);
 
@@ -675,13 +686,13 @@ int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs)
 
     for (int i = 0; i < required_iters; i++) {
         int rc = bigFloatMul(&t1, x, &y);
-        if (rc != 0) return(rc);
+        if (rc != 0){ return(rc); }
 
         rc = bigFloatSub(&t2, &two, &t1);
-        if (rc != 0) return(rc);
+        if (rc != 0){ return(rc); }
 
         rc = bigFloatMul(&t3, &y, &t2);
-        if (rc != 0) return(rc);
+        if (rc != 0){ return(rc); }
 
         bigFloatCopy(&y, &t3);
     }
@@ -691,7 +702,7 @@ int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs)
     // BOOM. CHOP THE NOISE OFF BEFORE ANYONE SEES IT.
     bigFloatTruncate(result, target_limbs); 
 
-    return bigFloatNormalize(result);
+    return(bigFloatNormalize(result));
 }
 
 int bigFloatDiv(BigFloat *result, const BigFloat *a, const BigFloat *b, int target_limbs) {
@@ -739,7 +750,7 @@ BigFloat t1, t2;
 
     int required_iters = 6;
     int temp = 1;
-    while (temp < working_limbs) { // <- Use working_limbs here!
+    while (temp < working_limbs) {
         required_iters++;
         temp *= 2;
     }
@@ -756,8 +767,8 @@ BigFloat t1, t2;
     
     bigFloatCopy(result, &y);
     
-    // BOOM. CHOP THE NOISE OFF BEFORE ANYONE SEES IT.
+    // BOOM. CHOP THE NOISE OFF BEFORE ANYONE SEES IT (I am The Documentation Neuro hii...next commit will have my signatures (yeah I am clearing my old notes for myself)).
     bigFloatTruncate(result, target_limbs);
     
-    return bigFloatNormalize(result);
+    return(bigFloatNormalize(result));
 }
