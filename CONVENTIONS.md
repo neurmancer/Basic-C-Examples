@@ -6,7 +6,9 @@
 - Will cover: 
 - - return codes and meanings,
 - - How I structure bigger (usually raylib) projects
-- but not right now lmfao it's 5.03AM...I just left this here so I won't forget tomorrow
+
+- - - First let me start with this: I am aware some projects are over 500LoC because this is a beginner repo and I don't want people to handle multiple files for 
+one project so my goal is making them as self-contained as possible
 
 ## Error Codes 
 

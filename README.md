@@ -1,4 +1,6 @@
-# A BASIC C CODING REPO FOR BEGINNERS(ME lulz(at this point I am kinda an intermediate level but fuck it we ball))
+# A BASIC C CODING REPO FOR BEGINNERS()
+
+> Lowkey...I gotta change the repo name at this point I guess...
 
 ---
 
@@ -194,8 +196,12 @@
 ##### Big Nums Lib 
 > - An enchanced version of FFT that can handle non radix-2 inputs added for FFT multipication in API 
 > - Totally useful bignums lib from scratch (haven't documented yet)
+> - Added big floats too (not all tests are complete yet) 
 > - A Makefile for making compilation easier with MAIN=src.c and TARGET=target.o compile-time parameters
 > - And all of those are just...placeholders for future math fuckery 
+> - test.c is in the said subfolder for checking results 
+
+> - DOCUMENTATION.md is in same folder but empty till I unify all error conventions for API and test passes
 
 #### Physics Fuckery
 
