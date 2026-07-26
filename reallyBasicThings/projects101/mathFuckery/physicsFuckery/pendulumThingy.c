@@ -79,6 +79,10 @@ typedef struct{
 
 }Pendulum;
 
+typedef struct{
+  Pendulum pend;
+  Ball pivot;
+}Objects ;
 
 /* ============== GLOBAL VARS ==================== */
 
@@ -86,6 +90,8 @@ typedef struct{
 
 //For some fucking reason my tabs aren't what they used to be in this file
 /* =================== FUNCTION PROTOTYPES ============= */
+
+void drawObjects(Objects *obj);
 
 int setupEnv(void);
 
@@ -106,6 +112,7 @@ int main(void)
   pendulum.string.p2 = pendulum.ball.center;    //Should I use radius as offset? We'll see ig...
   pendulum.string.thickness = LINE_THICKNESS;
 
+  Objects obj = {pendulum,pivot};
 
   while (!WindowShouldClose()) {
     if (IsKeyPressed(KEY_ESCAPE)) { break; }
@@ -113,10 +120,9 @@ int main(void)
     //Drawing shit
     BeginDrawing();
     ClearBackground(BLACK);
-    DrawLineEx(pendulum.string.p1,pendulum.string.p2,pendulum.string.thickness,pendulum.string.color);
-    DrawCircleV(pivot.center, pivot.radius, pivot.color);
+    drawObjects(&obj);
     EndDrawing();
-  
+
   }
 
 
@@ -126,6 +132,15 @@ int main(void)
 }
 
 
+//Rendering objects
+void drawObjects(Objects *obj)
+{
+  //Line
+  DrawLineEx(obj->pend.string.p1,obj->pend.string.p2,obj->pend.string.thickness,obj->pend.string.color);
+  //Pivot
+  DrawCircleV(obj->pivot.center, obj->pivot.radius, obj->pivot.color);
+  DrawCircleV(obj->pend.ball.center,obj->pend.ball.radius,obj->pend.ball.color);
+}
 
 int setupEnv(void)
 {
