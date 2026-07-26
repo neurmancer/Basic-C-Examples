@@ -50,6 +50,8 @@ void bigFloatFromUint32(BigFloat *x, uint32_t v);
 
 void bigFloatCopy(BigFloat *dst, const BigFloat *src);
 
+void bigFloatTruncate(BigFloat *x, int target_limbs);
+
 int bigFloatNormalize(BigFloat *x);
 
 int bigFloatShiftLeft(BigFloat *x, int bits);

@@ -33,6 +33,12 @@
                 Fixed using a different approach:
                     bigFloatSqrt is loosing precision for some reason 
                     bigFloatRecip is loosing also precision if I am not mistaken
+
+                Turnicated the precision loss in the said functions
+
+
+            the resut of :sqrt(144) = +0xc00000003f7fffff0400000000000000 * 2^(-124)  (size=4) is 12.000000000000000000001 due to 
+            AM-GM Inequality (Arithmetic Mean-Geometric Mean) due to my method (Newton's method of square root) so yeah that can be 'known weakness'
 */
 
 /* helper to print a BigInt in hex (most-significant limb first) */

@@ -450,6 +450,30 @@ void bigFloatFromUint32(BigFloat *x, uint32_t v) {
     bigFloatNormalize(x);   
 }
 
+/* =====================================================================
+   GUARD LIMB TRUNCATION
+   ===================================================================== */
+
+// Silently chops off the lowest limbs to hide iteration noise and enforce a strict precision
+void bigFloatTruncate(BigFloat *x, int target_limbs) {
+    if (target_limbs < 1) target_limbs = 1;
+    
+    if (x->mantissa.size > target_limbs) {
+        int limbs_to_chop = x->mantissa.size - target_limbs;
+        
+        // Shift the mantissa right by exactly 'limbs_to_chop' whole limbs (32 bits each)
+        // This physically deletes the un-converged noise at the bottom of the number!
+        bigIntShiftRight(&x->mantissa, limbs_to_chop * 32);
+        
+        // Compensate the exponent because we effectively divided the mantissa integer by 2^(32 * chop)
+        x->exp += (limbs_to_chop * 32);
+        
+        // Clean up any remaining leading zeros just in case
+        bigFloatNormalize(x);
+    }
+}
+
+
 /* Normalize: only remove leading zero limbs (no bit‑level shifting).*/
 
 int bigFloatNormalize(BigFloat *x) {
@@ -638,9 +662,13 @@ int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs)
 
     // 6 base iterations guarantees 32-bit precision from the seed, 
     // plus log2(target) iterations to scale up to massive sizes.
+    
+ int working_limbs = target_limbs + 2; 
+    if (working_limbs > MAX_LIMBS) working_limbs = MAX_LIMBS;
+
     int required_iters = 6; 
     int temp = 1;
-    while (temp < target_limbs) {
+    while (temp < working_limbs) { // <- Use working_limbs here!
         required_iters++;
         temp *= 2;
     }
@@ -657,7 +685,11 @@ int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs)
 
         bigFloatCopy(&y, &t3);
     }
+    
     bigFloatCopy(result, &y);
+    
+    // BOOM. CHOP THE NOISE OFF BEFORE ANYONE SEES IT.
+    bigFloatTruncate(result, target_limbs); 
 
     return bigFloatNormalize(result);
 }
@@ -699,18 +731,21 @@ int bigFloatSqrt(BigFloat *result, const BigFloat *x, int target_limbs)
     y.sign = 1;
 
 // ---------- Newton: y = (y + x/y) / 2 ----------
-    BigFloat t1, t2;
+BigFloat t1, t2;
     
+    // WE ADD 2 GUARD LIMBS TO PUSH THE NOISE DOWN!
+    int working_limbs = target_limbs + 2;
+    if (working_limbs > MAX_LIMBS) working_limbs = MAX_LIMBS;
+
     int required_iters = 6;
     int temp = 1;
-    while (temp < target_limbs) {
+    while (temp < working_limbs) { // <- Use working_limbs here!
         required_iters++;
         temp *= 2;
     }
 
     for (int i = 0; i < required_iters; i++) {
-        // We pass MAX_LIMBS to division here so it doesn't artificially truncate 
-        // intermediate steps, giving us a perfect root!
+        // Pass MAX_LIMBS to division so intermediate steps don't truncate early!
         if (bigFloatDiv(&t1, x, &y, MAX_LIMBS) != 0) return(-1);
         if (bigFloatAdd(&t2, &y, &t1) != 0) return(-1);
 
@@ -718,6 +753,11 @@ int bigFloatSqrt(BigFloat *result, const BigFloat *x, int target_limbs)
 
         bigFloatCopy(&y, &t2);
     }
+    
     bigFloatCopy(result, &y);
+    
+    // BOOM. CHOP THE NOISE OFF BEFORE ANYONE SEES IT.
+    bigFloatTruncate(result, target_limbs);
+    
     return bigFloatNormalize(result);
 }
