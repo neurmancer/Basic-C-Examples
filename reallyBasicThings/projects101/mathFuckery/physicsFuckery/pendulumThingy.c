@@ -8,6 +8,12 @@
 
             The OG grahpical app gang gonna be here probably -lraylib, -lm (tho...I really make a Makefile for this type shit but not now)
 
+
+            My original idea is using a frictionless pivot and letting the ball go crazy like a crackhead on meth 
+            rope p1 will be a constant on the pivot, p2 will follow the ball's center or center-radius haven't decided yet...
+
+            Here's its wiki page: https://en.wikipedia.org/wiki/Pendulum and maybe I may add a pendulum angle to sin wave visualizer at the end
+
 */
 
 
@@ -86,11 +92,12 @@ int main(void)
     return(-53);
   }
 
+  Pendulum pendulum = { 0 }; 
+  
+
   while (!WindowShouldClose()) {
     if (IsKeyPressed(KEY_ESCAPE)) { break; }
   
-
-
     //Drawing shit
     BeginDrawing();
     ClearBackground(BLACK);
