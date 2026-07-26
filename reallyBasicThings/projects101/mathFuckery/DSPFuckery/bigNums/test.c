@@ -27,6 +27,12 @@
                 15- BigFloat sqrt (Newton)
 
             Now we test the whole damn zoo.
+
+
+            Known bugs:
+
+                bigFloatSqrt is loosing precision for some reason 
+                bigFloatRecip is loosing also precision if I am not mistaken
 */
 
 /* helper to print a BigInt in hex (most-significant limb first) */
