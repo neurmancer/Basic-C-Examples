@@ -92,6 +92,8 @@ one project so my goal is making them as self-contained as possible
 #ifndef FPS
     #define FPS 120
 #endif //So you can change those with -D(define name)=VALUE 
+//some visual applications are framerate dependent because making them independent would be overkill just visualization this option won't be in those kind of files
+
 
 /*OBJECTS(or structs)*/
 
@@ -154,10 +156,10 @@ int main(void)
 {
     //Main doesn't have a certain structure but somethings that worth noting:
     //return value variable (if needed) is always on the top such as:
-    int retValue = 0;
+    int retValue = 0;   //name may change since I tend to name things randomly
     //If used buffer handling and random seeding follows returnValue
     srand(time(NULL));
-    setvbuf(stdout, NULL, _IONBF, 0);   //Example buffer clearing
+    setvbuf(stdout, NULL, _IONBF, 0);   //Example buffer handling (if needed)
     //After those are done the inline comment (//) sign will guide you through all the stages such as Init, var assignment, loops, allocation etc...
 
     //The projects that uses dynmaic allocation will have them right after enviroment setup such as:
@@ -184,22 +186,38 @@ cleanUp:
     p2 = NULL;
     p3 = NULL;
     
+/*
+        Here is an example for the said allocation array
+        for (size_t i = 0; i < ALLOCATED_AMOUNT;i++)
+        {
+            free(allocatedMemories[i]);
+            allocatedMemories[i] = NULL;
+        }
+        but never used before as I said 
+*/
+
 
     return(retValue); //This is a stylistic choice that I inhabited
     //return and sizeof operator uses () explicitly even though not being a necessity
 }
 
-//and in between main and function bodies I usually have a Memory Accountant part manually counting allocations as I allocate such as
+//and in between main and function bodies I usually have a Memory Accountant part manually counting allocations as I allocate in case of Valgrind malfunctions
+//or projects I couldn't run valgrind due to some problems
 
 /*
     Allocated memory so far : x 
     free'd : x 
 */ 
 
+
 /*FUNCTION BODIES*/
 
 //All the bodies independent from the order on prototype section most-likely to be in order according to their first apperance in main
+//Sectored accordingly to their use case such as:
 
-
+//Rendering/Drawing
+//Computational functions
+//Helpers / Wrappers
+//Initilaze/Misc
 ```c
 
