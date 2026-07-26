@@ -201,8 +201,9 @@
 > - And all of those are just...placeholders for future math fuckery 
 > - test.c is in the said subfolder for checking results 
 > - IT FUCKING PASSED THE TESTS and yeah I am taking rest of today as **off day** since I've been working on this like for the last 21 hours Ramanujan and Tupper can wait
-
-> - DOCUMENTATION.md is in same folder but empty till I unify all error conventions for API and test passes
+>
+> - API documentation can be found [here](/reallyBasicThings/projects101/mathFuckery/DSPFuckery/bigNums/DOCUMENTATION.md)
+> - API design choices, usage and shit is in documentation link with a demo file ([demo](/reallyBasicThings/projects101/mathFuckery/DSPFuckery/bigNums/demo.c)) within same folder (It's too corpo-like, if you're a beginner don't even bother to read mwa)
 
 #### Physics Fuckery
 

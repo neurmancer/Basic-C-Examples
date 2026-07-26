@@ -133,7 +133,6 @@ Used to remove iteration noise from Newton-Raphson.
 Internal function, called automatically by reciprocal, division, and sqrt
 
 **Arithmetic:**
-
 - bigFloatMul(result, a, b): Multiplies a and b. Handles signs correctly. Returns 0 or INT_MAX on overflow
 - bigFloatAdd(result, a, b): Adds a and b. Handles mixed signs by falling back to subtraction. Aligns exponents by shifting the smaller operand's mantissa right. Returns 0 on success, -1 or INT_MAX on error
 - bigFloatSub(result, a, b): Subtracts b from a by negating b's sign and calling bigFloatAdd. Returns 0 on success
@@ -156,9 +155,8 @@ Create two BigFloats from integers (2 and 10), divide them with 8 limbs of preci
 
 **Comparison:**
 
-- bigFloatCmpAbs(a, b): Compares absolute values ignoring sign. Returns -1, 0, or 1. Treats zero correctly
-
-
+- bigFloatCmpAbs(a, b): Compares absolute values ignoring sign. Returns **-1, 0, or 1**.
+- Comparison functions are the only kind of function with a return value where -1 is **NOT** an error value
 ---
 
 ### Implementation Details

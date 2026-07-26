@@ -1,7 +1,5 @@
 # Error Naming Conventions and Project Structures
 
-- I'll make this standard validated in all the project within this repo... right now this is not valid for every project (I'll retro inspect)
-
 - This file is a guide for all the considerably large projects in this repo
 - Will cover: 
 - - return codes and meanings,
