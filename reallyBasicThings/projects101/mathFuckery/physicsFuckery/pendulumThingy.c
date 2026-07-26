@@ -30,8 +30,8 @@
 /* ======================== DEFINES ======================== */
 
 //Initilize 
-#define WIDTH 1200
-#define HEIGHT 900 
+#define WIDTH 1200.0f
+#define HEIGHT 900.0f
 
 #define TITLE "String and Ball Thingy"
 
@@ -43,6 +43,10 @@
 #ifndef VSYNC
   #define VSYNC 0
 #endif
+
+//Object props
+#define B_RADIUS 15.0f 
+#define PIVOT_RADIUS 5.0f
 
 /* ===================== OBJECTS =============== */
 
@@ -91,9 +95,12 @@ int main(void)
     printf("Blame raylib bruh\n");
     return(-53);
   }
+  const Ball pivot = {PIVOT_RADIUS, (Vector2){WIDTH/2,HEIGHT/4}, VIOLET};
 
-  Pendulum pendulum = { 0 }; 
+  Pendulum pendulum = {.ball.color=WHITE, .ball.radius=B_RADIUS}; 
+  pendulum.ball.center = (Vector2){2*(WIDTH/3),(HEIGHT/2)};
   
+
 
   while (!WindowShouldClose()) {
     if (IsKeyPressed(KEY_ESCAPE)) { break; }
@@ -101,6 +108,7 @@ int main(void)
     //Drawing shit
     BeginDrawing();
     ClearBackground(BLACK);
+    DrawCircleV(pivot.center, pivot.radius, pivot.color);
     EndDrawing();
   
   }
