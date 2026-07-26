@@ -16,11 +16,41 @@
 
 #include "complexFFT.h"
 #include "bignums.h"
+#include <stdio.h>  //Debug only
 
 #define MAX_LIMBS 64 // 64 * 32bits (int standard) = 2048 bits...hope that's gonna be enough
 #ifndef INT_MAX
     #define INT_MAX (~0u>>1)
 #endif
+
+
+static int clz32(uint32_t x)
+{
+    if (x == 0){ return 32; }
+
+#if defined(__GNUC__) || defined(__clang__)
+    return(__builtin_clz(x));
+#else
+    int n = 0;
+
+    while ((x & 0x80000000u) == 0)
+    {
+        n++;
+        x <<= 1;
+    }
+
+    return(n);
+#endif
+}
+
+
+/* constant 0.5 in BigFloat format (mantissa=1, exp=-1) */
+static const BigFloat half_const = {
+    .mantissa = { .limbs = {1}, .size = 1 },
+    .exp = -1,
+    .sign = 1
+};
+
 
 void bigIntZero(BigInt *a) {
     memset(a->limbs, 0, sizeof(a->limbs));
@@ -84,13 +114,15 @@ int bigIntMulUInt_32(BigInt *a, uint32_t b) {
 int bigIntFromString(BigInt *a, const char *dec_str) {
     bigIntZero(a);
     while (*dec_str) {
-        int rc = bigIntMulUInt_32(a, 10);
-        if (rc != 0){ return(rc); }
+        if (*dec_str < '0' || *dec_str > '9'){ return (-1); }
 
-        rc = bigIntAddUInt_32(a, *dec_str - '0');
-        if (rc != 0){ return(rc); }
+        int rc = bigIntMulUInt_32(a, 10);
+        if (rc){ return (rc); }
+
+        rc = bigIntAddUInt_32(a, (uint32_t)(*dec_str - '0'));
+        if (rc){ return(rc); }
+
         dec_str++;
-    
     }
     return(0);
 }
@@ -98,6 +130,8 @@ int bigIntFromString(BigInt *a, const char *dec_str) {
 
 uint32_t bigIntModUInt32(const BigInt *a, uint32_t divisor) {
     uint64_t remainder = 0;
+    if (divisor == 0) { return(INT_MAX); }
+    
     for (int i = a->size - 1; i >= 0; i--) {
         remainder = (remainder << 32) | a->limbs[i];
         remainder %= divisor;
@@ -107,6 +141,7 @@ uint32_t bigIntModUInt32(const BigInt *a, uint32_t divisor) {
 
 uint32_t bigIntDivUInt32(BigInt *a, uint32_t divisor) {
     uint64_t remainder = 0;
+    if (divisor == 0) { return(INT_MAX); }
     for (int i = a->size - 1; i >= 0; i--) {
         remainder = (remainder << 32) | a->limbs[i];
         a->limbs[i] = (uint32_t)(remainder / divisor);
@@ -308,300 +343,240 @@ int bigIntSub(BigInt *result, const BigInt *a, const BigInt *b) {
 }
 
 
-void bigFloatZero(BigFloat *x)
-{
-    bigIntZero(&x->mantissa);
-    x->exp  = 0;
-    x->sign = 1;          // convention: zero is positive
+
+/* Shift the BigInt left by 'bits' bits (0 <= bits < 32?) Actually any amount.
+ * Returns 0, or INT_MAX if result would exceed MAX_LIMBS. */
+int bigIntShiftLeft(BigInt *a, int bits) {
+    if (bits == 0) return 0;
+    if (bits < 0) return bigIntShiftRight(a, -bits);   // unlikely but safe
+
+    int limb_shift = bits / 32;
+    int bit_shift  = bits % 32;
+
+    // Check overflow
+    if (a->size + limb_shift + 1 > MAX_LIMBS)
+        return INT_MAX;
+
+    // Make room by moving limbs up
+    if (limb_shift > 0) {
+        memmove(a->limbs + limb_shift, a->limbs, a->size * sizeof(uint32_t));
+        memset(a->limbs, 0, limb_shift * sizeof(uint32_t));
+    }
+
+    // Bit shift
+    if (bit_shift > 0) {
+        uint32_t carry = 0;
+        for (int i = limb_shift; i < a->size + limb_shift; i++) {
+            uint64_t val = ((uint64_t)a->limbs[i] << bit_shift) | carry;
+            a->limbs[i] = (uint32_t)val;
+            carry = (uint32_t)(val >> 32);
+        }
+        if (carry) {
+            a->limbs[a->size + limb_shift] = carry;
+            a->size += limb_shift + 1;
+        } else {
+            a->size += limb_shift;
+        }
+    } else {
+        a->size += limb_shift;
+    }
+
+    // Trim any trailing zero? Not needed.
+    while (a->size > 1 && a->limbs[a->size-1] == 0)
+        a->size--;
+    return(0);
 }
 
-void bigFloatFromUint32(BigFloat *x, uint32_t v)
-{
+/* Shift the BigInt right by 'bits' bits. Truncates toward zero.
+ * Returns 0. */
+int bigIntShiftRight(BigInt *a, int bits) {
+    if (bits == 0) return 0;
+    if (bits < 0) return bigIntShiftLeft(a, -bits);
+
+    int limb_shift = bits / 32;
+    int bit_shift  = bits % 32;
+
+    if (limb_shift >= a->size) {
+        bigIntZero(a);
+        return(0);
+    }
+
+    // Move limbs down
+    if (limb_shift > 0) {
+        memmove(a->limbs, a->limbs + limb_shift,
+                (a->size - limb_shift) * sizeof(uint32_t));
+        a->size -= limb_shift;
+    }
+
+    // Bit shift
+    if (bit_shift > 0) {
+        uint32_t carry = 0;
+        for (int i = a->size - 1; i >= 0; i--) {
+            uint64_t val = ((uint64_t)carry << 32) | a->limbs[i];
+            a->limbs[i] = (uint32_t)(val >> bit_shift);
+            carry = (uint32_t)(val & ((1ULL << bit_shift) - 1));
+        }
+        if (a->limbs[a->size-1] == 0 && a->size > 1)
+            a->size--;
+    }
+    return(0);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ---------- BigFloat basic ---------- */
+void bigFloatZero(BigFloat *x) {
+    bigIntZero(&x->mantissa);
+    x->exp  = 0;
+    x->sign = 1;
+}
+
+void bigFloatFromUint32(BigFloat *x, uint32_t v) {
     if (v == 0) {
         bigFloatZero(x);
         return;
     }
-
     bigIntZero(&x->mantissa);
     x->mantissa.limbs[0] = v;
     x->mantissa.size     = 1;
     x->exp               = 0;
     x->sign              = 1;
-
-    // Already normalized (single non-zero limb)
 }
 
-/* Enforce the invariant:
-   - mantissa is zero  → size == 1, limbs[0] == 0, exp = 0, sign = +1
-   - otherwise         → highest limb is never zero
-*/
-int bigFloatNormalize(BigFloat *x)
-{
-    // Trim leading zero limbs
+/* Normalize: only remove leading zero limbs (no bit‑level shifting).*/
+
+int bigFloatNormalize(BigFloat *x) {
     while (x->mantissa.size > 1 &&
-           x->mantissa.limbs[x->mantissa.size - 1] == 0)
-    {
+           x->mantissa.limbs[x->mantissa.size-1] == 0)
         x->mantissa.size--;
-    }
-
-    // Special-case actual zero
     if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0) {
-        x->exp  = 0;
-        x->sign = 1;
-        return(0);
-    }
-
-    return(0);
-}
-
-/* Shift the entire BigFloat left by 'bits' bits.
-   This increases the magnitude.
-   Returns 0 on success, INT_MAX on overflow (would need more than MAX_LIMBS).
-*/
-int bigFloatShiftLeft(BigFloat *x, int bits)
-{
-    if (bits < 0)
-        return(bigFloatShiftRight(x, -bits));   // just in case someone is dumb
-
-    if (bits == 0)
-        return(0);
-
-    // Actual zero stays zero
-    if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0)
-        return(0);
-
-    int limb_shift = bits / 32;
-    int bit_shift  = bits % 32;
-
-    // Check if we would exceed MAX_LIMBS
-    if (x->mantissa.size + limb_shift + (bit_shift ? 1 : 0) > MAX_LIMBS)
-        return(INT_MAX);
-
-    // First move whole limbs
-    if (limb_shift > 0) {
-        // Shift limbs upward
-        for (int i = x->mantissa.size - 1; i >= 0; i--) {
-            x->mantissa.limbs[i + limb_shift] = x->mantissa.limbs[i];
-        }
-        // Clear the low limbs
-        for (int i = 0; i < limb_shift; i++) {
-            x->mantissa.limbs[i] = 0;
-        }
-        x->mantissa.size += limb_shift;
-    }
-
-    // Now the remaining bit shift inside limbs
-    if (bit_shift > 0) {
-        uint32_t carry = 0;
-        for (int i = 0; i < x->mantissa.size; i++) {
-            uint64_t tmp = ((uint64_t)x->mantissa.limbs[i] << bit_shift) | carry;
-            x->mantissa.limbs[i] = (uint32_t)tmp;
-            carry = (uint32_t)(tmp >> 32);
-        }
-        if (carry) {
-            if (x->mantissa.size >= MAX_LIMBS)
-                return(INT_MAX);
-            x->mantissa.limbs[x->mantissa.size++] = carry;
-        }
-    }
-
-    // Exponent stays the same because we are shifting the mantissa itself.
-    // (If you ever decide to keep mantissa in [0.5, 1) style, you would
-    //  adjust exp here. Right now we keep it simple.)
-
-    return(bigFloatNormalize(x));
-}
-
-/* Shift the entire BigFloat right by 'bits' bits.
-   This decreases the magnitude (can lose low bits – truncation toward zero).
-   Returns 0 on success.
-*/
-int bigFloatShiftRight(BigFloat *x, int bits)
-{
-    if (bits < 0)
-        return bigFloatShiftLeft(x, -bits);
-
-    if (bits == 0)
-        return(0);
-
-    // Actual zero stays zero
-    if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0)
-        return(0);
-
-    int limb_shift = bits / 32;
-    int bit_shift  = bits % 32;
-
-    // If we shift away the entire number
-    if (limb_shift >= x->mantissa.size) {
         bigFloatZero(x);
-        return(0);
     }
-
-    // Move limbs downward
-    if (limb_shift > 0) {
-        for (int i = 0; i < x->mantissa.size - limb_shift; i++) {
-            x->mantissa.limbs[i] = x->mantissa.limbs[i + limb_shift];
-        }
-        // Clear the high limbs we just vacated
-        for (int i = x->mantissa.size - limb_shift; i < x->mantissa.size; i++) {
-            x->mantissa.limbs[i] = 0;
-        }
-        x->mantissa.size -= limb_shift;
-    }
-
-    // Remaining bit shift
-    if (bit_shift > 0) {
-        uint32_t carry = 0;
-        for (int i = x->mantissa.size - 1; i >= 0; i--) {
-            uint32_t new_carry = x->mantissa.limbs[i] << (32 - bit_shift);
-            x->mantissa.limbs[i] = (x->mantissa.limbs[i] >> bit_shift) | carry;
-            carry = new_carry;
-        }
-        // Low bits that fell off are simply discarded (truncation)
-    }
-
-    return(bigFloatNormalize(x));
+    return 0;
 }
 
-/* Compare absolute values only (ignore sign).
-   Returns:
-     -1 if |a| < |b|
-      0 if |a| == |b|
-     +1 if |a| > |b|
-*/
-int bigFloatCmpAbs(const BigFloat *a, const BigFloat *b)
-{
-    // Fast path for zeros
+/* Shift the whole float left by 'bits' bits.
+ * Actually shift the mantissa bits. */
+int bigFloatShiftLeft(BigFloat *x, int bits) {
+    if (bits == 0) return 0;
+    return bigIntShiftLeft(&x->mantissa, bits);
+}
+
+/* Shift the whole float right by 'bits' bits (truncation). */
+int bigFloatShiftRight(BigFloat *x, int bits) {
+    if (bits == 0) return 0;
+    return bigIntShiftRight(&x->mantissa, bits);
+}
+
+/* Compare absolute values (ignore sign). */
+int bigFloatCmpAbs(const BigFloat *a, const BigFloat *b) {
     int a_zero = (a->mantissa.size == 1 && a->mantissa.limbs[0] == 0);
     int b_zero = (b->mantissa.size == 1 && b->mantissa.limbs[0] == 0);
-    if (a_zero && b_zero) { return(0); }
-    if (a_zero) { return(-1); }
-    if (b_zero) { return (1); }
+    if (a_zero && b_zero) return 0;
+    if (a_zero) return -1;
+    if (b_zero) return 1;
 
-    // Different exponents dominate
+    // Compare exponents (word exponents)
     if (a->exp != b->exp)
-        return((a->exp > b->exp) ? 1 : -1);
-
-    return(bigIntCmp(&a->mantissa, &b->mantissa));
+        return (a->exp > b->exp) ? 1 : -1;
+    return bigIntCmp(&a->mantissa, &b->mantissa);
 }
 
-void bigFloatCopy(BigFloat *dst, const BigFloat *src)
-{
-    if (dst == src)
-        return;   // self-copy is a no-op
-
-    // Copy mantissa limbs
+void bigFloatCopy(BigFloat *dst, const BigFloat *src) {
+    if (dst == src) return;
     memcpy(dst->mantissa.limbs, src->mantissa.limbs,
            src->mantissa.size * sizeof(uint32_t));
-
-    // Clear any leftover high limbs so we never leak old data
-    if (src->mantissa.size < MAX_LIMBS) {
+    if (src->mantissa.size < MAX_LIMBS)
         memset(dst->mantissa.limbs + src->mantissa.size, 0,
                (MAX_LIMBS - src->mantissa.size) * sizeof(uint32_t));
-    }
-
     dst->mantissa.size = src->mantissa.size;
     dst->exp           = src->exp;
     dst->sign          = src->sign;
 }
 
-
-int bigFloatMul(BigFloat *result, const BigFloat *a, const BigFloat *b)
-{
-    /* ---------- 0. Zero cases ---------- */
+/* ---------- BigFloat multiplication ---------- */
+int bigFloatMul(BigFloat *result, const BigFloat *a, const BigFloat *b) {
     if ((a->mantissa.size == 1 && a->mantissa.limbs[0] == 0) ||
-        (b->mantissa.size == 1 && b->mantissa.limbs[0] == 0))
-    {
-        bigIntZero(&result->mantissa);
-        result->exp  = 0;
-        result->sign = 1;
-        return(0);
+        (b->mantissa.size == 1 && b->mantissa.limbs[0] == 0)) {
+        bigFloatZero(result);
+        return 0;
     }
 
-    /* ---------- 1. Multiply mantissas with FFT ---------- */
     int rc = bigIntMulFFT(&result->mantissa, &a->mantissa, &b->mantissa);
-    if (rc != 0) { return(INT_MAX); }                          // INT_MAX = overflow (result would need > MAX_LIMBS)
+    if (rc != 0) return INT_MAX;
 
-    /* ---------- 2. Exponent & sign ---------- */
-    // Careful: int32_t can overflow if exponents are huge.
-    // For π work this is almost never an issue, but we still guard it.
     int64_t new_exp = (int64_t)a->exp + (int64_t)b->exp;
-    if (new_exp > INT32_MAX || new_exp < INT32_MIN){ return(INT_MAX); }                          // exponent overflow/underflow
+    if (new_exp > INT32_MAX || new_exp < INT32_MIN) return INT_MAX;
 
     result->exp  = (int32_t)new_exp;
     result->sign = a->sign * b->sign;
-
-    return(bigFloatNormalize(result));
+    return bigFloatNormalize(result);
 }
 
-
-
-/* result = a + b */
-int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b)
-{
-
-
+/* ---------- BigFloat addition ---------- */
+int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b) {
+    // Handle zeros
     if (a->mantissa.size == 1 && a->mantissa.limbs[0] == 0) {
         bigFloatCopy(result, b);
-        return(0);
+        return 0;
     }
     if (b->mantissa.size == 1 && b->mantissa.limbs[0] == 0) {
         bigFloatCopy(result, a);
-        return(0);
+        return 0;
     }
 
-    // Same sign → add magnitudes
+    // Same sign – add magnitudes
     if (a->sign == b->sign) {
         BigFloat tmp_a, tmp_b;
         bigFloatCopy(&tmp_a, a);
         bigFloatCopy(&tmp_b, b);
 
-        // Align exponents (make them equal by shifting the smaller one)
+        // Align by shifting the smaller exponent's mantissa right
         if (tmp_a.exp > tmp_b.exp) {
-            int shift = (tmp_a.exp - tmp_b.exp) * 32;
-            if (bigFloatShiftRight(&tmp_b, shift) != 0) return -1;
+            int shift_bits = (tmp_a.exp - tmp_b.exp) * 32;
+            bigFloatShiftRight(&tmp_b, shift_bits);
             tmp_b.exp = tmp_a.exp;
         } else if (tmp_b.exp > tmp_a.exp) {
-            int shift = (tmp_b.exp - tmp_a.exp) * 32;
-            if (bigFloatShiftRight(&tmp_a, shift) != 0) return -1;
+            int shift_bits = (tmp_b.exp - tmp_a.exp) * 32;
+            bigFloatShiftRight(&tmp_a, shift_bits);
             tmp_a.exp = tmp_b.exp;
         }
 
-        // Now exponents are equal → add mantissas
-        // We need a temporary BigInt add (you don't have one yet, so here's a solid one)
+        // Add aligned mantissas
         BigInt sum;
         bigIntZero(&sum);
-
         uint64_t carry = 0;
         int max_size = (tmp_a.mantissa.size > tmp_b.mantissa.size) ?
                         tmp_a.mantissa.size : tmp_b.mantissa.size;
-
         for (int i = 0; i < max_size || carry; i++) {
-            if (i >= MAX_LIMBS){ return(INT_MAX); }  // overflow
-
+            if (i >= MAX_LIMBS) return INT_MAX;
             uint64_t av = (i < tmp_a.mantissa.size) ? tmp_a.mantissa.limbs[i] : 0;
             uint64_t bv = (i < tmp_b.mantissa.size) ? tmp_b.mantissa.limbs[i] : 0;
             uint64_t s  = av + bv + carry;
-
             sum.limbs[i] = (uint32_t)s;
             carry = s >> 32;
             sum.size = i + 1;
         }
-
         result->mantissa = sum;
-        result->exp  = tmp_a.exp;
-        result->sign = a->sign;
-
-        return(bigFloatNormalize(result));
+        result->exp      = tmp_a.exp;
+        result->sign     = a->sign;
+        return bigFloatNormalize(result);
     }
 
-    // Different signs → subtract the smaller absolute value from the larger
+    // Different signs – subtract smaller magnitude from larger
     int cmp = bigFloatCmpAbs(a, b);
     if (cmp == 0) {
         bigFloatZero(result);
-        return(0);
+        return 0;
     }
-
     const BigFloat *larger  = (cmp > 0) ? a : b;
     const BigFloat *smaller = (cmp > 0) ? b : a;
 
@@ -611,174 +586,116 @@ int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b)
 
     // Align
     if (tmp_large.exp > tmp_small.exp) {
-        int shift = (tmp_large.exp - tmp_small.exp) * 32;
-        if (bigFloatShiftRight(&tmp_small, shift) != 0) return -1;
+        int shift_bits = (tmp_large.exp - tmp_small.exp) * 32;
+        bigFloatShiftRight(&tmp_small, shift_bits);
         tmp_small.exp = tmp_large.exp;
     } else if (tmp_small.exp > tmp_large.exp) {
-        int shift = (tmp_small.exp - tmp_large.exp) * 32;
-        if (bigFloatShiftRight(&tmp_large, shift) != 0) return -1;
+        int shift_bits = (tmp_small.exp - tmp_large.exp) * 32;
+        bigFloatShiftRight(&tmp_large, shift_bits);
         tmp_large.exp = tmp_small.exp;
     }
 
-    // Subtract mantissas (tmp_large - tmp_small)
     if (bigIntSub(&result->mantissa, &tmp_large.mantissa, &tmp_small.mantissa) != 0)
-        return(-1);
-
+        return -1;
     result->exp  = tmp_large.exp;
     result->sign = larger->sign;
-
-    return(bigFloatNormalize(result));
+    return bigFloatNormalize(result);
 }
 
 /* result = a - b */
-int bigFloatSub(BigFloat *result, const BigFloat *a, const BigFloat *b)
-{
+int bigFloatSub(BigFloat *result, const BigFloat *a, const BigFloat *b) {
     BigFloat neg_b;
     bigFloatCopy(&neg_b, b);
     neg_b.sign = -b->sign;
-    return (bigFloatAdd(result, a, &neg_b));
+    return bigFloatAdd(result, a, &neg_b);
 }
 
-
-/* result ~ 1 / x   (Newton iteration)
-   target_limbs controls how precise you want it.
-   Returns 0 on success, negative on error.
-*/
-int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs)
-{
+/* ---------- Reciprocal, division, sqrt ---------- */
+int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs) {
     if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0)
         return INT_MAX;  // division by zero
 
-    if (target_limbs < 1)
-        target_limbs = 1;
-    if (target_limbs > MAX_LIMBS)
-        target_limbs = MAX_LIMBS;
-
-    // ---------- Initial guess (safer version) ----------
-    BigFloat y;
-    bigFloatZero(&y);
+    if (target_limbs < 1) target_limbs = 1;
+    if (target_limbs > MAX_LIMBS) target_limbs = MAX_LIMBS;
 
     uint32_t high = x->mantissa.limbs[x->mantissa.size - 1];
-
-    // This prevents the first (2 - x*y) from going negative
-    uint32_t guess;
-    if (high == 0) {
-        guess = 1;
-    } else {
-
-        guess = (uint32_t)(0x7FFFFFFFu / high);   // What the fuck? (yeah this is a Carmack reference lol)
-        if (guess == 0) guess = 1;
-    }
-
+    // Initial guess: y = floor(2^32 / high) * 2^(-32*(exp + size))
+    BigFloat y;
+    bigFloatZero(&y);
+    uint32_t guess = (high == 0) ? 1 : (uint32_t)(0xFFFFFFFFu / high);
+    printf("DEBUG: guess = 0x%08x\n", guess);
+    if (guess == 0) guess = 1;
     y.mantissa.limbs[0] = guess;
-    y.mantissa.size     = 1;
-    y.exp               = -x->exp - (x->mantissa.size - 1);
-    y.sign              = x->sign;
+    y.mantissa.size = 1;
+    y.exp = -x->exp - x->mantissa.size;
+    y.sign = x->sign;
 
-    // Extra safety: if the number is small, pull the exponent down a bit more
-    // so the first product is comfortably under 2
-    if (x->mantissa.size == 1 && high < 0x10000) {
-        y.exp -= 1;
-    }
-
-    // ---------- Newton: y = y * (2 - x*y) ----------
+    // Newton: y = y * (2 - x*y)
     BigFloat two, t1, t2, t3;
     bigFloatFromUint32(&two, 2);
-
     int current = 1;
-
     while (current < target_limbs) {
         current *= 2;
-        if (current > target_limbs)
-            current = target_limbs;
-
-        int rc = bigFloatMul(&t1, x, &y);
-        if (rc != 0){ return(rc); }
-
-        rc = bigFloatSub(&t2, &two, &t1);
-        if (rc != 0){ return(rc); }
-
-        rc = bigFloatMul(&t3, &y, &t2);
-        if (rc != 0){ return(rc); }
-
+        if (current > target_limbs) current = target_limbs;
+        if (bigFloatMul(&t1, x, &y) != 0) return INT_MAX;
+        if (bigFloatSub(&t2, &two, &t1) != 0) return INT_MAX;
+        if (bigFloatMul(&t3, &y, &t2) != 0) return INT_MAX;
         bigFloatCopy(&y, &t3);
     }
-
     bigFloatCopy(result, &y);
-    return(bigFloatNormalize(result));
+    return bigFloatNormalize(result);
 }
 
-int bigFloatDiv(BigFloat *result, const BigFloat *a, const BigFloat *b, int target_limbs)
-{
+int bigFloatDiv(BigFloat *result, const BigFloat *a, const BigFloat *b, int target_limbs) {
     BigFloat recip;
     int rc = bigFloatReciprocal(&recip, b, target_limbs);
-    if (rc != 0){ return(rc) ;}
-
-    return(bigFloatMul(result, a, &recip)); 
-
+    if (rc != 0) return rc;
+    return bigFloatMul(result, a, &recip);
 }
 
 
-/* result ~ sqrt(x)   (x must be >= 0)
-   Uses Newton: y_{n+1} = (y_n + x / y_n) / 2
-*/
-int bigFloatSqrt(BigFloat *result, const BigFloat *x, int target_limbs)
-{
-    if (x->sign < 0){ return(-1); } // negative
-
-
+int bigFloatSqrt(BigFloat *result, const BigFloat *x, int target_limbs) {
+    if (x->sign < 0) return -1;
     if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0) {
         bigFloatZero(result);
-        return(0);
+        return 0;
+    }
+    if (target_limbs < 1) target_limbs = 1;
+    if (target_limbs > MAX_LIMBS) target_limbs = MAX_LIMBS;
+
+    // Make exponent even (so that exp/2 is integer)
+    BigFloat tmp;
+    bigFloatCopy(&tmp, x);
+    if (tmp.exp & 1) {   // odd exponent
+        // multiply mantissa by 2^32 and decrement exponent to make it even
+        if (bigIntShiftLeft(&tmp.mantissa, 32) != 0) return INT_MAX;
+        tmp.exp--;
     }
 
-    if (target_limbs < 1)
-        target_limbs = 1;
-    if (target_limbs > MAX_LIMBS)
-        target_limbs = MAX_LIMBS;
-
-    // ---------- Initial guess ----------
+    // Initial guess: y = sqrt(mantissa high limb) with exponent = exp/2
     BigFloat y;
-    bigFloatCopy(&y, x);
-
-    y.exp = x->exp / 2;
+    bigFloatZero(&y);
+    uint32_t high = tmp.mantissa.limbs[tmp.mantissa.size - 1];
+    uint32_t g = 1;
+    while ((uint64_t)(g+1)*(g+1) <= high)
+        g++;
+    y.mantissa.limbs[0] = g;
+    y.mantissa.size = 1;
+    y.exp = tmp.exp / 2;
     y.sign = 1;
 
-    if (x->mantissa.size > 0) {
-        uint32_t high = x->mantissa.limbs[x->mantissa.size - 1];
-        uint32_t g = 1;
-
-        // Safe integer square root
-        while (g < 0xFFFFu && (uint64_t)g * g < (uint64_t)high)
-            g++;
-
-        y.mantissa.limbs[0] = g;
-        y.mantissa.size = 1;
-        for (int i = 1; i < MAX_LIMBS; i++)
-            y.mantissa.limbs[i] = 0;
-    }
-
-    // ---------- Newton: y = (y + x/y) / 2 ----------
+    // Newton: y = (y + x/y) / 2
     BigFloat t1, t2;
     int current = 1;
-
     while (current < target_limbs) {
         current *= 2;
-        if (current > target_limbs)
-            current = target_limbs;
-
-        // t1 = x / y
-        if (bigFloatDiv(&t1, x, &y, current) != 0){ return(-1); }
-
-        // t2 = y + t1
-        if (bigFloatAdd(&t2, &y, &t1) != 0){ return(-1); }
-
-        // y = t2 / 2
-        if (bigFloatShiftRight(&t2, 1) != 0){ return(-1); }
-
+        if (current > target_limbs) current = target_limbs;
+        if (bigFloatDiv(&t1, x, &y, current) != 0) return -1;
+        if (bigFloatAdd(&t2, &y, &t1) != 0) return -1;
+        // divide by 2 = multiply by 0.5 (keeps fraction bits)
+        if (bigFloatMul(&t2, &t2, &half_const) != 0) return -1;
         bigFloatCopy(&y, &t2);
     }
-
     bigFloatCopy(result, &y);
     return bigFloatNormalize(result);
 }
