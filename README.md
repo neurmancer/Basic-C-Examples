@@ -191,6 +191,12 @@
 
 > > A Fast Fourier Transform with cosine samples added as a placeholder for future math fuckery my ideas ran dry for now (and ofc no external libs with the sole exception of math.h)
 
+##### Big Nums Lib 
+> - An enchanced version of FFT that can handle non radix-2 inputs added for FFT multipication in API 
+> - Totally useful bignums lib from scratch (haven't documented yet)
+> - A Makefile for making compilation easier with MAIN=src.c and TARGET=target.o compile-time parameters
+> - And all of those are just...placeholders for future math fuckery 
+
 #### Physics Fuckery
 
 > - [Physics Fuckery](/reallyBasicThings/projects101/mathFuckery/physicsFuckery/)
