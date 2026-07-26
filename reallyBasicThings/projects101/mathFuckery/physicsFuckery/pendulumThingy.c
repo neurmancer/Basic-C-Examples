@@ -48,6 +48,8 @@
 #define B_RADIUS 15.0f 
 #define PIVOT_RADIUS 5.0f
 
+#define LINE_THICKNESS 1.3f;
+
 /* ===================== OBJECTS =============== */
 
 typedef struct{
@@ -99,7 +101,10 @@ int main(void)
 
   Pendulum pendulum = {.ball.color=WHITE, .ball.radius=B_RADIUS}; 
   pendulum.ball.center = (Vector2){2*(WIDTH/3),(HEIGHT/2)};
-  
+  pendulum.string.color = RED;
+  pendulum.string.p1 = pivot.center;
+  pendulum.string.p2 = pendulum.ball.center;    //Should I use radius as offset? We'll see ig...
+  pendulum.string.thickness = LINE_THICKNESS;
 
 
   while (!WindowShouldClose()) {
@@ -108,6 +113,7 @@ int main(void)
     //Drawing shit
     BeginDrawing();
     ClearBackground(BLACK);
+    DrawLineEx(pendulum.string.p1,pendulum.string.p2,pendulum.string.thickness,pendulum.string.color);
     DrawCircleV(pivot.center, pivot.radius, pivot.color);
     EndDrawing();
   
