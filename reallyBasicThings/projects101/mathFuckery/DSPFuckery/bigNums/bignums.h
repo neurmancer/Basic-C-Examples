@@ -10,6 +10,13 @@ typedef struct {
     int size;
 } BigInt;
 
+typedef struct {
+    BigInt  mantissa;   // always >= 0, normalized (highest limb != 0 unless zero)
+    int32_t exp;        // value = sign * mantissa * 2^(exp * 32)
+    int8_t  sign;       // +1 or -1  (zero has sign = +1 by convention)
+} BigFloat;
+
+
 
 void bigIntZero(BigInt *a);
 
@@ -32,5 +39,33 @@ int bigIntMulFFT(BigInt *result, const BigInt *a, const BigInt *b);
 int bigIntCmp(const BigInt *a, const BigInt *b);
 
 int bigIntSub(BigInt *result, const BigInt *a, const BigInt *b);
+
+//Float operations
+
+void bigFloatZero(BigFloat *x);
+
+void bigFloatFromUint32(BigFloat *x, uint32_t v);
+
+void bigFloatCopy(BigFloat *dst, const BigFloat *src);
+
+int bigFloatNormalize(BigFloat *x);
+
+int bigFloatShiftLeft(BigFloat *x, int bits);
+
+int bigFloatShiftRight(BigFloat *x, int bits);
+
+int bigFloatCmpAbs(const BigFloat *a, const BigFloat *b);
+
+int bigFloatMul(BigFloat *result, const BigFloat *a, const BigFloat *b);
+
+int bigFloatAdd(BigFloat *result, const BigFloat *a, const BigFloat *b);
+
+int bigFloatSub(BigFloat *result, const BigFloat *a, const BigFloat *b);
+
+int bigFloatReciprocal(BigFloat *result, const BigFloat *x, int target_limbs);
+
+int bigFloatDiv(BigFloat *result, const BigFloat *a, const BigFloat *b, int target_limbs);
+
+int bigFloatSqrt(BigFloat *result, const BigFloat *x, int target_limbs);
 
 #endif

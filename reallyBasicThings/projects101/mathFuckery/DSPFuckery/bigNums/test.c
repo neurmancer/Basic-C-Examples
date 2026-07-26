@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "bignums.h"
 
-
-
 /*
         Sup? this is a test clause for my fresh big num lib and it seemed like it fucking passed the TEST...
         This subfolder won't have commentary more than it needs to since...it was a hell even for the creator(me lulz)
@@ -17,20 +15,40 @@
                 5- bignum mod and division
                 6- bignum get bit
                 7- bignum mul with FFT 
-                
 
+            Then the next day I came back like a maniac and added:
+                8-  BigFloat zero / from uint32 / normalize / copy
+                9-  BigFloat shift left / right
+                10- BigFloat abs compare
+                11- BigFloat mul (FFT powered)
+                12- BigFloat add / sub
+                13- BigFloat reciprocal (Newton)
+                14- BigFloat div
+                15- BigFloat sqrt (Newton)
 
+            Now we test the whole damn zoo.
 */
 
-
-
 /* helper to print a BigInt in hex (most-significant limb first) */
-
 void bigIntPrintHex(const BigInt *a);
+
+/* helper to print a BigFloat (sign + mantissa hex + exp) */
+void bigFloatPrint(const BigFloat *x) {
+    if (x->sign < 0) printf("-");
+    else             printf("+");
+
+    printf("0x");
+    for (int i = x->mantissa.size - 1; i >= 0; i--) {
+        printf("%08x", x->mantissa.limbs[i]);
+    }
+    printf(" * 2^(%d*32)  (size=%d)\n", x->exp, x->mantissa.size);
+}
 
 int main(void) {
     BigInt a, b, res, copy;
+    BigFloat fa, fb, fres, ftmp;
     uint32_t rem;
+    int rc;
 
     /* ---------- 1. string conversion & add ---------- */
     printf("=== Test: string conversion & addition ===\n");
@@ -39,8 +57,6 @@ int main(void) {
     printf("a = "); bigIntPrintHex(&a);
     printf("b = "); bigIntPrintHex(&b);
 
-    // add b to a (we'll just do it manually with a loop of adds)
-    // or we can implement a full add; for now we test single-word add.
     bigIntAddUInt_32(&a, 1);
     printf("a + 1 = "); bigIntPrintHex(&a);
 
@@ -52,7 +68,7 @@ int main(void) {
     bigIntMulUInt_32(&a, 12345);
     printf("a * 12345 = "); bigIntPrintHex(&a);
 
-    copy = a;   // keep a copy for modulo test
+    copy = a;
     rem = bigIntDivUInt32(&a, 1000);
     printf("after div by 1000: "); bigIntPrintHex(&a);
     printf("remainder = %u\n", rem);
@@ -64,14 +80,13 @@ int main(void) {
     printf("\n=== Test: get bit ===\n");
     bigIntFromString(&a, "128");  // binary: 10000000
     printf("a = "); bigIntPrintHex(&a);
-    printf("bit 0 = %d\n", bigIntGetBit(&a, 0));   // 0
-    printf("bit 7 = %d\n", bigIntGetBit(&a, 7));   // 1
-    printf("bit 8 = %d\n", bigIntGetBit(&a, 8));   // 0
+    printf("bit 0 = %d\n", bigIntGetBit(&a, 0));
+    printf("bit 7 = %d\n", bigIntGetBit(&a, 7));
+    printf("bit 8 = %d\n", bigIntGetBit(&a, 8));
 
     /* ---------- 4. FFT multiplication ---------- */
     printf("\n=== Test: FFT multiplication ===\n");
 
-    // multiply two medium numbers
     bigIntFromString(&a, "12345678901234567890");
     bigIntFromString(&b, "98765432109876543210");
     printf("a = "); bigIntPrintHex(&a);
@@ -83,31 +98,138 @@ int main(void) {
         printf("FFT multiplication overflowed!\n");
     }
 
-    // multiply by zero
     bigIntFromString(&a, "0");
     bigIntFromString(&b, "99999999999999999999");
     if (bigIntMulFFT(&res, &a, &b) == 0) {
-        printf("0 * big = "); bigIntPrintHex(&res);  // should be 0x0 size 1
+        printf("0 * big = "); bigIntPrintHex(&res);
     }
 
-    // multiply with result that fits in one limb
-    bigIntFromString(&a, "65536");     // 2^16
+    bigIntFromString(&a, "65536");
     bigIntFromString(&b, "65536");
     if (bigIntMulFFT(&res, &a, &b) == 0) {
-        printf("2^16 * 2^16 = "); bigIntPrintHex(&res);  // 0x100000000 (2^32)
+        printf("2^16 * 2^16 = "); bigIntPrintHex(&res);
     }
 
-    // test that carry propagation works
-    bigIntFromString(&a, "4294967295");     // 2^32 - 1
+    bigIntFromString(&a, "4294967295");
     bigIntFromString(&b, "4294967295");
     if (bigIntMulFFT(&res, &a, &b) == 0) {
         printf("(2^32-1)^2 = "); bigIntPrintHex(&res);
-        // expected: 0xFFFFFFFE00000001
     }
 
+    /* ================================================================
+       BIGFLOAT TESTS
+       ================================================================ */
+
+    printf("\n\n========== BIGFLOAT ZONE ==========\n");
+
+    /* ---------- 5. BigFloat zero / fromUint32 / copy / normalize ---------- */
+    printf("\n=== Test: BigFloat basic constructors ===\n");
+
+    bigFloatZero(&fa);
+    printf("zero = "); bigFloatPrint(&fa);
+
+    bigFloatFromUint32(&fa, 123456789);
+    printf("from 123456789 = "); bigFloatPrint(&fa);
+
+    bigFloatCopy(&fb, &fa);
+    printf("copy = "); bigFloatPrint(&fb);
+
+    /* ---------- 6. BigFloat shifts ---------- */
+    printf("\n=== Test: BigFloat shifts ===\n");
+
+    bigFloatFromUint32(&fa, 1);
+    printf("1 = "); bigFloatPrint(&fa);
+
+    bigFloatShiftLeft(&fa, 32);
+    printf("1 << 32 = "); bigFloatPrint(&fa);
+
+    bigFloatShiftLeft(&fa, 5);
+    printf("then << 5 = "); bigFloatPrint(&fa);
+
+    bigFloatShiftRight(&fa, 37);
+    printf("then >> 37 (should be back near 1) = "); bigFloatPrint(&fa);
+
+    /* ---------- 7. BigFloat mul ---------- */
+    printf("\n=== Test: BigFloat multiplication ===\n");
+
+    bigFloatFromUint32(&fa, 123456789);
+    bigFloatFromUint32(&fb, 987654321);
+    printf("fa = "); bigFloatPrint(&fa);
+    printf("fb = "); bigFloatPrint(&fb);
+
+    rc = bigFloatMul(&fres, &fa, &fb);
+    if (rc == 0) {
+        printf("fa * fb = "); bigFloatPrint(&fres);
+    } else {
+        printf("bigFloatMul failed with code %d\n", rc);
+    }
+
+    /* ---------- 8. BigFloat add / sub ---------- */
+    printf("\n=== Test: BigFloat add / sub ===\n");
+
+    bigFloatFromUint32(&fa, 1000);
+    bigFloatFromUint32(&fb, 250);
+    printf("1000 + 250 = ");
+    if (bigFloatAdd(&fres, &fa, &fb) == 0)
+        bigFloatPrint(&fres);
+
+    printf("1000 - 250 = ");
+    if (bigFloatSub(&fres, &fa, &fb) == 0)
+        bigFloatPrint(&fres);
+
+    // different exponents
+    bigFloatFromUint32(&fa, 1);
+    bigFloatShiftLeft(&fa, 64);          // 2^64
+    bigFloatFromUint32(&fb, 1);
+    printf("2^64 + 1 = ");
+    if (bigFloatAdd(&fres, &fa, &fb) == 0)
+        bigFloatPrint(&fres);
+
+    /* ---------- 9. BigFloat reciprocal + div ---------- */
+    printf("\n=== Test: BigFloat reciprocal & division ===\n");
+
+    bigFloatFromUint32(&fa, 7);
+    printf("1 / 7 ≈ ");
+    if (bigFloatReciprocal(&fres, &fa, 4) == 0)
+        bigFloatPrint(&fres);
+
+    bigFloatFromUint32(&fa, 22);
+    bigFloatFromUint32(&fb, 7);
+    printf("22 / 7 ≈ ");
+    if (bigFloatDiv(&fres, &fa, &fb, 4) == 0)
+        bigFloatPrint(&fres);
+
+    /* ---------- 10. BigFloat sqrt ---------- */
+    printf("\n=== Test: BigFloat sqrt ===\n");
+
+    bigFloatFromUint32(&fa, 2);
+    printf("sqrt(2) ≈ ");
+    if (bigFloatSqrt(&fres, &fa, 6) == 0)
+        bigFloatPrint(&fres);
+
+    bigFloatFromUint32(&fa, 144);
+    printf("sqrt(144) = ");
+    if (bigFloatSqrt(&fres, &fa, 4) == 0)
+        bigFloatPrint(&fres);
+
+    /* ---------- 11. compare abs ---------- */
+    printf("\n=== Test: bigFloatCmpAbs ===\n");
+
+    bigFloatFromUint32(&fa, 100);
+    bigFloatFromUint32(&fb, 50);
+    printf("|100| vs |50| → %d\n", bigFloatCmpAbs(&fa, &fb));
+
+    bigFloatFromUint32(&fa, 50);
+    bigFloatFromUint32(&fb, 100);
+    printf("|50| vs |100| → %d\n", bigFloatCmpAbs(&fa, &fb));
+
+    bigFloatFromUint32(&fa, 77);
+    bigFloatFromUint32(&fb, 77);
+    printf("|77| vs |77| → %d\n", bigFloatCmpAbs(&fa, &fb));
+
+    printf("\n========== ALL TESTS DONE ==========\n");
     return(0);
 }
-
 
 void bigIntPrintHex(const BigInt *a) {
     printf("0x");
