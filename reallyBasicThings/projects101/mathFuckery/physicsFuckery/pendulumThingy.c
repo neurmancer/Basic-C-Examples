@@ -18,6 +18,13 @@
 
             I guess I'll go with Euler method (Shoutout to all of my dead nerds...thx for writing those down)
             it's roughly acceleartion = -1* gravity/Length or rope * sin(theta) 
+
+
+            funfact: I changed my intellisense or whatever now it even completes comments Da fucK? IT predicts what I was !stop it ! did you really did tho? Come back!
+            anyways this intellisense shit is really haunted tho I kinda like it but also I don't like it at the same time. I guess it's a love-hate relationship.
+            My essays gonna be triple the length of how it was before... can you answer me this question? Why the fuck is it predicting what I was gonna write in a comment? 
+            I don't even know what I'm gonna write in a comment.(completed by her? yeah I guess it's a she) 
+
 */
 
 
@@ -54,13 +61,14 @@
 #define PIVOT_RADIUS 15.0f
 
 #define LINE_THICKNESS 5.20f
-#define LINE_LENGTH 400.0f
+#define LINE_LENGTH 250.0f
 
 //Physics 
 
 #ifndef G 
-  #define G 50.0f
+  #define G 9.8f  //Earth's gravity in m/s^2 (Thx auto-correct for finishing my sentence for me(but it's scary tho))
 #endif
+#define SIM_SPEED 5.3f
 
 //UI Choices 
 #define NEAT_RED CLITERAL(Color){58,4,7,255}
@@ -68,6 +76,12 @@
 #define CYANISH CLITERAL(Color){4,58,55,255}
 #define SMOKE_ON_THE_WATER CLITERAL(Color){24,4,58,255} //'Cuz it's Deep Purple
 
+
+//Sine Visualizer UI 
+
+#define HISTORY_SIZE 3000          // how many samples we keep
+#define GRAPH_HEIGHT 200.0f
+#define GRAPH_Y (HEIGHT - GRAPH_HEIGHT - 20.0f)
 
 
 /* ===================== OBJECTS =============== */
@@ -117,6 +131,12 @@ typedef struct{
   Physics engine; 
 }Objects ;
 
+typedef struct{
+
+  float angleHistory[HISTORY_SIZE];
+  int historyIndex;
+
+}Graph;
 
 
 
@@ -124,6 +144,7 @@ typedef struct{
 /* =================== FUNCTION PROTOTYPES ============= */
 
 void drawObjects(Objects *obj);
+void drawGraph(Graph *graph);
 void updatePendulum(Objects *obj, float dt);
 
 
@@ -157,6 +178,7 @@ int main(void)
 
   obj.pend.ball.center = obj.pend.string.p2;
 
+  Graph sineGraph = { 0 };
 
   //------------Testing era------------//
 
@@ -167,15 +189,19 @@ int main(void)
   
     dT = GetFrameTime();
     for (int i = 0;i < 10; i++) {
-      updatePendulum(&obj, dT/10);
-  
+      updatePendulum(&obj, (dT*SIM_SPEED)/10);
+      
     }
+        
+    sineGraph.angleHistory[sineGraph.historyIndex] = obj.engine.angle;
+    sineGraph.historyIndex = (sineGraph.historyIndex + 1) % HISTORY_SIZE;
     
     //Drawing shit
     BeginDrawing();
     ClearBackground(SMOKE_ON_THE_WATER);
     DrawTextEx(defaultFont, "My Projects are getting worse everyday", (Vector2){20,20}, 25.0f, 2.0f, GRAY);
     drawObjects(&obj);
+    drawGraph(&sineGraph);
     EndDrawing();
 
   }
@@ -195,6 +221,30 @@ void drawObjects(Objects *obj)
   //Pivot
   DrawCircleV(obj->pivot.center, obj->pivot.radius, obj->pivot.color);
   DrawCircleV(obj->pend.ball.center,obj->pend.ball.radius,obj->pend.ball.color);
+}
+
+void drawGraph(Graph *graph)
+{
+
+DrawRectangle(0, GRAPH_Y, WIDTH, GRAPH_HEIGHT, (Color){10, 10, 20, 220});
+
+DrawLine(0, GRAPH_Y + GRAPH_HEIGHT/2, WIDTH, GRAPH_Y + GRAPH_HEIGHT/2, GRAY);
+
+for (int i = 1; i < HISTORY_SIZE; i++) {
+    int idx1 = (graph->historyIndex + i - 1) % HISTORY_SIZE;
+    int idx2 = (graph->historyIndex + i) % HISTORY_SIZE;
+
+    float y1 = GRAPH_Y + GRAPH_HEIGHT/2 - graph->angleHistory[idx1] * 75.0f;  
+    float y2 = GRAPH_Y + GRAPH_HEIGHT/2 - graph->angleHistory[idx2] * 75.0f;
+
+    DrawLineEx(
+        (Vector2){(float)(i-1) * (WIDTH/(float)HISTORY_SIZE), y1},
+        (Vector2){(float)i * (WIDTH/(float)HISTORY_SIZE), y2},
+        2.0f,
+        (Color){0, 255, 180, 255}   //
+    );
+  }
+
 }
 
 int setupEnv(void)
@@ -221,6 +271,7 @@ int setupEnv(void)
 
   return(0);
 }
+
 
 
 
