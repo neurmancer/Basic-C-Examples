@@ -29,12 +29,12 @@
 */
 
 
-
 /* ======================== INCLUDES ==================== */
 
 //libc headers 
 #include <stdio.h>
 #include <stdlib.h> //I'll probably use an dynamic array to keep track of the points that I have 
+
 //External libs
 #include <raylib.h>
 
@@ -61,8 +61,8 @@
 /* ===================== FUNCTION PROTOTYPES ================== */
 
 void drawVertices(Vector2 vertices[3]);
-
 int setupEnv(void);
+
 
 
 //MAIN 
@@ -81,7 +81,7 @@ int main(void)
     while (!WindowShouldClose()) {
         
         if (IsKeyPressed(KEY_ESCAPE)) { break; }
-
+        
 
         //I'll call it a day right now...but at least let me draw a fucking traingle or something...
         BeginDrawing();
@@ -96,7 +96,6 @@ int main(void)
 
     return(0);
 }
-
 
 void drawVertices(Vector2 vertices[3])
 {
