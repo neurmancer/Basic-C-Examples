@@ -34,7 +34,7 @@
 //libc headers 
 #include <stdio.h>
 #include <stdlib.h> //I'll probably use an dynamic array to keep track of the points that I have 
-
+#include <time.h>
 //External libs
 #include <raylib.h>
 
@@ -61,9 +61,10 @@
 /* ===================== FUNCTION PROTOTYPES ================== */
 
 void drawVertices(Vector2 vertices[3]);
+
 int setupEnv(void);
 
-
+double randDouble(int min,int max);
 
 //MAIN 
 
@@ -73,7 +74,12 @@ int main(void)
 
     //Setup shit
     if (setupEnv()) {printf("Window did something...Ig...\n") ; return(-53); } 
+    srand(time(NULL));
 
+    for (size_t i = 0;i < 100;i++) {
+        printf("%lf\n",randDouble(0, 1));
+    }
+    goto debug;
     Vector2 peak = (Vector2){WIDTH/2.0f, (HEIGHT/3.0f)};
     Vector2 vertices[3] = { peak,(Vector2){peak.x - (WIDTH/3.0f), peak.y + (HEIGHT/3.0f)},(Vector2){peak.x + (WIDTH/3.0f), peak.y + (HEIGHT/3.0f)} };
 
@@ -91,6 +97,7 @@ int main(void)
         EndDrawing();
     }
 
+debug:
 
     CloseWindow();
 
@@ -116,6 +123,11 @@ int setupEnv(void)
     else {
         SetTargetFPS(FPS);
     }
-
     return(0);
+}
+
+
+double randDouble(int min,int max)
+{
+    return(((double)rand() / RAND_MAX)*(max-min)+min);
 }
