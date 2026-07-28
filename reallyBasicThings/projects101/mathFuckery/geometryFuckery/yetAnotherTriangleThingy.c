@@ -60,6 +60,8 @@
 
 /* ===================== FUNCTION PROTOTYPES ================== */
 
+void drawVertices(Vector2 vertices[3]);
+
 int setupEnv(void);
 
 
@@ -72,7 +74,8 @@ int main(void)
     //Setup shit
     if (setupEnv()) {printf("Window did something...Ig...\n") ; return(-53); } 
 
-
+    Vector2 peak = (Vector2){WIDTH/2.0f, (HEIGHT/3.0f)};
+    Vector2 vertices[3] = { peak,(Vector2){peak.x - (WIDTH/3.0f), peak.y + (HEIGHT/3.0f)},(Vector2){peak.x + (WIDTH/3.0f), peak.y + (HEIGHT/3.0f)} };
 
 
     while (!WindowShouldClose()) {
@@ -83,7 +86,8 @@ int main(void)
         //I'll call it a day right now...but at least let me draw a fucking traingle or something...
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawTriangle((Vector2){200,500}, (Vector2){500,300}, (Vector2){150,300}, PURPLE); //Yup this looks like a retarded triangle on the screen
+        drawVertices(vertices);
+
         EndDrawing();
     }
 
@@ -93,6 +97,13 @@ int main(void)
     return(0);
 }
 
+
+void drawVertices(Vector2 vertices[3])
+{
+    for (int i = 0; i < 3; i++) {
+        DrawCircleV(vertices[i], 3.0f, RED);
+    }
+}
 
 int setupEnv(void)
 {
