@@ -1,4 +1,4 @@
-# A BASIC C CODING REPO FOR BEGINNERS()
+# A BASIC C CODING REPO FOR BEGINNERS
 
 > Lowkey...I gotta change the repo name at this point I guess...
 
