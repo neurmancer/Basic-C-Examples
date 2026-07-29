@@ -1,4 +1,4 @@
-# A BASIC C CODING REPO FOR BEGINNERS
+# A BASIC C PROGRAM EXAMPLES REPO FOR BEGINNERS
 
 > Lowkey...I gotta change the repo name at this point I guess...
 
@@ -54,6 +54,7 @@
 - [DynamicMemoryShit](#dynamicmemoryshit)
 - [Preprocessors](#_ifnwin32-yippie-part)
 - [UNCLASSIFED MATH FUCKERY](#unclassified-math-fuckery)
+- [Machine Learning](#forcing-silicon-into-thinking)
 - [Low-Level Stuff](#low-level-stuff)
 
 ---
@@ -220,6 +221,13 @@
 > > Added a Basic Frictionless Environment Pendulum (yeah after those two this is nothing appealing IK)
 
 ---
+
+### Forcing Silicon Into Thinking
+> - [ML Subfolder](reallyBasicThings/makingMachineGoHmm/)
+
+> The basicest Machine Learning algorithm you can see on the surface of Earth (_Shit will be added_)
+> A bash script compiling with all the warnings enabled so I won't type -Wall -Wextra 500k times
+
 
 ### Low-Level Stuff
 
