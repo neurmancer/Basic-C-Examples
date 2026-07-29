@@ -10,6 +10,7 @@
 */
 
 #include "bignums.h"
+#include <math.h>
 
 int main(void)
 {
@@ -20,6 +21,12 @@ int main(void)
     BigFloat bF = { 0 };
     bigFloatZero(&bF);
 
-    
+    double x = sqrt(8)/9801; //The constant multiplier before Sigma notation in the equation
+
+    for (int k = 0; k < 1000;k++) {
+        /*And that's where my brain gave up...*/
+    }
+
+
     return(0);
 }
