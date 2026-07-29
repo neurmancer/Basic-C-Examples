@@ -170,6 +170,8 @@
 
 > > Sierpinski's triangle visualizer using recursion and raylib (math broke me bad in this one lmfao) 
 
+> > Yet another Sierpinski's triangle using iteration (math was mildly more favorable in this one) 
+
 ##### PI fuckery
 * <p>Yeah it needs its own sub-sub folder since I can't stop building estimators for π...(gamba addict) </p>
 
