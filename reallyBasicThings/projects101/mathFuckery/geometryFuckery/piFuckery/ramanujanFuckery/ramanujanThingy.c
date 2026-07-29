@@ -1,7 +1,7 @@
 /*
 
     Luckly this won't be a raylib project but unluckly that will be a me project where I'll use my own fft to multiply shit in my own big num lib to 
-    build this so this is the voltran of my side-quests anways...
+    build this so this is the voltron of my side-quests anways...
 
     What's today's fuckery? MORE PI GAMBA...
     
@@ -10,7 +10,11 @@
 */
 
 #include "bignums.h"
-#include <math.h>
+//#include <math.h> you know what? Fuck math.h we're going full my own crap mode 
+//I'll finish this project with my own shit made out of pure spite blackjack and hookers 
+double sqrty(unsigned int val);
+
+typedef unsigned char uint8_t;
 
 int main(void)
 {
@@ -21,12 +25,32 @@ int main(void)
     BigFloat bF = { 0 };
     bigFloatZero(&bF);
 
-    double x = sqrt(8)/9801; //The constant multiplier before Sigma notation in the equation
+    double x = sqrty(8)/9801; //The constant multiplier before Sigma notation in the equation
 
     for (int k = 0; k < 1000;k++) {
         /*And that's where my brain gave up...*/
     }
 
-
     return(0);
+}
+
+
+double sqrty(unsigned int val)
+{
+    if (val == 0) { return(0.0f); }
+    if (val == 1) { return(1.0f); }
+    
+    int msb = 0;
+    unsigned int temp = val;
+    while (temp >>= 1) msb++;
+
+    int expon = msb/2;
+
+    double z = (double) (1u << expon);    
+    for (uint8_t i = 0; i < 8; i++) {  
+
+        z = (z + val / z) * 0.5f;
+    }
+    
+    return(z);
 }
