@@ -73,7 +73,7 @@
 #define MAGENTA_DUH         CLITERAL(Color){ 233,  30,  99, 255 }  // #E91E63
 #define PINKY            CLITERAL(Color){ 240,  98, 146, 255 }  // #F06292
 #define HOT_PINK        CLITERAL(Color){ 236,  64, 122, 255 }  // #EC407A
-#define SHE_LOVES_PURLE          CLITERAL(Color){ 171,  71, 188, 255 }  // #AB47BC
+#define SHE_LOVES_PURPLE          CLITERAL(Color){ 171,  71, 188, 255 }  // #AB47BC
 #define SO_DO_I          CLITERAL(Color){ 126,  87, 194, 255 }  // #7E57C2
 #define INDIGO          CLITERAL(Color){  92, 107, 192, 255 }  // #5C6BC0
 #define BLUE_GRAY       CLITERAL(Color){ 144, 164, 174, 255 }  // #90A4AE
@@ -461,7 +461,7 @@ Color randColor(void)
     MAGENTA_DUH,
     PINKY,
     HOT_PINK,
-    SHE_LOVES_PURLE,
+    SHE_LOVES_PURPLE,
     SO_DO_I,
     INDIGO,
     BLUE_GRAY,
