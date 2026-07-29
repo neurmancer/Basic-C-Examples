@@ -118,7 +118,7 @@ int main(int argc, char **argv)
 static int path_exists(const char *p)
 {
     struct stat st;
-    return (stat(p, &st) == 0 && S_ISDIR(st.st_mode));
+    return(stat(p, &st) == 0 && S_ISDIR(st.st_mode));
 }
 
 static void add_path(const char *p)
@@ -136,16 +136,16 @@ static void add_path(const char *p)
 static void parse_config(const char *filename)
 {
     FILE *f = fopen(filename, "r");
-    if (!f) return;
+    if (!f){ return; }
 
     char line[1024];
     while (fgets(line, sizeof line, f)) {
         char *p = line;
         while (*p == ' ' || *p == '\t') p++;
-        if (*p == '#' || *p == '\n' || *p == '\0') continue;
+        if (*p == '#' || *p == '\n' || *p == '\0'){ continue; }
 
         char *tok = strtok(p, " \t\n");
-        if (!tok) continue;
+        if (!tok){ continue; }
 
         if (strcmp(tok, "MANDATORY_MANPATH") == 0) {
             tok = strtok(NULL, " \t\n");
@@ -243,7 +243,7 @@ static int run_pipeline(const char *page_path, const char *compressor)
 
 
     pid_t pid1 = fork();
-    if (pid1 == -1) { perror("fork"); return 1; }
+    if (pid1 == -1) { perror("fork"); return(-13); }
 
     if (pid1 == 0) {
         dup2(zcat_groff[1], STDOUT_FILENO);
