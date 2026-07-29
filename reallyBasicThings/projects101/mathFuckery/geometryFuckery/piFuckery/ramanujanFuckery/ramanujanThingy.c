@@ -10,6 +10,7 @@
 */
 
 #include "bignums.h"
+#include <stdio.h>
 //#include <math.h> you know what? Fuck math.h we're going full my own crap mode 
 //I'll finish this project with my own shit made out of pure spite blackjack and hookers 
 double sqrty(unsigned int val);
@@ -26,6 +27,8 @@ int main(void)
     bigFloatZero(&bF);
 
     double x = sqrty(8)/9801; //The constant multiplier before Sigma notation in the equation
+    //My casio calc says: 0.00028858556 and my sqrty nods in agreement
+    printf("%.10lf\n",x);
     //I realized I didn't implement a printBigNum function so...I'll be going back that brb...
     for (int k = 0; k < 1000;k++) {
         /*And that's where my brain gave up...*/
@@ -47,7 +50,7 @@ double sqrty(unsigned int val)
     int expon = msb/2;
 
     double z = (double) (1u << expon);    
-    for (uint8_t i = 0; i < 6; i++) {  
+    for (uint8_t i = 0; i < 8; i++) {  
 
         z = (z + val / z) * 0.5l;
     }
