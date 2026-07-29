@@ -130,6 +130,8 @@
 >
 > - **cat** clone(kitty)
 
+> - **man** clone (my man or my boi choice is yours)
+
 --- 
 
 ### Unclassified Math Fuckery
@@ -197,12 +199,11 @@
 
 ##### Big Nums Lib 
 > - An enchanced version of FFT that can handle non radix-2 inputs added for FFT multipication in API 
-> - Totally useful bignums lib from scratch (haven't documented yet)
-> - Added big floats too (not all tests are complete yet) 
+> - Totally useful bignums lib from scratch
+> - Added big floats too 
 > - A Makefile for making compilation easier with MAIN=src.c and TARGET=target.o compile-time parameters
 > - And all of those are just...placeholders for future math fuckery 
 > - test.c is in the said subfolder for checking results 
-> - IT FUCKING PASSED THE TESTS and yeah I am taking rest of today as **off day** since I've been working on this like for the last 21 hours Ramanujan and Tupper can wait
 >
 > - API documentation can be found [here](/reallyBasicThings/projects101/mathFuckery/DSPFuckery/bigNums/DOCUMENTATION.md)
 > - API design choices, usage and shit is in documentation link with a demo file ([demo](/reallyBasicThings/projects101/mathFuckery/DSPFuckery/bigNums/demo.c)) within same folder (It's too corpo-like, if you're a beginner don't even bother to read mwa)

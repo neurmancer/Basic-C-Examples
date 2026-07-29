@@ -23,7 +23,7 @@
 - [X] Build a basic pendulum simulator.
 - [ ] Create a function visualizer. (I know it's vauge but I don't know what to do...let's say something like Desmos or Wolfram Alpha. yeah, yeah sure also solve P = NP by next tuesday too while you are at it nerd!)
 - [X] Build an big-num lib(Yeah I didn't build that FFT for nothing)
-- [ ] Render Tupper's self-referential graph (possible, but no promises since I haven't implemented big nums in C yet and int overflow bitching about it).
+- [ ] Render Tupper's self-referential graph (possible, but no promises)
 - [ ] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement('Ehm actually it's topologically 2 Dimensional' I do know Mr...Nerd).
 
 ---
@@ -73,7 +73,7 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] Neofetch (or fastfetch) clone
 - [X] cat clone 
 - [X] echo clone (I mean isn't it just printf?)
-- [ ] man clone...since I use this so much and that would be paying homage(_You're next bruh_)
+- [X] man clone...since I use this so much and that would be paying homage
 
 
 ## Academic Shit I Guess
