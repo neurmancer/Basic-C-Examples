@@ -22,6 +22,7 @@
 
 - [Compile Instructions](#compile-instructions)
 
+- [New Additions](#new)
 
 ---
 
@@ -297,3 +298,10 @@ Using the given Makefile is strongly recommended to simplify this process
 make MAIN=source.c TARGET=programName 
 
 ```
+
+## New
+
+- Added printBigFloat() and printBigInt() helpers 
+
+- - printBigInt() only takes the number you want to print to screen(uses stdio.h)
+- - printBigFloat() takes both the number (Big Float struct pointer) and the decimal precision you want to print **'0' only prints the integer part**

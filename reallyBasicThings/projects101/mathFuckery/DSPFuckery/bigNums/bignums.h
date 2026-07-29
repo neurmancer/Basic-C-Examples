@@ -18,6 +18,8 @@ typedef struct {
 
 void bigIntZero(BigInt *a);
 
+void printBigInt(const BigInt *a);
+
 void int_32ToBigInt(BigInt *a, uint32_t val);
 
 uint32_t bigIntModUInt32(const BigInt *a, uint32_t divisor);
@@ -45,6 +47,8 @@ int bigIntShiftRight(BigInt *a, int bits);
 //Float operations
 
 void bigFloatZero(BigFloat *x);
+
+void printBigFloat(const BigFloat *x, int decimal_places);
 
 void bigFloatFromUint32(BigFloat *x, uint32_t v);
 

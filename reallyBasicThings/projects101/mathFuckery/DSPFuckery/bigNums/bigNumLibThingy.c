@@ -13,7 +13,7 @@
 
 #include <string.h>     //For memset
 #include <stdlib.h>     //For Dyanmic memory shit
-
+#include <stdio.h>
 #include "complexFFT.h"
 #include "bignums.h"
 
@@ -61,6 +61,27 @@ void int_32ToBigInt(BigInt *a, uint32_t val) {
     a->size = 1;
 }
 
+
+void printBigInt(const BigInt *a)
+{
+    if (a->size == 1 && a->limbs[0] == 0) {
+        printf("0");
+        return;
+    }
+
+    BigInt tmp = *a;
+
+    // Max decimal digits: 2048 bits ≈ 617 digits + '\0'
+    char digits[620];
+    int pos = sizeof(digits) - 1;
+    digits[pos] = '\0';
+
+    while (!(tmp.size == 1 && tmp.limbs[0] == 0)) {
+        uint32_t rem = bigIntDivUInt32(&tmp, 10);
+        digits[--pos] = (char)('0' + rem);
+    }
+    printf("%s", &digits[pos]);
+}
 
 int bigIntAddUInt_32(BigInt *a, uint32_t b) {
     uint64_t carry = b;
@@ -423,13 +444,6 @@ int bigIntShiftRight(BigInt *a, int bits) {
 
 
 
-
-
-
-
-
-
-
 /* ---------- BigFloat basic ---------- */
 void bigFloatZero(BigFloat *x) {
     bigIntZero(&x->mantissa);
@@ -471,6 +485,88 @@ void bigFloatTruncate(BigFloat *x, int target_limbs) {
         // Clean up any remaining leading zeros just in case
         bigFloatNormalize(x);
     }
+}
+
+void printBigFloat(const BigFloat *x, int decimal_places)
+{
+    if (decimal_places < 0) decimal_places = 0;
+
+    if (x->mantissa.size == 1 && x->mantissa.limbs[0] == 0) {
+        printf("0.");
+        for (int i = 0; i < decimal_places; i++) printf("0");
+        return;
+    }
+
+    if (x->sign < 0) printf("-");
+    BigFloat pos;
+    bigFloatCopy(&pos, x);
+    pos.sign = 1;
+
+    BigFloat int_float, frac;
+    BigInt   int_part, frac_digits;
+    BigFloat scale, scaled_frac;
+
+    // Integer part
+    int_part = pos.mantissa;
+    if (pos.exp >= 0) {
+        bigIntShiftLeft(&int_part, pos.exp);
+    } else {
+        bigIntShiftRight(&int_part, -pos.exp);
+    }
+    printBigInt(&int_part);
+    printf(".");
+
+    // Fractional part = pos - int_part (as BigFloat)
+    int_float.mantissa = int_part;
+    int_float.exp = 0;
+    int_float.sign = 1;
+    bigFloatNormalize(&int_float);
+    bigFloatSub(&frac, &pos, &int_float);
+
+    // Multiply by 10^decimal_places and round
+    {
+        BigInt ten_pow;
+        bigIntZero(&ten_pow);
+        ten_pow.limbs[0] = 1;
+        for (int i = 0; i < decimal_places; i++)
+            bigIntMulUInt_32(&ten_pow, 10);
+
+        scale.mantissa = ten_pow;
+        scale.exp = 0;
+        scale.sign = 1;
+        bigFloatNormalize(&scale);
+    }
+    bigFloatMul(&scaled_frac, &frac, &scale);
+    bigFloatAdd(&scaled_frac, &scaled_frac, &half_const);
+
+    // Extract digits
+    frac_digits = scaled_frac.mantissa;
+    if (scaled_frac.exp >= 0) {
+        bigIntShiftLeft(&frac_digits, scaled_frac.exp);
+    } else {
+        bigIntShiftRight(&frac_digits, -scaled_frac.exp);
+    }
+
+    char buf[22];
+    int bufPos = sizeof(buf) - 1;
+    buf[bufPos] = '\0';
+
+    if (frac_digits.size == 1 && frac_digits.limbs[0] == 0) {
+        for (int i = 0; i < decimal_places; i++){ printf("0"); }
+        return;
+    }
+
+    BigInt tmp = frac_digits;
+    int digit_count = 0;
+    while (!(tmp.size == 1 && tmp.limbs[0] == 0)) {
+        uint32_t rem = bigIntDivUInt32(&tmp, 10);
+        buf[--bufPos] = (char)('0' + rem);
+        digit_count++;
+    }
+
+    int leading_zeros = decimal_places - digit_count;
+    for (int i = 0; i < leading_zeros; i++){ printf("0"); }
+    printf("%s", &buf[bufPos]);
 }
 
 
