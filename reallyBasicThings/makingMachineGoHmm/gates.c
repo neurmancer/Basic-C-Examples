@@ -6,6 +6,7 @@
 
 */
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -22,6 +23,7 @@ float train[][3] = {
 
 float cost(float w1, float w2);
 float randFloat(void);
+float sigmoidf(float x);
 
 int main(void)
 {
@@ -56,7 +58,7 @@ float cost(float w1 , float w2 )
     {
         float x1 = train[i][0];
         float x2 = train[i][1];
-        float y = x1*w1 + x2*w2;
+        float y = sigmoidf(x1*w1 + x2*w2);
         float offset = y - train[i][2];
         result += offset*offset;
     }    
@@ -68,4 +70,10 @@ float cost(float w1 , float w2 )
 float randFloat(void)
 {
     return((float)rand() / RAND_MAX);
+}
+
+float sigmoidf(float x)
+{
+
+    return(1.0f/(1.0f+ expf(-x)));
 }
