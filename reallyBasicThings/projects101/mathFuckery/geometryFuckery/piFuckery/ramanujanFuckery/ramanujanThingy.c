@@ -23,15 +23,30 @@ int main(void)
     BigInt bigInt = { 0 };
     bigIntZero(&bigInt);
 
-    BigFloat bF = { 0 };
-    bigFloatZero(&bF);
+    BigFloat numerator = { 0 };
+    bigFloatZero(&numerator);
+    BigFloat denominator = { 0 };
+    bigFloatZero(&denominator);
+    
+    
 
     double x = sqrty(8)/9801; //The constant multiplier before Sigma notation in the equation
     //My casio calc says: 0.00028858556 and my sqrty nods in agreement
     printf("%.10lf\n",x);
     //I realized I didn't implement a printBigNum function so...I'll be going back that brb...
-    for (int k = 0; k < 1000;k++) {
-        /*And that's where my brain gave up...*/
+    
+    int k = 0;
+    //My brain really says no and it's 3AM...sorry I forgot my bigNum factorial in the other repo lmfao
+    /*
+        but idea is 
+        bigFloatFactorial(&numerator,4k);
+        bigFloatMul(&numerator,(26390n+1103));
+
+        then the rest is the denominantor which is same shit but with 4th power so I might need to add bigFloat/bigInt pow() to the API first...
+    
+    */
+    for (; k < 1000;k++) {
+    
     }
 
     return(0);
