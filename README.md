@@ -187,7 +187,7 @@
 
 > > - Calculating π using two boxes and collision (yk...the 3Blue1Brown video)
 
-> > - **Spoiler Alert**:Next π fuckery will be, Ramanujan-type series for calculating 1/π(_Postponed A little_)
+> > - **Spoiler Alert**:Next π fuckery will be, Ramanujan-type series for calculating _1/π_
 
 #### DSP Fuckery
 
