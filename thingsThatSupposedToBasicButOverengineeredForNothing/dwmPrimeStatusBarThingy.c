@@ -19,8 +19,8 @@
 #include <time.h>
 #include <X11/Xlib.h>
 
-#ifndef INT_MAX
-    #define UINT_MAX (~0u)
+#ifndef UINT_MAX
+    #define UINT_MAX (~0u)  //Sets all bits to 1
 #endif
 
 int isPrime(unsigned int val);
