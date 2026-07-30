@@ -23,12 +23,13 @@ int main(void)
     BigInt bigInt = { 0 };
     bigIntZero(&bigInt);
 
-    BigFloat numerator = { 0 };
-    bigFloatZero(&numerator);
-    BigFloat denominator = { 0 };
-    bigFloatZero(&denominator);
+    BigInt denominantor = { 0 };
+    int_32ToBigInt(&denominantor, 396);
     
+    BigInt res = { 0 };
+    int_32ToBigInt(&res, 396);
     
+
 
     double x = sqrty(8)/9801; //The constant multiplier before Sigma notation in the equation
     //My casio calc says: 0.00028858556 and my sqrty nods in agreement
@@ -45,9 +46,25 @@ int main(void)
         then the rest is the denominantor which is same shit but with 4th power so I might need to add bigFloat/bigInt pow() to the API first...
     
     */
-    for (; k < 1000;k++) {
     
+
+    for (; k < 4;k++) {
+        bigIntFactorial(&bigInt, 4*k);      //Numerator part
+        bigIntMulUInt_32(&bigInt, (26390*k+1103));
+        for (size_t i = 0;i < 4*k; i++ ) {
+            bigIntMulFFT(&denominantor, &res, &denominantor);        //I won't bother to create a pow function
+            //But I guess I need a bigIntDivBigInt() that retrurns bigFlaot
+        }
+        
     }
+
+    printBigInt(&bigInt);
+    printf("\n");
+    printBigInt(&denominantor);
+    printf("\n");
+    printBigInt(&res);
+    printf("\n");
+    
 
     return(0);
 }
