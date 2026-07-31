@@ -289,7 +289,8 @@
 - Bring Me To Life lyrics spitter for CLI (prototype shitty jukebox from day 3)
 - A program that gives you an output file and spits a text on terminal anyways because I used stderr instead of stdout
 - Added a walking segfault PTSD on purpose 
-- dwm statusbar for showing the time (in hh:mm format) and spitting primes through 2 to UINT_MAX
+- suckless dwm statusbar for showing the time (in hh:mm format) and spitting primes through 2 to UINT_MAX
+- A spotify artist - title displayer for Steelseries Apex5 OLED screen (requires playerctl to get the song info) (compiling flags in the source code)
 
 ---
 
