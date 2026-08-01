@@ -22,29 +22,32 @@ void configTerm(void)
   tcsetattr(STDIN_FILENO, TCSANOW, &newTermios);
 }
 
+void fixTerm(void)
+{
+
+  printf("\033[25h");
+  printf("\033[H\033[J");
+
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldTermios);
+}
+
 int readKey(char *buf, int k)
 {
+
 
   if(buf[k] == '\033' && buf[k+1] == '[')
   {
     switch (buf[k+2]) {
       case 'A':
         return(1);
-        break;
       case 'B':
         return(2);
-        break;
       case 'C':
         return(3);
-        break;
       case 'D':
         return(4);
-        break;
-      default:
-        break;
     }
   }
-
   return(0);
 }
 
@@ -53,11 +56,12 @@ int readInput(void)
 
   char buf[4096];
   int n = read(STDIN_FILENO, buf, sizeof(buf));
-  int keyStroke;
+  int keyStroke = 0;
 
   for (int k = 0; k <= n-3; k+=3) {
 
     int key = readKey(buf, k);
+    
     if (!key) { continue; }
     keyStroke = key;
   }
@@ -73,7 +77,6 @@ void printArrows(int key)
     case 1:
       printf("Up\n");
       break;
-
     case 2:
       printf("Down\n");
       break;
@@ -83,8 +86,6 @@ void printArrows(int key)
     case 4:
       printf("Left\n");
       break;
-    default:
-      printf("Invalid\n");
   }
 }
 
@@ -95,18 +96,17 @@ int main(void)
   
   struct timespec req = { 0 };
   struct timespec rem = { 0 };
+  int key = 0;
 
-
-  while (1) {
-    int key = readInput();
+  while (key != -1) {
+    key = readInput();
     printArrows(key);
-     
+
     req.tv_nsec = 0.1 * SECOND;
     nanosleep(&req, &rem);
-    
   }
 
-
+  fixTerm();
 
   return(0);
 }
