@@ -25,6 +25,7 @@
 - [X] Build an big-num lib(Yeah I didn't build that FFT for nothing)
 - [ ] Render Tupper's self-referential graph (possible, but no promises)
 - [ ] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement('Ehm actually it's topologically 2 Dimensional' I do know Mr...Nerd).
+- [ ] Implement a MANIM(3B1B math animation engine) in C (cuz yk... why the fuck not?)
 
 ---
 
