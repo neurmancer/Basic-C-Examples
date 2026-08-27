@@ -53,9 +53,9 @@
 #define BRICK_COLUMNS 14
 
 
-const float BRICK_LENGTH = WIDTH/16;
-const float BRICK_HEIGHT = HEIGHT/2;
-
+static const float BRICK_LENGTH = WIDTH/16;
+static const float BRICK_HEIGHT = HEIGHT/32;
+//Why static? 'cuz scope thingy is a bitch...(not like I use multiple files but what if I Do?)
 
 /* =================== OBJECTS ========================= */
 
