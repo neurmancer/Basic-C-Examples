@@ -1,166 +1,160 @@
 /*
+            =============== YAPPING =====================
 
-        =============== YAPPING ==================
+            'Sup? Yk...the deal I got shit to mark as done in futureShit.md... so here we are starting to code it....
+            
+            First, I changed my rig setup (DWM to Hyprland to try) and raylib is currently bitching about it 
+            Second, This is a template for now I'll try to finish this in a few days if not in a few hours
 
-        'Sup? What's today's fuckery? Atari breakout clone duh...I hate working with game logics but here we are...
+            So...the technical part: 
 
-        So here is the plan...
+            What are we doing? Breakout clone, but question is 'how' since I have no clue how to do...
 
-          1- make shit appear on the screen
-          2- Make shit move
-          3- make shit move with passion 
-        
+            Shit to do: 
 
-        6 rows, 12 columns of bricks 
+            1- Well...code everything
+            2- Paddle movment
+            3- Brick offsets and drawing shit
+            4- Collision detection (Hardest part, it seems)
+            5- Ball movement and shit
+
+
+            This is a template for now 
 */
 
 
+/* ================== INCLUDES ===================== */
 
-/* ================== INCLUDES ================ */
-
-#include <stdio.h> 
+#include <stdio.h>
+//External Headers 
 #include <raylib.h>
 
+/* ===================== DEFINES ====================== */
 
 
-/* ================= DEFINES ================ */
+//Window shit
 
-#define WIDTH 1200
-#define HEIGHT 900  //4:3 
+#define WIDTH 1200.0f
+#define HEIGHT 900.0f
 
-#define TITLE "BREAKOUT IG..."
+#define TITLE "Breakout Duh..."
 
-#ifndef FPS
-  #define FPS 120 
+#ifndef FPS 
+    #define FPS 120
 #endif 
 
-#ifndef VSYNC 
-  #define VSYNC 0
+#ifndef VSYNC
+    #define VSYNC 0
 #endif 
 
+//Game thingies
 
-//Game shit
-#define BRICK_COUNT 72
+#define BRICK_ROWS 4
+#define BRICK_COLUMNS 14
 
 
-/* ============= OBJECTS ================ */
+const float BRICK_LENGTH = WIDTH/16;
+const float BRICK_HEIGHT = HEIGHT/2;
 
+
+/* =================== OBJECTS ========================= */
 
 typedef struct{
-  
-  Vector2 pos;
-  Vector2 size;
 
-  Color color;
+    Vector2 pos;
+    Vector2 size;
 
-  int powerUp;
+    Color color;
+    int powerUp;
 }Brick;
 
-
 typedef struct{
-  
-  Vector2 pos;
-  Vector2 vel; 
-  Vector2 accel;
 
-  Color color;
+    Vector2 pos;
+    float radius;
+
+    Color color;
 }Ball;
 
 typedef struct{
-  
-  Vector2 pos;
-  Vector2 vel;
 
-  Color color;
+    Vector2 pos;
+    Vector2 vel;
+    Vector2 accel;
+
+    Vector2 size;
+    Color color;
 
 }Paddle;
 
+typedef struct{
 
-/* ================= FUNCTION PROTOTYPES =================== */
+    //I ain't gonna optimize padding for a fucking breakout clone 
+    Paddle paddle;
+    Ball ball;
 
-void fillBricks(Brick *brick, int brickAmount);
+    Brick bricks[BRICK_ROWS][BRICK_COLUMNS];
 
-int setup(void);
+}Objects;
+
+typedef struct{
+
+    //I'll try to make this configurable 'cuz why not but not now...
+    
+
+}Config;
+
+/* ================ (Hopefully Not) GLOBALS ================ */
 
 
+
+/* ================= FUNCTION PROTOTYPES ==================== */
+
+
+int setupEnv(void);
+
+
+/* ============ MAIN ============= */
 
 int main(void)
 {
-  if(setup()){
-    perror("Window got fucked up\n");
-    return(-1);
-  }
 
-  Brick bricks[BRICK_COUNT]; 
+    printf("C'mon I have to start with a printf right\n");
+    if(setupEnv()) { printf("We fucked\n"); return(-53); }
 
+    Brick bricks[BRICK_ROWS][BRICK_COLUMNS] = { 0 };
 
-  while(!WindowShouldClose())
-  {
-  
-    if (IsKeyPressed(KEY_ESCAPE)) { break; }
+    while (!WindowShouldClose()) {
+        if (IsKeyPressed(KEY_ESCAPE)) { break;}
 
-
-
-
-    BeginDrawing();
-    ClearBackground(BLACK);
-    EndDrawing();
-  
-  }
+        BeginDrawing();
+        ClearBackground(BLACK);
+        EndDrawing();
+    }
+    
 
 
-  return(0);
+    CloseWindow();
+    return(0);
 }
 
 
 
-void fillBricks(Brick *bricks, int brickAmount)
+/* ============ FUNCTION BODIES ================ */
+
+int setupEnv(void)
 {
-  
+ 
+    if (VSYNC) {
+        SetConfigFlags(FLAG_VSYNC_HINT);    
+    }
 
+    InitWindow(WIDTH, HEIGHT, TITLE);
 
+    if ((FPS < 0 || FPS > 300) && !VSYNC) { SetTargetFPS(120); }
+    else { SetTargetFPS(FPS); }
 
+    if (!IsWindowReady()) { return(-1); }
 
-
-
+    return(0);
 }
-
-int setup(void)
-{
-
-
-  if (VSYNC)
-  {
-    SetConfigFlags(FLAG_VSYNC_HINT);
-  }
-  
-
-  InitWindow(WIDTH, HEIGHT, TITLE);
-  
-  if (!VSYNC && FPS >= 0 && FPS <= 300) {
-    SetTargetFPS(FPS);
-  }
-  else{
-    SetTargetFPS(120);
-  }
-
-  if(!IsWindowReady()){ return(-53); }
-
-  return(0);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
