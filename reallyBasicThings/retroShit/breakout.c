@@ -4,6 +4,7 @@
             'Sup? Yk...the deal I got shit to mark as done in futureShit.md... so here we are starting to code it....
             
             First, I changed my rig setup (DWM to Hyprland to try) and raylib is currently bitching about it 
+                -Solved it via changing my raylib pack to raylib-wayland 
             Second, This is a template for now I'll try to finish this in a few days if not in a few hours
 
             So...the technical part: 
@@ -122,7 +123,8 @@ int main(void)
     printf("C'mon I have to start with a printf right\n");
     if(setupEnv()) { printf("We fucked\n"); return(-53); }
 
-    Brick bricks[BRICK_ROWS][BRICK_COLUMNS] = { 0 };
+
+    Objects objs = { 0 };
 
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { break;}
@@ -150,11 +152,11 @@ int setupEnv(void)
     }
 
     InitWindow(WIDTH, HEIGHT, TITLE);
+    if (!IsWindowReady()) { return(-1); }
 
     if ((FPS < 0 || FPS > 300) && !VSYNC) { SetTargetFPS(120); }
     else { SetTargetFPS(FPS); }
 
-    if (!IsWindowReady()) { return(-1); }
 
     return(0);
 }
