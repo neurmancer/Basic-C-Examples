@@ -124,6 +124,7 @@ typedef struct{
 typedef struct{
 
     Vector2 pos;
+    Vector2 speed;
     Vector2 size;
     Color color;
 
@@ -174,6 +175,7 @@ typedef struct{
 
 void drawObjects(Objects *objs);
 void setObjects(Objects *objs, Config *cfg);
+void updateObjects(Objects *objs);
 
 int setupEnv(void);
 Color randColor(void);
@@ -194,7 +196,7 @@ int main(void)
     
     Config cfg = {
         .paddleSize = (Vector2){WIDTH/5, HEIGHT/50},
-        .paddleSpeed = 1,   //Pixel/dT
+        .paddleSpeed = 3,   //Pixel/dT
         .paddleColor = WHITE,
 
         .ballRadius = WIDTH/60,
@@ -211,6 +213,8 @@ int main(void)
 
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { break;}
+        if(IsKeyDown(KEY_A)) { objs.paddle.pos.x -= objs.paddle.speed.x; }  //Those are placeholders for tomorrow
+        if(IsKeyDown(KEY_D)) { objs.paddle.pos.x += objs.paddle.speed.x; }
 
         BeginDrawing();
         ClearBackground(BLACK);
@@ -284,6 +288,9 @@ void setObjects(Objects *objs, Config *cfg)
     //Paddle Shit
     objs->paddle.size = cfg->paddleSize;
     objs->paddle.pos = (Vector2){((WIDTH-objs->paddle.size.x)/2), 24*HEIGHT/25 };
+    objs->paddle.speed.x = cfg->paddleSpeed;
+    objs->paddle.speed.y = 0;
+
     objs->paddle.color = cfg->paddleColor;
 
     //Ball shit
