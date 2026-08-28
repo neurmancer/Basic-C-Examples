@@ -66,7 +66,7 @@ Yeah all retro... I am a retro guy, after all.
 
 - [X] Prime number spitter for dwm status bar for no apperant reason besides being cool
 - [ ] More experiments for DWM environment(My idea well ran dry...I know it's vague)
-
+- [ ] Fuck with journalctl (Just to see some shit on my fancy logs)
 
 ## Rediscovering America
 
