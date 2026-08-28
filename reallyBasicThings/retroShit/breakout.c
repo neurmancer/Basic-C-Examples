@@ -30,6 +30,7 @@
 
 /* ================== INCLUDES ===================== */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -92,7 +93,7 @@
 static const float BRICK_LENGTH = WIDTH/14; //That's gonna be used as left-right offset too  
 static const float BRICK_HEIGHT = HEIGHT/32;    //That might differ
 static const float Y_OFFSET = HEIGHT/10;
-
+static const float X_OFFSET = BRICK_LENGTH/8;
 //Why static? 'cuz scope thingy is a bitch...(not like I use multiple files but what if I Do?)
 
 /* =================== OBJECTS ========================= */
@@ -297,7 +298,7 @@ void setObjects(Objects *objs, Config *cfg)
     
     for (size_t i = 0;i < BRICK_COLUMNS; i++) {
         for (size_t j = 0; j < BRICK_ROWS; j++) {
-            objs->bricks[j][i].pos = (Vector2){(i+1)*BRICK_LENGTH, (j*BRICK_HEIGHT)+Y_OFFSET};
+            objs->bricks[j][i].pos = (Vector2){(i+1)*BRICK_LENGTH + X_OFFSET, (j*BRICK_HEIGHT)+Y_OFFSET};
             objs->bricks[j][i].size = (Vector2){BRICK_LENGTH, BRICK_HEIGHT};
             objs->bricks[j][i].color = randColor();
             objs->bricks[j][i].powerUp = -1;
@@ -312,14 +313,14 @@ void setObjects(Objects *objs, Config *cfg)
 void drawObjects(Objects *objs)
 {
 
-    for (size_t i = 0; i < BRICK_ROWS; i++) {
-        for (size_t j = 0; j < BRICK_COLUMNS; j++) {
-            if (objs->bricks[i][j].isDestroyed) {
+    for (size_t i = 0; i < BRICK_COLUMNS; i++) {
+        for (size_t j = 0; j < BRICK_ROWS; j++) {
+            if (objs->bricks[j][i].isDestroyed) {
                 continue;
             }
-            DrawRectangleV(objs->bricks[i][j].pos, objs->bricks[i][j].size, objs->bricks[i][j].color);
+            DrawRectangleV(objs->bricks[j][i].pos, objs->bricks[j][i].size, objs->bricks[j][i].color);
             DrawRectangleLinesEx(
-            (Rectangle){objs->bricks[i][j].pos.x,objs->bricks[i][j].pos.y, objs->bricks[i][j].size.x, objs->bricks[i][j].size.y}, 
+            (Rectangle){objs->bricks[j][i].pos.x,objs->bricks[j][i].pos.y, objs->bricks[j][i].size.x, objs->bricks[j][i].size.y}, 
             3.5f, 
             BLACK);
         }
