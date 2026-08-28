@@ -198,8 +198,8 @@ int main(void)
         .paddleColor = WHITE,
 
         .ballRadius = WIDTH/60,
-        .ballVel = 1,
-        .ballAccel = 0,
+        .ballVel = (Vector2){1,0},
+        .ballAccel = (Vector2){ 0 },
         .ballColor = WHITE,
     
         .playerLives = 3,
@@ -294,7 +294,7 @@ void setObjects(Objects *objs, Config *cfg)
     objs->ball.accel = cfg->ballAccel;
     objs->ball.color = cfg->ballColor;
 
-    objs->gameState = (GameState){cfg->playerLives, cfg->scorePerBrick};
+    objs->gameState = (GameState){cfg->playerLives, 0};
     
     for (size_t i = 0;i < BRICK_COLUMNS; i++) {
         for (size_t j = 0; j < BRICK_ROWS; j++) {
