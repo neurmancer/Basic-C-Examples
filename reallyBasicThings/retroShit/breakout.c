@@ -242,7 +242,7 @@ int main(void)
         if (IsKeyDown(KEY_SPACE)) { firstShot = 0; }
         if (firstShot) { 
             objs.ball.pos.x = objs.paddle.pos.x + objs.paddle.size.x/2;
-            objs.ball.pos.y = objs.paddle.pos.y + objs.ball.radius; 
+            objs.ball.pos.y = objs.paddle.pos.y - objs.ball.radius; 
         }
         //clamp shit
 
