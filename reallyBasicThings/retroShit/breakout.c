@@ -142,7 +142,7 @@ typedef struct{
 typedef struct{
     int remainingLives;
     int score;
-
+    int isGameOver;
 }GameState;
 
 
@@ -228,7 +228,9 @@ int main(void)
     float dT = 0.0f;
     float accumulator = 0.0f; //substepping to prevent phasing (tunnelling type shit you get it)
     const float sliceTime = 1.0f / 240.0f;
+    
     int firstShot = 1;
+
 
     while (!WindowShouldClose()) {
         
@@ -265,7 +267,13 @@ int main(void)
         //Drawin shit
         BeginDrawing();
         ClearBackground(BLACK);
-        drawObjects(&objs);
+        if (!objs.gameState.isGameOver) {
+            drawObjects(&objs);
+        }
+        else {
+            //You sux at playing
+        }
+
         EndDrawing();
     }
 
@@ -282,9 +290,12 @@ int setupEnv(void)
 {
  
     if (VSYNC) {
-        SetConfigFlags(FLAG_VSYNC_HINT);    
+        SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT );    
     }
-
+    else {
+        SetConfigFlags(FLAG_MSAA_4X_HINT);
+    }
+    
     InitWindow(WIDTH, HEIGHT, TITLE);
 
     if (!IsWindowReady()) { return(-1); }
@@ -350,7 +361,8 @@ void setObjects(Objects *objs, Config *cfg)
     objs->ball.color = cfg->ballColor;
 
     objs->gameState = (GameState){cfg->playerLives, 0};
-    
+    objs->gameState.isGameOver = 0;
+
     for (size_t i = 0;i < BRICK_COLUMNS; i++) {
         for (size_t j = 0; j < BRICK_ROWS; j++) {
             objs->bricks[j][i].pos = (Vector2){(i+1)*BRICK_LENGTH + X_OFFSET, (j*BRICK_HEIGHT)+Y_OFFSET};
