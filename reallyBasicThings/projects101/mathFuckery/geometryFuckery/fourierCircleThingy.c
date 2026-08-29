@@ -24,10 +24,9 @@
             Algorithm-Archive: https://www.algorithm-archive.org/contents/cooley_tukey/cooley_tukey.html (This one on FFT but you'll learn new shit either way)
 
             for complex.h
-            ```bash
                 man complex (or man 7 complex if your system has other complex titles) 
-            ```
-            but if that's a little cryptic (for me it was to start)
+
+            but if that's a little cryptic (for me it was, to start)
             here is the jump-start: https://www.geeksforgeeks.org/c/complex-h-header-file-in-c-with-examples/
 */
 
@@ -35,11 +34,11 @@
 /* ====================== INCLUDES =================== */
 
 #include <stdlib.h>     //Dynamic shit will get involved so...malloc it is 
-#include <complex.h>    //Yeah this time I wanna look what this does 
+#include <complex.h>    //Yeah this time I wanna look at what this does 
 
 //flagged headers (add -lm -lraylib as you compile)
-#include <raylib.h>
-#include <math.h>
+#include <raylib.h> // To be able to see shit on screen
+#include <math.h>   //To math
 /* ====================== DEFINES ==================== */
 
 #define WIDTH 1200
@@ -52,9 +51,10 @@
 
 int setupEnv(void);
 
-float complex *dft(float complex *x, int arrLen);
+float complex *dft(float complex *x, size_t arrLen);
 //For now it's caller's responsibilty to free the returned array I may change that to:
 // An added output parameter to make caller more aware of the allocation process and free'ing responsbility
+// One last note: Due to DFT being a 'transformation' output array length will be same as allocated arrLen.
 
 
 /* ==================== MAIN ====================== */
@@ -62,7 +62,14 @@ float complex *dft(float complex *x, int arrLen);
 int main(void)
 {
     if (setupEnv()) { return(-53); }
-    
+
+    int width = GetScreenWidth();
+    int height = GetScreenHeight();
+    if (!width || !height) {
+        width = WIDTH;
+        height = HEIGHT;    
+    }
+
     float complex *x = NULL;
 
     while (!WindowShouldClose()) {
@@ -87,18 +94,21 @@ int main(void)
 
 int setupEnv(void)
 {
+    
     InitWindow(WIDTH, HEIGHT, TITLE);
+
     if (!IsWindowReady()) { return(-1); }
     
+    ToggleBorderlessWindowed();
     SetTargetFPS(FPS);
     
     return(0);
 }
 
-float complex *dft(float complex *x, int arrLen)
+float complex *dft(float complex *x, size_t arrLen)
 {
 
-
+    //Mathing happens here
 
 
     return(NULL);
