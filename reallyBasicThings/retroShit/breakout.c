@@ -502,5 +502,5 @@ void updatePositions(Objects *objs, float dT)
     objs->ball.pos.y += objs->ball.vel.y * dT;
     
     objs->ball.vel.x += objs->ball.accel.x * dT;
-    objs->ball.vel.y += objs->ball.accel.x * dT;
+    objs->ball.vel.y += objs->ball.accel.y * dT;
 }
