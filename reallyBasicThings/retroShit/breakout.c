@@ -30,13 +30,13 @@
 
 /* ================== INCLUDES ===================== */
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
 //External Headers 
 #include <raylib.h>
+#include <math.h>
 
 /* ===================== DEFINES ====================== */
 
@@ -47,14 +47,6 @@
 #define HEIGHT 900.0f
 
 #define TITLE "Breakout Duh..."
-
-#ifndef FPS 
-    #define FPS 120
-#endif 
-
-#ifndef VSYNC
-    #define VSYNC 0
-#endif 
 
 //Game thingies
 
@@ -96,6 +88,17 @@ static const float Y_OFFSET = HEIGHT/10;
 static const float X_OFFSET = BRICK_LENGTH/8;
 //Why static? 'cuz scope thingy is a bitch...(not like I use multiple files but what if I Do?)
 
+// Compile-Time Shit
+
+#ifndef FPS 
+    #define FPS 120
+#endif 
+
+#ifndef VSYNC
+    #define VSYNC 0
+#endif 
+
+
 /* =================== OBJECTS ========================= */
 
 typedef struct{
@@ -116,9 +119,13 @@ typedef struct{
     Vector2 vel;
     Vector2 accel;  //For future power-ups
 
+    Vector2 defaultVel;
+
     float radius;
 
     Color color;
+
+
 }Ball;
 
 typedef struct{
@@ -175,9 +182,13 @@ typedef struct{
 
 void drawObjects(Objects *objs);
 void setObjects(Objects *objs, Config *cfg);
-void updateObjects(Objects *objs);
+
+void resolveCollisions(Objects *objs);
+void updatePositions(Objects *objs, float dT);
 
 int setupEnv(void);
+float paddleBounceFunction(float x);
+
 Color randColor(void);
 
 
@@ -196,26 +207,54 @@ int main(void)
     
     Config cfg = {
         .paddleSize = (Vector2){WIDTH/5, HEIGHT/50},
-        .paddleSpeed = 3,   //Pixel/dT
+        .paddleSpeed = WIDTH/4,   //Pixel/dT
         .paddleColor = WHITE,
 
+
         .ballRadius = WIDTH/60,
-        .ballVel = (Vector2){1,0},
+        .ballVel = (Vector2){0,3*HEIGHT/10},
         .ballAccel = (Vector2){ 0 },
         .ballColor = WHITE,
     
         .playerLives = 3,
         .scorePerBrick = 100,
     };
-    printf("Og debug tool\n");
+
     setObjects(&objs, &cfg);
-    printf("Test\n");
+
+
+    float dT = 0.0f;
+    float accumulator = 0.0f; //substepping to prevent phasing (tunnelling type shit you get it)
+    const float sliceTime = 1.0f / 240.0f;
 
     while (!WindowShouldClose()) {
-        if (IsKeyPressed(KEY_ESCAPE)) { break;}
-        if(IsKeyDown(KEY_A)) { objs.paddle.pos.x -= objs.paddle.speed.x; }  //Those are placeholders for tomorrow
-        if(IsKeyDown(KEY_D)) { objs.paddle.pos.x += objs.paddle.speed.x; }
+        
+        dT = GetFrameTime();
+        
+        if (dT > 0.1f) { dT = 0.1f; } //To prevent drops? 
 
+        if (IsKeyPressed(KEY_ESCAPE)) { break;}
+        if(IsKeyDown(KEY_A)) { objs.paddle.pos.x -= dT*objs.paddle.speed.x; }  //Those are placeholders for tomorrow
+        if(IsKeyDown(KEY_D)) { objs.paddle.pos.x += dT*objs.paddle.speed.x; }
+        //clamp shit
+
+        if (objs.paddle.pos.x < 0) objs.paddle.pos.x = 0;
+        if (objs.paddle.pos.x + objs.paddle.size.x > WIDTH) objs.paddle.pos.x = WIDTH - objs.paddle.size.x;
+
+        //collision shit
+        resolveCollisions(&objs);
+
+        //Physics Bitch! 
+        
+        accumulator += dT;
+        while (accumulator >= sliceTime) {
+            updatePositions(&objs, sliceTime);
+            resolveCollisions(&objs);
+            
+            accumulator -= sliceTime;
+        }
+        
+        //Drawin shit
         BeginDrawing();
         ClearBackground(BLACK);
         drawObjects(&objs);
@@ -287,7 +326,7 @@ void setObjects(Objects *objs, Config *cfg)
     
     //Paddle Shit
     objs->paddle.size = cfg->paddleSize;
-    objs->paddle.pos = (Vector2){((WIDTH-objs->paddle.size.x)/2), 24*HEIGHT/25 };
+    objs->paddle.pos = (Vector2){((WIDTH-objs->paddle.size.x)/2), (23*HEIGHT)/25 };
     objs->paddle.speed.x = cfg->paddleSpeed;
     objs->paddle.speed.y = 0;
 
@@ -298,6 +337,7 @@ void setObjects(Objects *objs, Config *cfg)
     objs->ball.pos.x = objs->paddle.pos.x + (objs->paddle.size.x/2);
     objs->ball.pos.y = objs->paddle.pos.y - objs->ball.radius;
     objs->ball.vel = cfg->ballVel;
+    objs->ball.defaultVel = cfg->ballVel;
     objs->ball.accel = cfg->ballAccel;
     objs->ball.color = cfg->ballColor;
 
@@ -308,13 +348,109 @@ void setObjects(Objects *objs, Config *cfg)
             objs->bricks[j][i].pos = (Vector2){(i+1)*BRICK_LENGTH + X_OFFSET, (j*BRICK_HEIGHT)+Y_OFFSET};
             objs->bricks[j][i].size = (Vector2){BRICK_LENGTH, BRICK_HEIGHT};
             objs->bricks[j][i].color = randColor();
-            objs->bricks[j][i].powerUp = -1;
+            objs->bricks[j][i].powerUp = 0;
             objs->bricks[j][i].isDestroyed = 0;
         }
     }
     //I guess every fucking thing is settled but I HIGHLY DOUBT THAT THIS IS THE FUCKING RIGHT WAY
     return;
 }
+
+void resolveCollisions(Objects *objs)
+{
+    //left and right wall shit
+    if (objs->ball.pos.x - objs->ball.radius <= 0) {
+        objs->ball.pos.x = objs->ball.radius;
+        objs->ball.vel.x *= -1;
+    } 
+    else if (objs->ball.pos.x + objs->ball.radius >= WIDTH) {
+        objs->ball.pos.x = WIDTH - objs->ball.radius;
+        objs->ball.vel.x *= -1;
+    }
+
+    // Upper shit
+    if (objs->ball.pos.y - objs->ball.radius <= 0) {
+        objs->ball.pos.y = objs->ball.radius;
+        objs->ball.vel.y *= -1;
+    }
+
+
+        if (objs->ball.pos.y + objs->ball.radius >= HEIGHT) {
+        objs->gameState.remainingLives--;
+        
+        objs->ball.pos.x = objs->paddle.pos.x + (objs->paddle.size.x / 2.0f);
+        objs->ball.pos.y = objs->paddle.pos.y - objs->ball.radius;
+        objs->ball.vel = objs->ball.defaultVel;
+        
+        if (objs->gameState.remainingLives <= 0) {
+            // Do shit
+        }
+        return; 
+    }
+
+
+    Rectangle paddleRect = { objs->paddle.pos.x, objs->paddle.pos.y, objs->paddle.size.x, objs->paddle.size.y };
+    if (CheckCollisionCircleRec(objs->ball.pos, objs->ball.radius, paddleRect)) {
+        objs->ball.pos.y = objs->paddle.pos.y - objs->ball.radius;
+        
+
+        float ballSpeed = sqrtf((objs->ball.vel.x * objs->ball.vel.x) + (objs->ball.vel.y * objs->ball.vel.y));
+        
+        if (ballSpeed < 0.1f) ballSpeed = 5.0f; 
+
+        float relativeHitX = (objs->ball.pos.x - objs->paddle.pos.x) / objs->paddle.size.x;
+        
+        if (relativeHitX < 0.0f) relativeHitX = 0.0f;
+        if (relativeHitX > 1.0f) relativeHitX = 1.0f;
+
+        float bounceAngleRad = paddleBounceFunction(relativeHitX);
+
+        if (bounceAngleRad != -1) {
+            objs->ball.vel.x = cosf(bounceAngleRad) * ballSpeed;
+            objs->ball.vel.y = -sinf(bounceAngleRad) * ballSpeed;
+        } else {
+            objs->ball.vel.y = -fabsf(objs->ball.vel.y);
+        }
+    }
+
+
+    //Matris grid shit don't ask why...
+    int col = (int)((objs->ball.pos.x - X_OFFSET) / BRICK_LENGTH) - 1;
+    int row = (int)((objs->ball.pos.y - Y_OFFSET) / BRICK_HEIGHT);
+
+    if (row >= 0 && row < BRICK_ROWS && col >= 0 && col < BRICK_COLUMNS) {
+        Brick *targetBrick = &objs->bricks[row][col];
+
+        //Bruh honestly? I should've gone with brute-force this LOGIC FUCKED ME 
+        if (!targetBrick->isDestroyed) {
+            Rectangle brickRect = { targetBrick->pos.x, targetBrick->pos.y, targetBrick->size.x, targetBrick->size.y };
+            
+            if (CheckCollisionCircleRec(objs->ball.pos, objs->ball.radius, brickRect)) {
+                targetBrick->isDestroyed = 1;
+                objs->gameState.score += 100;
+
+                float overlapLeft   = (objs->ball.pos.x - targetBrick->pos.x);
+                float overlapRight  = (targetBrick->pos.x + targetBrick->size.x) - objs->ball.pos.x;
+                float overlapTop    = (objs->ball.pos.y - targetBrick->pos.y);
+                float overlapBottom = (targetBrick->pos.y + targetBrick->size.y) - objs->ball.pos.y;
+
+                float minOverlap = overlapLeft;
+                int side = 0; 
+
+                if (overlapRight < minOverlap)  { minOverlap = overlapRight;  side = 1; }
+                if (overlapTop < minOverlap)    { minOverlap = overlapTop;    side = 2; }
+                if (overlapBottom < minOverlap) { minOverlap = overlapBottom; side = 3; }
+
+                if (side == 0 || side == 1) {
+                    objs->ball.vel.x *= -1; 
+                } else {
+                    objs->ball.vel.y *= -1; 
+                }
+            }
+        }
+    }
+}
+
 
 
 void drawObjects(Objects *objs)
@@ -335,4 +471,36 @@ void drawObjects(Objects *objs)
     DrawRectangleV(objs->paddle.pos, objs->paddle.size, objs->paddle.color);
     DrawCircleV(objs->ball.pos, objs->ball.radius , objs->ball.color);
 
+}
+
+/*
+    Yeah I've done some highschool math on paper to come up with this to sum the equation up:
+
+        defined in range of x = [0,1] and y = [30,120] (y values in degree)
+
+
+*/
+float paddleBounceFunction(float x)
+{
+    if (x < 0.0f || x > 1.0f) {
+        return(-1);
+    }
+
+    float y = 150.0f-(120.0f*x);
+    float rad = DEG2RAD*y;
+
+    return(rad);
+}
+
+
+void updatePositions(Objects *objs, float dT)
+{
+
+    if (objs->gameState.remainingLives <= 0) { return; }
+
+    objs->ball.pos.x += objs->ball.vel.x * dT;
+    objs->ball.pos.y += objs->ball.vel.y * dT;
+    
+    objs->ball.vel.x += objs->ball.accel.x * dT;
+    objs->ball.vel.y += objs->ball.accel.x * dT;
 }
