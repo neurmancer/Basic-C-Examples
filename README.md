@@ -278,7 +278,7 @@
 
 - Pong (Rite of _Passage_)  
 - CRT/VHS filter (SUMMONS CTHULHU **DO NOT APPROACH**) __ABONDENED__
-- Atari Breakout Clone(_Freshly Started_)
+- Atari Breakout Clone
 - Galaga (_Not started to work on yet_)
 
 ---

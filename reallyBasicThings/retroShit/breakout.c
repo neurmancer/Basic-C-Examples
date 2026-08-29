@@ -24,7 +24,7 @@
             5- Ball movement and shit
 
 
-            This is a template for now 
+            'till further notice, This marked as done. It does the thing (poorly but does nonetheless)
 */
 
 
@@ -143,6 +143,7 @@ typedef struct{
     int remainingLives;
     int score;
     int isGameOver;
+    int firstShot;
 }GameState;
 
 
@@ -174,6 +175,7 @@ typedef struct{
    
     int scorePerBrick;
     int playerLives;
+
 }Config;
 
 /* ================ (Hopefully Not) GLOBALS ================ */
@@ -228,8 +230,6 @@ int main(void)
     float dT = 0.0f;
     float accumulator = 0.0f; //substepping to prevent phasing (tunnelling type shit you get it)
     const float sliceTime = 1.0f / 240.0f;
-    
-    int firstShot = 1;
 
 
     while (!WindowShouldClose()) {
@@ -241,8 +241,8 @@ int main(void)
         if (IsKeyPressed(KEY_ESCAPE)) { break;}
         if(IsKeyDown(KEY_A)) { objs.paddle.pos.x -= dT*objs.paddle.speed.x; }  //Those are placeholders for tomorrow
         if(IsKeyDown(KEY_D)) { objs.paddle.pos.x += dT*objs.paddle.speed.x; }
-        if (IsKeyDown(KEY_SPACE)) { firstShot = 0; }
-        if (firstShot) { 
+        if (IsKeyDown(KEY_SPACE)) { objs.gameState.firstShot = 0; }
+        if (objs.gameState.firstShot) { 
             objs.ball.pos.x = objs.paddle.pos.x + objs.paddle.size.x/2;
             objs.ball.pos.y = objs.paddle.pos.y - objs.ball.radius; 
         }
@@ -362,6 +362,8 @@ void setObjects(Objects *objs, Config *cfg)
 
     objs->gameState = (GameState){cfg->playerLives, 0};
     objs->gameState.isGameOver = 0;
+    objs->gameState.firstShot = 1;
+
 
     for (size_t i = 0;i < BRICK_COLUMNS; i++) {
         for (size_t j = 0; j < BRICK_ROWS; j++) {
@@ -403,9 +405,9 @@ void resolveCollisions(Objects *objs)
         objs->ball.pos.x = objs->paddle.pos.x + (objs->paddle.size.x / 2.0f);
         objs->ball.pos.y = objs->paddle.pos.y - objs->ball.radius;
         objs->ball.vel = objs->ball.defaultVel;
-        
+        objs->gameState.firstShot = 1;
         if (objs->gameState.remainingLives <= 0) {
-            // Do shit
+            objs->gameState.isGameOver = 1;
         }
         return; 
     }

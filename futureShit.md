@@ -36,7 +36,7 @@ These may live in this repository or in a separate games repository. The aim is 
 
 - [ ] Create a Galaga clone. and I might connect this with Celestial Doppler Sim to make an partially physically accurate Galaga lol
 - [X] Create Pong. The online multiplayer/server flex is still pending. (and it'll wait for at least a year)
-- [ ] Rediscover Breakout.
+- [X] Rediscover Breakout.
 - [ ] Tetris (ofc Tetris duh)
 
 Yeah all retro... I am a retro guy, after all.
