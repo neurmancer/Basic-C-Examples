@@ -30,6 +30,7 @@
 
 /* ================== INCLUDES ===================== */
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -111,6 +112,7 @@ typedef struct{
     int isDestroyed;
     int powerUp;
 
+    int scoreVal; 
 }Brick;
 
 typedef struct{
@@ -207,11 +209,11 @@ int main(void)
     
     Config cfg = {
         .paddleSize = (Vector2){WIDTH/5, HEIGHT/50},
-        .paddleSpeed = WIDTH/4,   //Pixel/dT
+        .paddleSpeed = WIDTH/4,   //Pixel/s
         .paddleColor = WHITE,
 
 
-        .ballRadius = WIDTH/60,
+        .ballRadius = WIDTH/80,
         .ballVel = (Vector2){0,3*HEIGHT/10},
         .ballAccel = (Vector2){ 0 },
         .ballColor = WHITE,
@@ -226,6 +228,7 @@ int main(void)
     float dT = 0.0f;
     float accumulator = 0.0f; //substepping to prevent phasing (tunnelling type shit you get it)
     const float sliceTime = 1.0f / 240.0f;
+    int firstShot = 1;
 
     while (!WindowShouldClose()) {
         
@@ -236,6 +239,11 @@ int main(void)
         if (IsKeyPressed(KEY_ESCAPE)) { break;}
         if(IsKeyDown(KEY_A)) { objs.paddle.pos.x -= dT*objs.paddle.speed.x; }  //Those are placeholders for tomorrow
         if(IsKeyDown(KEY_D)) { objs.paddle.pos.x += dT*objs.paddle.speed.x; }
+        if (IsKeyDown(KEY_SPACE)) { firstShot = 0; }
+        if (firstShot) { 
+            objs.ball.pos.x = objs.paddle.pos.x + objs.paddle.size.x/2;
+            objs.ball.pos.y = objs.paddle.pos.y + objs.ball.radius; 
+        }
         //clamp shit
 
         if (objs.paddle.pos.x < 0) objs.paddle.pos.x = 0;
@@ -260,7 +268,6 @@ int main(void)
         drawObjects(&objs);
         EndDrawing();
     }
-    
 
 
     CloseWindow();
@@ -279,10 +286,11 @@ int setupEnv(void)
     }
 
     InitWindow(WIDTH, HEIGHT, TITLE);
+
     if (!IsWindowReady()) { return(-1); }
 
     if ((FPS < 0 || FPS > 300) && !VSYNC) { SetTargetFPS(120); }
-    else { SetTargetFPS(FPS); }
+    else if(!VSYNC){ SetTargetFPS(FPS); }
 
 
     return(0);
@@ -350,6 +358,9 @@ void setObjects(Objects *objs, Config *cfg)
             objs->bricks[j][i].color = randColor();
             objs->bricks[j][i].powerUp = 0;
             objs->bricks[j][i].isDestroyed = 0;
+            
+            if (rand() % 10 == 3) { objs->bricks[j][i].scoreVal = 2*cfg->scorePerBrick; }
+            else{ objs->bricks[j][i].scoreVal = cfg->scorePerBrick; }
         }
     }
     //I guess every fucking thing is settled but I HIGHLY DOUBT THAT THIS IS THE FUCKING RIGHT WAY
@@ -373,9 +384,8 @@ void resolveCollisions(Objects *objs)
         objs->ball.pos.y = objs->ball.radius;
         objs->ball.vel.y *= -1;
     }
-
-
-        if (objs->ball.pos.y + objs->ball.radius >= HEIGHT) {
+    // Bottom shit (life loss)
+    else if (objs->ball.pos.y + objs->ball.radius >= HEIGHT) {
         objs->gameState.remainingLives--;
         
         objs->ball.pos.x = objs->paddle.pos.x + (objs->paddle.size.x / 2.0f);
@@ -388,12 +398,11 @@ void resolveCollisions(Objects *objs)
         return; 
     }
 
-
     Rectangle paddleRect = { objs->paddle.pos.x, objs->paddle.pos.y, objs->paddle.size.x, objs->paddle.size.y };
+    
     if (CheckCollisionCircleRec(objs->ball.pos, objs->ball.radius, paddleRect)) {
         objs->ball.pos.y = objs->paddle.pos.y - objs->ball.radius;
         
-
         float ballSpeed = sqrtf((objs->ball.vel.x * objs->ball.vel.x) + (objs->ball.vel.y * objs->ball.vel.y));
         
         if (ballSpeed < 0.1f) ballSpeed = 5.0f; 
@@ -408,11 +417,11 @@ void resolveCollisions(Objects *objs)
         if (bounceAngleRad != -1) {
             objs->ball.vel.x = cosf(bounceAngleRad) * ballSpeed;
             objs->ball.vel.y = -sinf(bounceAngleRad) * ballSpeed;
-        } else {
+        } 
+        else {
             objs->ball.vel.y = -fabsf(objs->ball.vel.y);
         }
     }
-
 
     //Matris grid shit don't ask why...
     int col = (int)((objs->ball.pos.x - X_OFFSET) / BRICK_LENGTH) - 1;
@@ -424,10 +433,10 @@ void resolveCollisions(Objects *objs)
         //Bruh honestly? I should've gone with brute-force this LOGIC FUCKED ME 
         if (!targetBrick->isDestroyed) {
             Rectangle brickRect = { targetBrick->pos.x, targetBrick->pos.y, targetBrick->size.x, targetBrick->size.y };
-            
+    
             if (CheckCollisionCircleRec(objs->ball.pos, objs->ball.radius, brickRect)) {
                 targetBrick->isDestroyed = 1;
-                objs->gameState.score += 100;
+                objs->gameState.score += targetBrick->scoreVal; 
 
                 float overlapLeft   = (objs->ball.pos.x - targetBrick->pos.x);
                 float overlapRight  = (targetBrick->pos.x + targetBrick->size.x) - objs->ball.pos.x;
@@ -435,26 +444,43 @@ void resolveCollisions(Objects *objs)
                 float overlapBottom = (targetBrick->pos.y + targetBrick->size.y) - objs->ball.pos.y;
 
                 float minOverlap = overlapLeft;
-                int side = 0; 
+                int side = 0;
 
                 if (overlapRight < minOverlap)  { minOverlap = overlapRight;  side = 1; }
                 if (overlapTop < minOverlap)    { minOverlap = overlapTop;    side = 2; }
                 if (overlapBottom < minOverlap) { minOverlap = overlapBottom; side = 3; }
 
-                if (side == 0 || side == 1) {
-                    objs->ball.vel.x *= -1; 
-                } else {
-                    objs->ball.vel.y *= -1; 
+                switch (side){     
+                    case 0:
+                        objs->ball.pos.x = targetBrick->pos.x - objs->ball.radius;
+                        objs->ball.vel.x = -fabsf(objs->ball.vel.x); 
+                        break;
+                    
+                    case 1:
+                        objs->ball.pos.x = targetBrick->pos.x + targetBrick->size.x + objs->ball.radius;
+                        objs->ball.vel.x = fabsf(objs->ball.vel.x);
+                        break;
+
+                    case 2:
+                        objs->ball.pos.y = targetBrick->pos.y - objs->ball.radius;
+                        objs->ball.vel.y = -fabsf(objs->ball.vel.y);
+                        break;
+                        
+                    case 3:
+                        objs->ball.pos.y = targetBrick->pos.y + targetBrick->size.y + objs->ball.radius;
+                        objs->ball.vel.y = fabsf(objs->ball.vel.y);
+                        break;
+                    
+                    default:
+                        break;
                 }
             }
         }
     }
-}
+}   //Note to future-self: If I use this much parens IMMA FUCKING KILL MYSELF I'VE BEEN trying to solve }}}}} abomination for the last 15 minutes 
 
 
-
-void drawObjects(Objects *objs)
-{
+void drawObjects(Objects *objs) {
 
     for (size_t i = 0; i < BRICK_COLUMNS; i++) {
         for (size_t j = 0; j < BRICK_ROWS; j++) {
