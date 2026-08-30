@@ -185,7 +185,9 @@ typedef struct{
 /* ================= FUNCTION PROTOTYPES ==================== */
 
 void drawObjects(Objects *objs);
+void drawGameThingies(GameState *gameState);
 void setObjects(Objects *objs, Config *cfg);
+void gameOverScreen(void);
 
 void resolveCollisions(Objects *objs);
 void updatePositions(Objects *objs, float dT);
@@ -268,10 +270,13 @@ int main(void)
         BeginDrawing();
         ClearBackground(BLACK);
         if (!objs.gameState.isGameOver) {
+        
             drawObjects(&objs);
+            drawGameThingies(&objs.gameState);
         }
         else {
             //You sux at playing
+            gameOverScreen();
         }
 
         EndDrawing();
@@ -543,4 +548,23 @@ void updatePositions(Objects *objs, float dT)
     
     objs->ball.vel.x += objs->ball.accel.x * dT;
     objs->ball.vel.y += objs->ball.accel.y * dT;
+}
+
+
+void gameOverScreen(void)
+{
+    //This is the rushed part since IDGAF about the end part
+    DrawText("GAME OVER", (WIDTH*1.1f)/3 , (1.2*HEIGHT)/3 , 53.0f, WHITE);
+    DrawText("YOU sux", WIDTH/2, 2*HEIGHT/3 , 13.0f, WHITE);
+    DrawText("Press ESC to quit(there is no replay button)", 10, 10, 20, WHITE);
+}
+
+void drawGameThingies(GameState *gameState)
+{
+    const char *txt = TextFormat("Remaining Lives : %d ",gameState->remainingLives);
+    const char *score = TextFormat("Score: %d",gameState->score);
+    DrawText("A/D : Left/Right", 10, 10, 15, CLITERAL(Color){255,255,255,155});
+    DrawText("Space: Launch the ball", 10, 25, 15, CLITERAL(Color){255,255,255,155});
+    DrawText(txt, 10, 40, 15, CLITERAL(Color){255,255,255,155});
+    DrawText(score, 10, HEIGHT-30, 15 , CLITERAL(Color){255,255,255,155});
 }
