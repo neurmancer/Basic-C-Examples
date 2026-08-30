@@ -1,5 +1,7 @@
 /*
 
+                ================= YAPPING =================== 
+
         'Sup?...Today's fuckery is Fourier Epicycle visualizer (just finished (half-assed) the breakout clone) and 
         I need to code something stupid to gather my thoughts before diving into harder things...
         This raylib projects started to make me feel like a fraud since it's always same thing with different tones so...
@@ -94,7 +96,7 @@ int main(void)
 
 int setupEnv(void)
 {
-    
+    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_UNDECORATED | FLAG_WINDOW_ALWAYS_RUN);  
     InitWindow(WIDTH, HEIGHT, TITLE);
 
     if (!IsWindowReady()) { return(-1); }
