@@ -40,6 +40,11 @@
                 2- Be able to draw the given index thingy (vague because I still dunno how this dark sorcery shit works)
                 3- No promises: but custom .jpeg/.png upload suppor to draw the shit from the said .png
                 4- Go question life choices
+
+            Shit I know about what I need: 
+                0- Frequency needed (which is the whole fucking point of using DFT)
+                1- Amplitude is also needed. So if we vectorify (yeah I know I am concocting words) the re and im like a 2D vector the line would be the amp
+                2- Phase (or offset about where the circling begins) also on the to-do list. which is the angle (im/re) or tan(theta)
     */
 
 
@@ -59,7 +64,8 @@
 #define FPS 120 //No compile-time flags this time
 
 #define DFT_COS (cos(2.0*M_PI * (double) i * (double) j/(double) arrLen))   
-#define DFT_SIN (-sin(2.0*M_PI * (double) i * (double) j/(double) arrLen))  //To make my shit easier 
+#define DFT_SIN (-sin(2.0*M_PI * (double) i * (double) j/(double) arrLen))  //To make my shit easier  besides don't touch those or they'll haunt yo
+//Those defines are text substitudes so if you don't get what that implies DO NOT TOUCH (fucking gaslit texts)
 
 /* ================= OBJECTS ================= */
 
@@ -70,11 +76,19 @@ typedef struct{
 
 }complexNum;
 
+typedef struct{
+
+    complexNum z;   //a+bi
+    double amp;
+    double freq;
+    double phase;
+}dftData;
+
 /* =============== FUNCTION THINGIES ============ */
 
 int setupEnv(void);
 
-int dft(complexNum *input, complexNum *output , size_t arrLen);
+int dft(complexNum *input, dftData *output , size_t arrLen);
 
 //Changed the function: Now caller has to give input output and the arrLen themself, in case of invalid input returns -1
 
@@ -96,7 +110,11 @@ int main(void)
         height = HEIGHT;    
     }
 
-    complexNum *x = NULL;
+    complexNum *input = NULL;
+    dftData *output = NULL;
+    
+
+    //Well...now what?
 
     while (!WindowShouldClose()) {
         
@@ -167,32 +185,35 @@ int setupEnv(void)
     Lol now imagine what if I were to use FFT...the explanation would be:
 
     -   WTF is Fourier Transform
-    -   Why FFT is fast AF 
+    -   Why FFT is fast AF O(n*log(n))
     -   What is bit-reversal
     -   Why I chose iterate/recurse 
     -   What is Bluestein algorithm and chirp-z (since we need to handle non-radix2 input and native cooley-turkey is incapable of that)
 */
 
-int dft(complexNum *input, complexNum *output , size_t arrLen)
+int dft(complexNum *input, dftData *output , size_t arrLen)
 {
 
     //Mathing happens here
-    if (input == NULL) { return(-1); }
+    if (input == NULL || output == (void *)0) { return(-1); } //You weren't expecting (void *)0 right? Yeah neither did I...
 
-    complexNum temp = { 0 };
+
     for (size_t i = 0; i < arrLen; i++) {
-        
+        complexNum temp = { 0 };      
+
         for (size_t j = 0; j < arrLen; j++) {
             //This shit is what makes DFT O(n^2)
-            temp.re += input[i].re * DFT_COS; 
-            temp.im += input[i].im * DFT_SIN;
-            //Notice there is no 'i' in any of the DFT_COS and DFT_SIN macros because as I said 'i' is a delusion we ignore it (well that's not true but kinda is)
+            temp.re += input[j].re * DFT_COS; 
+            temp.im += input[j].im * DFT_SIN;    
         }
         //Normalizing the output 
         temp.re /= arrLen;
         temp.im /= arrLen;
         
-        output[i] = temp;
+        output[i].freq = i;
+        output[i].amp = sqrt((temp.re*temp.re)+(temp.im*temp.im));  //Pythogaras theorem ykr?
+        output[i].phase = atan2(temp.im, temp.re);  //I trust math.h with this one but it's basically atan(m), m = slope
+        output[i].z = temp;
     }
 
     return(0);
