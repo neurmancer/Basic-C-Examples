@@ -63,8 +63,9 @@
 
 #define FPS 120 //No compile-time flags this time
 
-#define DFT_COS (cos(2.0*M_PI * (double) i * (double) j/(double) arrLen))   
-#define DFT_SIN (-sin(2.0*M_PI * (double) i * (double) j/(double) arrLen))  //To make my shit easier  besides don't touch those or they'll haunt yo
+#define DFT_COS (cos(2.0*M_PI * (double)i * (double)j / (double)arrLen))
+#define DFT_SIN (sin(2.0*M_PI * (double)i * (double)j / (double)arrLen))
+//To make my shit easier  besides don't touch those or they'll haunt yo
 //Those defines are text substitudes so if you don't get what that implies DO NOT TOUCH (fucking gaslit texts)
 
 /* ================= OBJECTS ================= */
@@ -196,19 +197,19 @@ int dft(complexNum *input, dftData *output , size_t arrLen)
 
     //Mathing happens here
     if (input == NULL || output == (void *)0) { return(-1); } //You weren't expecting (void *)0 right? Yeah neither did I...
-
+    if (arrLen == 0) { return(-1); }
 
     for (size_t i = 0; i < arrLen; i++) {
         complexNum temp = { 0 };      
 
         for (size_t j = 0; j < arrLen; j++) {
             //This shit is what makes DFT O(n^2)
-            temp.re += input[j].re * DFT_COS; 
-            temp.im += input[j].im * DFT_SIN;    
+            temp.re += input[j].re * DFT_COS + input[j].im * DFT_SIN;
+            temp.im += input[j].im * DFT_COS - input[j].re * DFT_SIN;   
         }
         //Normalizing the output 
         temp.re /= arrLen;
-        temp.im /= arrLen;
+        temp.im /= arrLen;  //Yeah yeah...this 'belongs' to inverse-FT fuck you I need a normalized size for this
         
         output[i].freq = i;
         output[i].amp = sqrt((temp.re*temp.re)+(temp.im*temp.im));  //Pythogaras theorem ykr?
