@@ -192,6 +192,11 @@ int main(void)
 
 
     //Free shit right here
+    free(input);
+    free(output);
+    input = NULL;
+    output = NULL;
+    //Lmafao I forgot to free shit in the last commit then I just realized when I laid my head to bed and got up again to add those (it's 1.20AM)
     CloseWindow();
     return(0);
 }
