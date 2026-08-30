@@ -38,20 +38,27 @@
                 0- Get the DFT working 
                 1- Draw Shit on the screen (radius lines, circles and other shits that's required)
                 2- Be able to draw the given index thingy (vague because I still dunno how this dark sorcery shit works)
-                3- No promises: but custom .jpeg/.png upload suppor to draw the shit from the said .png
+                3- No promises: but custom .jpeg/.png upload suppor to draw the shit from the said .png (Not today bruh...that's a job for tomorrow)
                 4- Go question life choices
 
             Shit I know about what I need: 
                 0- Frequency needed (which is the whole fucking point of using DFT)
                 1- Amplitude is also needed. So if we vectorify (yeah I know I am concocting words) the re and im like a 2D vector the line would be the amp
                 2- Phase (or offset about where the circling begins) also on the to-do list. which is the angle (im/re) or tan(theta)
-    */
+    
+            
+            Well...I'm still confused but at least now there is random shit on screen...
+
+*/
 
 
 /* ====================== INCLUDES =================== */
 
+#include <stddef.h>
 #include <stdlib.h>     //Dynamic shit will get involved so...malloc it is 
-
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
 //flagged headers (add -lm -lraylib as you compile)
 #include <raylib.h> // To be able to see shit on screen
 #include <math.h>   //To math
@@ -63,7 +70,8 @@
 
 #define FPS 120 //No compile-time flags this time
 
-
+#define MAX_PATH 1000    //Trail stuff
+#define TIME_TWEAK 60.0f
 
 /* ================= OBJECTS ================= */
 
@@ -85,9 +93,9 @@ typedef struct{
 /* =============== FUNCTION THINGIES ============ */
 
 int setupEnv(void);
-
 int dft(complexNum *input, dftData *output , size_t arrLen);
-
+int compareAmp(const void *a, const void *b);   //For stdlib qsort thing
+Vector2 drawCycleThingies(Vector2 startPos, dftData *fourier, size_t N, float time);
 //Changed the function: Now caller has to give input output and the arrLen themself, in case of invalid input returns -1
 
 //For now it's caller's responsibilty to free the returned array I may change that to:
@@ -100,6 +108,8 @@ int dft(complexNum *input, dftData *output , size_t arrLen);
 int main(void)
 {
     if (setupEnv()) { return(-53); }
+
+    srand(time(NULL));  //To randomize the values
 
     int width = GetScreenWidth();
     int height = GetScreenHeight();
@@ -114,6 +124,42 @@ int main(void)
 
     //Fuck...well...now what?
     //C'mon...draw the things please
+    //Well...Let's do the thing when we don't know what to do(nope I am not talking about cussing...Add shit and see if it works)
+    const size_t N = 100;
+    input = (complexNum *)malloc(N*sizeof(complexNum));
+    output = (dftData *)malloc(N*sizeof(dftData));
+    if (input == NULL || output == NULL) { printf("SBRK SAID NOPE!\n"); return(-1); }
+
+    for (size_t i = 0; i < N; i++) {
+        input[i] = (complexNum){rand() % 500, rand() % 500};
+    }
+
+    double mean_re = 0.0, mean_im = 0.0;
+    for (size_t i = 0; i < N; i++) {
+        mean_re += input[i].re;
+        mean_im += input[i].im;
+    }
+    
+    mean_re /= N;
+    mean_im /= N;
+
+    for (size_t i = 0; i < N; i++) {
+        input[i].re -= mean_re;
+        input[i].im -= mean_im;
+    }
+    
+    dft(input, output, N);    
+
+    qsort(output, N, sizeof(dftData), compareAmp);
+
+    float time = 0.0f;
+    const float TWO_PI = 2.0f * PI; //Yeah I am THIS lazy
+
+
+    Vector2 path[MAX_PATH];
+    int pathLen = 0;
+
+    //Finally I'm able to draw Shit shit on screen...now I gotta be able to draw ANY shit I want on the screen...
 
     while (!WindowShouldClose()) {
         
@@ -121,6 +167,25 @@ int main(void)
         
         BeginDrawing();
         ClearBackground(BLACK);
+        Vector2 tip = drawCycleThingies((Vector2){(float) width/2.0f, (float) height/2.0f}, output, N, time);
+        // Add tip to the path
+        if (pathLen < MAX_PATH) {
+            path[pathLen++] = tip;
+        } else {
+            for (int i = 0; i < MAX_PATH-1; i++) path[i] = path[i+1];
+            path[MAX_PATH-1] = tip;
+        }
+
+        if (pathLen > 1) {
+            for (int i = 1; i < pathLen; i++) {
+                DrawLineV(path[i-1], path[i], WHITE);
+            }
+        }
+        time += TWO_PI / (float) (N * TIME_TWEAK);
+        if (time > TWO_PI) {
+            time = 0.0f;
+            pathLen = 0;
+        }
         EndDrawing();
     }
 
@@ -150,6 +215,17 @@ int setupEnv(void)
     return(0);
 }
 
+
+int compareAmp(const void *a, const void *b)
+{
+    const dftData *da = (const dftData *)a;
+    const dftData *db = (const dftData *)b;
+
+    // Descending order (biggest amplitude first)
+    if (da->amp < db->amp){ return(1); }
+    if (da->amp > db->amp){ return(-1); }
+    return(0);
+}
 
 /*
 
@@ -227,4 +303,27 @@ int dft(complexNum *input, dftData *output , size_t arrLen)
     #undef DFT_COS
     #undef DFT_SIN
     return(0);
+}
+
+
+Vector2 drawCycleThingies(Vector2 startPos, dftData *fourier, size_t N, float time)
+{
+    Vector2 pos = startPos;
+
+    for (size_t i = 0; i < N; i++) {
+        Vector2 lastPos = pos;
+
+        float freq = fourier[i].freq;
+        float amp = fourier[i].amp;
+        float phs = fourier[i].phase;
+
+        pos.x += amp*cosf(freq * time + phs);
+        pos.y += amp*sinf(freq * time + phs);
+        
+        DrawCircleLinesV(lastPos, amp, Fade(WHITE, 0.3f));
+        DrawLineV(lastPos, pos, WHITE);
+        //All black&white like a 3B1B video (Thx for existing Mr.Sanderson)
+
+    }
+    return(pos);
 }
