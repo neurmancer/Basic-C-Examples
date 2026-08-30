@@ -175,6 +175,8 @@
 
 > > Yet another Sierpinski's triangle using iteration (math was mildly more favorable in this one) 
 
+> > Fourier Epicycle Thingy(math was as usual...)
+
 ##### PI fuckery
 * <p>Yeah it needs its own sub-sub folder since I can't stop building estimators for π...(gamba addict) </p>
 

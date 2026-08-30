@@ -134,18 +134,18 @@ int main(void)
         input[i] = (complexNum){rand() % 500, rand() % 500};
     }
 
-    double mean_re = 0.0, mean_im = 0.0;
+    double meanRe = 0.0, meanIm = 0.0;
     for (size_t i = 0; i < N; i++) {
-        mean_re += input[i].re;
-        mean_im += input[i].im;
+        meanRe += input[i].re;
+        meanIm += input[i].im;
     }
     
-    mean_re /= N;
-    mean_im /= N;
+    meanRe /= N;
+    meanIm /= N;
 
     for (size_t i = 0; i < N; i++) {
-        input[i].re -= mean_re;
-        input[i].im -= mean_im;
+        input[i].re -= meanRe;
+        input[i].im -= meanIm;
     }
     
     dft(input, output, N);    
