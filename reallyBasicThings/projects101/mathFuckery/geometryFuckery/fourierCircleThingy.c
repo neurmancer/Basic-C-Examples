@@ -63,10 +63,7 @@
 
 #define FPS 120 //No compile-time flags this time
 
-#define DFT_COS (cos(2.0*M_PI * (double)i * (double)j / (double)arrLen))
-#define DFT_SIN (sin(2.0*M_PI * (double)i * (double)j / (double)arrLen))
-//To make my shit easier  besides don't touch those or they'll haunt yo
-//Those defines are text substitudes so if you don't get what that implies DO NOT TOUCH (fucking gaslit texts)
+
 
 /* ================= OBJECTS ================= */
 
@@ -115,7 +112,8 @@ int main(void)
     dftData *output = NULL;
     
 
-    //Well...now what?
+    //Fuck...well...now what?
+    //C'mon...draw the things please
 
     while (!WindowShouldClose()) {
         
@@ -141,6 +139,8 @@ int setupEnv(void)
 {
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_UNDECORATED | FLAG_WINDOW_ALWAYS_RUN);  
     InitWindow(WIDTH, HEIGHT, TITLE);
+
+    
 
     if (!IsWindowReady()) { return(-1); }
     
@@ -176,9 +176,11 @@ int setupEnv(void)
     and if you don't wanna get trigo to be involved you can use cexp() from complex.h but that's not my cup of tea
     
     One last thing: Fourier Transform 'under math conditions' is an integration which has dx (an infinitesimally small change on x) but since we are using 
-    computers and this shit is real life and infinity is basically  math nerds' wet dream..we use discrete fourier transform 
+    computers and this shit is real life and infinity is basically  math nerds' wet dream I mean fuck you mean numbers between 0-1 is as infinite as 0-well...infinity?..we use discrete fourier transform 
 
     The minus symbol is required for forward Fourier Transform (if you forget you'll get inverse fourier transform) 
+    Yeah I could've said 'Minus sign is requires to convert time domain to frequency domain and positive means frequency domain to time domain which is inverse fourier transform' 
+    but the shit is - = input->output and + = output -> input  
 
     So math class is over we can continue with DFT lol...
 
@@ -194,6 +196,12 @@ int setupEnv(void)
 
 int dft(complexNum *input, dftData *output , size_t arrLen)
 {
+
+    #define DFT_COS (cos(2.0*M_PI * (double)i * (double)j / (double)arrLen))
+    #define DFT_SIN (sin(2.0*M_PI * (double)i * (double)j / (double)arrLen))
+
+    //To make my shit easier  besides don't touch those or they'll fuck you
+    //Those defines are text substitudes so if you don't get what that implies DO NOT TOUCH (fucking gaslit texts)
 
     //Mathing happens here
     if (input == NULL || output == (void *)0) { return(-1); } //You weren't expecting (void *)0 right? Yeah neither did I...
@@ -216,6 +224,7 @@ int dft(complexNum *input, dftData *output , size_t arrLen)
         output[i].phase = atan2(temp.im, temp.re);  //I trust math.h with this one but it's basically atan(m), m = slope
         output[i].z = temp;
     }
-
+    #undef DFT_COS
+    #undef DFT_SIN
     return(0);
 }
