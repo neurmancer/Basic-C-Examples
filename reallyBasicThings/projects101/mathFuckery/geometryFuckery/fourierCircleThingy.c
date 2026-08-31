@@ -38,7 +38,7 @@
                 0- Get the DFT working 
                 1- Draw Shit on the screen (radius lines, circles and other shits that's required)
                 2- Be able to draw the given index thingy (vague because I still dunno how this dark sorcery shit works)
-                3- No promises: but custom .jpeg/.png upload suppor to draw the shit from the said .png (Not today bruh...that's a job for tomorrow)
+                3- No promises: but custom .jpeg/.png upload suppor to draw the shit from the said .png (FUCK this I ain't using OpenCV)
                 4- Go question life choices
 
             Shit I know about what I need: 
@@ -48,12 +48,15 @@
     
             
             Well...I'm still confused but at least now there is random shit on screen...
-
+                    =================== THIS PROJECT IS FINISHED ==================
+                
+                but same code will occur in PI fuckery subfolder as an visual proof that  why the fuck is PI irrational (never closing loop type shit)
 */
 
 
 /* ====================== INCLUDES =================== */
 
+#include <iso646.h>
 #include <stddef.h>
 #include <stdlib.h>     //Dynamic shit will get involved so...malloc it is 
 #include <stdio.h>
@@ -125,13 +128,15 @@ int main(void)
     //Fuck...well...now what?
     //C'mon...draw the things please
     //Well...Let's do the thing when we don't know what to do(nope I am not talking about cussing...Add shit and see if it works)
-    const size_t N = 100;
+    
+    size_t N = 256;
+
     input = (complexNum *)malloc(N*sizeof(complexNum));
     output = (dftData *)malloc(N*sizeof(dftData));
     if (input == NULL || output == NULL) { printf("SBRK SAID NOPE!\n"); return(-1); }
 
-    for (size_t i = 0; i < N; i++) {
-        input[i] = (complexNum){rand() % 500, rand() % 500};
+    for (size_t i = 0 ; i < N; i++) {
+        input[i] = (complexNum){rand()%500, rand()%500};
     }
 
     double meanRe = 0.0, meanIm = 0.0;
