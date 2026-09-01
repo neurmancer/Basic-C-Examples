@@ -145,7 +145,7 @@ int main(void)
             send(clientFD,http_response,strlen(http_response),0);
             printf("Works till here\n");
             FILE *indexFD = fopen("frontEnd/index.html","r");
-            char c = 0;
+            int c = 0; //Why int instead of char for a getc() loop? 'Cuz EOF is defined as -1 FOR SOME FUCKING REASON. GO ask Dennis why not me
             while ((c = getc(indexFD)) != EOF) {
                 int sentData = send(clientFD,&c,sizeof(c), 0);
         
