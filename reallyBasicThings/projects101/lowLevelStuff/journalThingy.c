@@ -17,6 +17,38 @@
         Now...I gotta put this to somewhere in /usr/local/bin or something and make a .service file...man...THAT'S LITERALLY PAPERWORK
         anyways let me learn what to do in /etc/systemd/prime_deamon.service
 
+
+
+        here is the .service file will get into /etc/sytemd/yourShit.service
+
+
+
+    [Unit]
+    Description=Prime Number Daemon (because why not)
+    After=network.target
+
+    [Service]
+    Type=simple
+    ExecStart=/usr/local/bin/prime_daemon
+    Restart=on-failure
+    RestartSec=5
+    StandardOutput=journal
+    StandardError=journal
+
+    [Install]
+    WantedBy=multi-user.target
+
+    and then let the systemd handle the rest
+
+    btw I am confident to put those in my own filesystem because...well I created the fucking thing but from another person's POV: DO NOT FUCKING COPY-PASTE THOSE
+    SUDO SHIT WITHOUT INSPECTING THE CODE YOURSELF
+
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl enable prime_daemon
+    sudo systemctl start prime_daemon
+    journalctl -u prime_daemon -f
+    ``` (yeah I am using markdown formatting in a C comment I lost my mind)
 */
 
 
