@@ -270,7 +270,7 @@
 ### Other Low-Level Stuff
 > - A mainless C file that you can run (for no apperant reason)
 > - Buffer oveflow for lulz. 
-
+> - A system deamon that spits out prime numbers to journalctl (if you turn the progam to a deamon duh...)(And yeah I know my ideas are getting repetitve)
 ---
 
 ## Retro Shit
