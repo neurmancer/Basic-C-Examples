@@ -56,7 +56,7 @@ int main(void)
     unsigned int allegedlyPrime = 0;
     while (flag && allegedlyPrime < UINT_MAX ) {
         if (isPrime(allegedlyPrime)) {
-            printf("Here is your prime bruh: %d\n",allegedlyPrime);
+            printf("Here is your prime bruh: %u\n",allegedlyPrime);
         }
         allegedlyPrime++;
         usleep(SECOND*0.5);
