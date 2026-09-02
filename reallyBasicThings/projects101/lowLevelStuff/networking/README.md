@@ -31,6 +31,7 @@ This readme exists for classification sake or I'll loose my mind dwelling into f
 
 - and I refuse to learn front-end shit such as HTML,CSS or JS so I'll probably yoink front-end material or beg for my friend to create some for me 
 
+> Template for 1.c (Intro for networking) added
 
 
 
@@ -38,7 +39,6 @@ This readme exists for classification sake or I'll loose my mind dwelling into f
 > You may find the files listed down here in the subfolder 'projects' (unless I rename it then you gotta look for the new version...) 
 >
 > A HTTP TCP Server in Raw C with sockets (**Will be developed further when I learn more shit**) and an index.html for testing (my max capability is that in front-end don't judge...or do IDC)
->
 >
 >
 >
