@@ -27,6 +27,7 @@
         I need this server since my ideas keep getting bigger and bigger and I need a fucking tracker of those
         What's next coding my own issue-tracker? (tho that would work...AND THIS IS THE REASON THAT I NEED A TO-DO APP)
 
+        and I'll be using snake_case to feel like a real C programmer this time
 
         Started working on this at: 3 September 2026 00.42AM - Planned Due Date:Hopefully before 2027  
 */
