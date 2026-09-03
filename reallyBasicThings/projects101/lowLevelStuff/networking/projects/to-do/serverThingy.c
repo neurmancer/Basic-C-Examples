@@ -61,7 +61,8 @@
         This version -now- relabily? relaiblylyl(yeah I cant't fucking spell) work with html files with local todo folder creation
 
         As the scope creep suggests, this project will continue on a separate repo for advencements...
-        I'll put it's link here when the repo gets created : *Placeholder Lulz*
+        I'll put it's link here when the repo gets created : *Placeholder Lulz*, but before future updates on this one,
+        I'll be making my own malloc using sbrk() to distract myself...
 
         And yeah corpo-like project gets corpo-like attitude 
 */
