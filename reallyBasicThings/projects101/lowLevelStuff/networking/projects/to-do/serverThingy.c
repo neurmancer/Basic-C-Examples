@@ -322,7 +322,7 @@ void send_homepage(int client_socket)
         }
     }
 
-    const char *bottom = "</body>\n</html>\n";  //Bruh hand-rolling HTMLL is fucking exhausting
+    const char *bottom = "</body>\n</html>\n";  //Bruh hand-rolling HTML is fucking exhausting
     send(client_socket, bottom, strlen(bottom), 0);
 }
 
@@ -480,7 +480,7 @@ void handle_post(int client_socket, char *body)
 {
 
     //Handling the POST seems like having a problem
-    /*Current suspects:
+    /*Current suspects(allegedly):
         1-This function itself
         2- url_decode() call in this function
     */
@@ -488,10 +488,12 @@ void handle_post(int client_socket, char *body)
     char *todo_begins = strstr(body, "todo=");
     //Yeah this is a Batman Begins joke
     if (!todo_begins) {
-        send_homepage(client_socket);
+        //When I try to create anything it redirects here which waits hanging...WHYYYYYYYY
+        send_homepage(client_socket);   //Yup when I change this with send_404() it goes there but not to homepage...
+        //Besides why function goes here...My parsing is fucked up?
         return;
     }
-
+    //printf("Unless\n?"); This line never got exectured
     todo_begins += 5;
     char *todo_returns = strpbrk(todo_begins, "&\r\n");
     
@@ -501,7 +503,7 @@ void handle_post(int client_socket, char *body)
     */
 
     if (todo_returns) { *todo_returns = '\0'; }
-
+    printf("This ain't working");
     url_decode(todo_begins);
 
     printf(">>> New shit dropped: %s\n",todo_begins);
@@ -519,6 +521,7 @@ void handle_delete(int client_socket, char *body)
 {
 
     char *id_start = strstr(body, "id=");
+    if (id_start == NULL) { return;/*This null here 'cuz test purposes I guess...my brain gave up*/ }
     if (id_start) { *id_start = '\0'; }
 
     url_decode(id_start);
