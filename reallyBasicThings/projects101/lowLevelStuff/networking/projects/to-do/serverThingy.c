@@ -55,13 +55,13 @@
 
 
 //Headers that I know why here (at least for my initila draft)
-#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/ucontext.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <time.h>
 #include <sys/errno.h>  
 #include <err.h>    //Yeah now we're in BSD territory
@@ -73,8 +73,6 @@
 #define PORT 8080
 #define BACKLOG 10 //This time I know this isn't overkill for bind lol
 #define BUF_SIZE 8192   //Two-pages of bytes are good yk...
-
-#define TODO_DIR "todos" //Yeah I am future-proofing my typos
 
 //These gonna bite me in the ass when I wanna change the infrastructure to .db
 void send_404(int client_socket);
@@ -100,7 +98,6 @@ int main(void)
     int server_sock = 0, client_sock = 0;
     struct sockaddr_in server_addr = { 0 }, client_addr = { 0 }; 
 
-    const int TODO_DIR_LEN = sizeof(TODO_DIR);
     socklen_t client_len = sizeof(client_addr);
     
     /*
@@ -122,7 +119,7 @@ int main(void)
 
     int opt = 1;
 
-    mkdir(TODO_DIR, 0755);    //I guess that was the 'Fuck it everybody can see it but only I CAN touch it' mode in octal
+    mkdir("todos", 0755);    //I guess that was the 'Fuck it everybody can see it but only I CAN touch it' mode in octal
     //For Future Neuro: This shit will use getenv to get $HOMe then crate .folder (invisible) so I don't get distracted by 218937218 html files
     //But first let serve a fucking html 
 
@@ -216,8 +213,8 @@ int main(void)
             //Had I known Python instead of C... 
         }
 
-        else if (strncmp(path, "/"TODO_DIR"/", TODO_DIR_LEN+2) == 0) {
-            send_todo_page(client_sock,path+TODO_DIR_LEN+2); //if I forget those slashes that's gonna fuck me bad
+        else if (strncmp(path, "/todos/", strlen("/todos/")) == 0) {
+            send_todo_page(client_sock,path+strlen("/todos/")); //if I forget those slashes that's gonna fuck me bad
         }
 
         else {
@@ -280,7 +277,7 @@ void send_homepage(int client_socket)
     
     send(client_socket, top, strlen(top), 0);
 
-    DIR *dir = opendir(TODO_DIR);
+    DIR *dir = opendir("todos");
     //Again will swap with $HOME/.todo 
     
     if (dir) {
@@ -294,7 +291,7 @@ void send_homepage(int client_socket)
             if (strstr(entry->d_name, ".html") == NULL) { continue; }
 
             char fpath[512] = { 0 };
-            snprintf(fpath, sizeof(fpath), TODO_DIR"/%s", entry->d_name);
+            snprintf(fpath, sizeof(fpath), "todos/%s", entry->d_name);
             
             char title[512] = { 0 };    //This is an overflow waiting to happen(stack vars are the last thing I trust)
             FILE *file = fopen(fpath, "r"); //Should I use read-binary? No clue
@@ -481,6 +478,13 @@ void handle_update(int client_socket, char *body)
 //I wonder what happens if I put [[gnu::noreturn]] instead of void lol
 void handle_post(int client_socket, char *body)
 {
+
+    //Handling the POST seems like having a problem
+    /*Current suspects:
+        1-This function itself
+        2- url_decode() call in this function
+    */
+
     char *todo_begins = strstr(body, "todo=");
     //Yeah this is a Batman Begins joke
     if (!todo_begins) {
