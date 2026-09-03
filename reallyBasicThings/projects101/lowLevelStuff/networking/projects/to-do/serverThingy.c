@@ -44,6 +44,13 @@
         this shit is getting out of hand
 
 
+        Well...After roughly ~18 hours of development I've tried the beta version and here are my findings:
+            1- site is indeed accessible on http://localhost:8080 when you run it
+            2- You can create a todo once (YOLO) 
+            3- The second time I've tried it didn't create anything and fucked the site without re-routing
+            4- Trying to look into todo subroutes gives you 404 despite file name appears to be matching with the url
+            5- I am confused and exhausted...
+
 */
 
 
@@ -53,6 +60,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/ucontext.h>
 #include <unistd.h>
 #include <time.h>
 #include <sys/errno.h>  
@@ -269,6 +277,8 @@ void send_homepage(int client_socket)
         "    <button type=\"submit\">Create</button>\n"
         "  </form>\n"
         "  <h2>Your todos</h2>\n";
+    
+    send(client_socket, top, strlen(top), 0);
 
     DIR *dir = opendir(TODO_DIR);
     //Again will swap with $HOME/.todo 
@@ -318,6 +328,91 @@ void send_homepage(int client_socket)
     const char *bottom = "</body>\n</html>\n";  //Bruh hand-rolling HTMLL is fucking exhausting
     send(client_socket, bottom, strlen(bottom), 0);
 }
+
+void send_todo_page(int client_socket, const char *filename)
+{
+    char filepath[512];
+    snprintf(filepath, sizeof(filepath), "todos/%s", filename);
+
+    FILE *f = fopen(filepath, "r");
+    if (!f) {
+        send_404(client_socket);
+        return;
+    }
+
+    char filebuf[8192] = {0};
+    fread(filebuf, 1, sizeof(filebuf) - 1, f);
+    fclose(f);
+
+    // Try to extract clean text
+    char content[4096] = {0};
+
+    // Case 1: old format (full HTML with <p style=...>)
+    char *start = strstr(filebuf, "<p style=\"font-size: 22px;\">");
+    if (start) {
+        start += strlen("<p style=\"font-size: 22px;\">");
+        char *end = strstr(start, "</p>");
+        if (end) {
+            size_t len = end - start;
+            if (len > sizeof(content) - 1) len = sizeof(content) - 1;
+            strncpy(content, start, len);
+            content[len] = '\0';
+        }
+    }
+
+    // Case 2: new format (pure text) or extraction failed
+    if (content[0] == '\0') {
+        // Just take the whole file, but cut it if it's too long
+        strncpy(content, filebuf, sizeof(content) - 1);
+    }
+
+    // Send headers
+    const char *header =
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html\r\n"
+        "Connection: close\r\n\r\n";
+    send(client_socket, header, strlen(header), 0);
+
+    // Build clean page
+    char page[16384];
+    snprintf(page, sizeof(page),
+        "<!DOCTYPE html>\n"
+        "<html>\n"
+        "<head>\n"
+        "  <meta charset=\"UTF-8\">\n"
+        "  <title>Edit Todo</title>\n"
+        "  <style>\n"
+        "    body { font-family: sans-serif; background: #111; color: #eee; padding: 40px; max-width: 700px; margin: 0 auto; }\n"
+        "    textarea { width: 100%%; height: 150px; padding: 14px; font-size: 16px; border-radius: 8px; border: 1px solid #444; background: #1a1a1a; color: #eee; resize: vertical; }\n"
+        "    button { padding: 11px 20px; margin-right: 10px; margin-top: 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; }\n"
+        "    .save { background: #4CAF50; color: white; }\n"
+        "    .delete { background: #e74c3c; color: white; }\n"
+        "    a { color: #4CAF50; text-decoration: none; }\n"
+        "    a:hover { text-decoration: underline; }\n"
+        "  </style>\n"
+        "</head>\n"
+        "<body>\n"
+        "  <h1>Edit Todo</h1>\n"
+        "  <form action=\"/update\" method=\"POST\">\n"
+        "    <input type=\"hidden\" name=\"id\" value=\"%s\">\n"
+        "    <textarea name=\"content\">%s</textarea>\n"
+        "    <br>\n"
+        "    <button type=\"submit\" class=\"save\">Save</button>\n"
+        "  </form>\n"
+        "  <form action=\"/delete\" method=\"POST\" style=\"display:inline;\">\n"
+        "    <input type=\"hidden\" name=\"id\" value=\"%s\">\n"
+        "    <button type=\"submit\" class=\"delete\">Delete</button>\n"
+        "  </form>\n"
+        "  <br><br>\n"
+        "  <a href=\"/\">← Back to all todos</a>\n"
+        "</body>\n"
+        "</html>\n",
+        filename, content, filename
+    );
+
+    send(client_socket, page, strlen(page), 0);
+}
+
 
 void handle_update(int client_socket, char *body)
 {
@@ -416,11 +511,52 @@ void handle_post(int client_socket, char *body)
     send(client_socket, redirect, strlen(redirect), 0);
 }
 
+void handle_delete(int client_socket, char *body)
+{
+
+    char *id_start = strstr(body, "id=");
+    if (id_start) { *id_start = '\0'; }
+
+    url_decode(id_start);
+
+    char filepath[512] = { 0 };
+    snprintf(filepath, sizeof(filepath), "todos/%s", id_start);
+
+    if (remove(filepath) == 0) {
+        printf("Deleted: %s\n",filepath);
+    }
+    else {
+        perror("You CAN'T GET RID OF ME");
+    }
+
+    const char *redirect =
+        "HTTP/1.1 303 See Other\r\n"
+        "Location: /\r\n"
+        "Connection: close\r\n\r\n";
+    send(client_socket, redirect, strlen(redirect), 0);
+}
+
+
 void create_todo_file(const char *content)
 {
 
+    static int counter = 0;
+    time_t now = time(NULL);    //Lol using this without srand() wrapping it feels WRONG
 
-    
+    char filename[256] = { 0 }; //Second idea: use /dev/urandom
+    snprintf(filename, sizeof(filename), "todos/%ld_%d.html", now,counter++);
+    //I presume counter++ won't cause UB but we'll see 
+
+    FILE *file = fopen(filename, "w");
+    if (!file) {
+        perror("Syscall gods have spoken");
+        return;
+    }
+
+    fprintf(file, "%s", content);
+    fclose(file);
+
+    printf("Created: %s\n",filename);
 }
 
 void url_decode(char *str)
