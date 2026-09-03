@@ -40,8 +40,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
-#include <sys/errno.h>
-#include <err.h>
+#include <sys/errno.h>  
+#include <err.h>    //Yeah now we're in BSD territory
 //Headers that I have no fucking idea about
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -49,6 +49,7 @@
 
 #define PORT 8080
 #define BACKLOG 10 //This time I know this isn't overkill for bind lol
+#define BUF_SIZE 8192   //Two-pages of bytes are good yk...
 
 
 int main(void)
@@ -117,11 +118,55 @@ int main(void)
     }
 
         printf("Server is running on http://localhost:%d\n", PORT);
-    /*
     while (1) {
-      This is where I need to read more shit...man I need a fucking Ouija Board and talk with Dennis for a few mins 
-    }
+        client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &client_len);
+        if (client_sock == -1) {
+            perror("Faith has spoken");
+            continue;
+        }
+        char buf[BUF_SIZE] = { 0 };
+        ssize_t bytes = recv(client_sock, buf, sizeof(buf)-1, 0);
+    
+    /*
+        RETURN VALUE
+            Upon  successful  completion, recv() shall return the length of the message in bytes. If no
+            messages are available to be received and the  peer  has  performed  an  orderly  shutdown,
+            recv() shall return 0. Otherwise, -1 shall be returned and errno set to indicate the error.
+                
+            so...I gotta handle both 0 and -1 I guess
     */
+
+        if (bytes <= 0 ) {
+            close(client_sock);
+            continue;
+        }
+        
+        char method[16] = { 0 };
+        char path[512] = { 0 };
+        sscanf(buf, "%15s %511s", method, path);    
+        //I mean you should know this at this point but %is means scanf reads i bytes and prevents overflow
+
+        printf("Request: %s %s\n", method, path);
+
+        if (strcmp(method, "POST") == 0)  {
+            char *body = strstr(buf, "\r\n\r\n");
+            /*
+            DESCRIPTION
+    
+                strstr() finds the first occurrence of the substring needle in the string haystack.
+                Brooo...haystack? Needle? which cursed person chose the names? 
+                This is way shitpostier than my names
+            */
+            
+            if (body) {
+                body += 4;
+                //This is where I need to make the helper funcitons
+            }
+        
+        }
+
+    }
+
 
 
     return(0);
