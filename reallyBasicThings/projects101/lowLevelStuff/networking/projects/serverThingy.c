@@ -43,6 +43,7 @@
         AND FIRST TO-DO IN THE LIST will be 'Make your own web-framework' 
         this shit is getting out of hand
 
+
 */
 
 
@@ -203,11 +204,11 @@ int main(void)
 
         else if (strcmp(path, "/") == 0 || strcmp(path, "/index.html") == 0) {
             send_homepage(client_sock);
-            //yeah this could just an after thougt like an @app.route decorator...
+            //yeah this could've been just an after thougt like an @app.route decorator...
             //Had I known Python instead of C... 
         }
 
-        else if (strncmp(path, "/"TODO_DIR"/", TODO_DIR_LEN+2)) {
+        else if (strncmp(path, "/"TODO_DIR"/", TODO_DIR_LEN+2) == 0) {
             send_todo_page(client_sock,path+TODO_DIR_LEN+2); //if I forget those slashes that's gonna fuck me bad
         }
 
@@ -262,7 +263,7 @@ void send_homepage(int client_socket)
         "  </style>\n"
         "</head>\n"
         "<body>\n"
-        "  <h1>Todo Ghetto App</h1>\n"
+        "  <h1>Neuro's Cyberspace™</h1>\n"
         "  <form action=\"/\" method=\"POST\">\n"
         "    <input type=\"text\" name=\"todo\" placeholder=\"What do you need to do?\" required>\n"
         "    <button type=\"submit\">Create</button>\n"
@@ -364,5 +365,31 @@ void handle_post(int client_socket, char *body)
     
     send(client_socket, redirect, strlen(redirect), 0);
 
+}
 
+
+
+
+
+
+void url_decode(char *str)
+{
+    char *src = str;
+    char *dst = str;    //classic <string.h> notation
+
+    while (*src) {
+        if (*src == '+') {
+            *dst++ = ' ';
+            src++;
+        }
+
+        else if(*src == '%' && src[1] && src[2]) {
+            char hex[3] = {src[1], src[2], '\0'};
+            *dst++ = (char)strtol(hex, NULL, 16); //Hexadecimal
+            src += 3;
+        }
+
+        else { *dst++ = *src++; }  
+    }
+    *dst = '\0'; //U forget that = U fuked
 }
