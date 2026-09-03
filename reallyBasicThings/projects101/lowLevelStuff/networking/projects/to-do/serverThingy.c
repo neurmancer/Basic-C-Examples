@@ -1,6 +1,8 @@
 /*
 
 
+        ============================= YAPPING ===========================
+
     'Sup? I've returned with yet another network fuckery 
     (local network till I learn how to make this shit world-wide but on the bright side: You can't get hacked if you are not on the internet)
     So I present you the idea of To-Do server so yeah I am making a Fucking CRUD app despite being a low-level gremlin
@@ -51,6 +53,17 @@
             4- Trying to look into todo subroutes gives you 404 despite file name appears to be matching with the url
             5- I am confused and exhausted...
 
+
+        Future update 11PM, Same Day:
+            Well...I found the bug (it was race condition and my reliance (is that a word?No fucking clue) on recv()) solved it with a 
+            mildly les cursed way of getting Content-Length and fixed the cursed delete handler as well as a few minor changes in update handler
+
+        This version -now- relabily? relaiblylyl(yeah I cant't fucking spell) work with html files with local todo folder creation
+
+        As the scope creep suggests, this project will continue on a separate repo for advencements...
+        I'll put it's link here when the repo gets created : *Placeholder Lulz*
+
+        And yeah corpo-like project gets corpo-like attitude 
 */
 
 
@@ -159,71 +172,86 @@ int main(void)
 
         printf("Server is running on http://localhost:%d\n", PORT);
     while (1) {
+
         client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &client_len);
         if (client_sock == -1) {
             perror("Faith has spoken");
             continue;
         }
-        char buf[BUF_SIZE] = { 0 };
-        ssize_t bytes = recv(client_sock, buf, sizeof(buf)-1, 0);
-    
-    /*
-        RETURN VALUE
-            Upon  successful  completion, recv() shall return the length of the message in bytes. If no
-            messages are available to be received and the  peer  has  performed  an  orderly  shutdown,
-            recv() shall return 0. Otherwise, -1 shall be returned and errno set to indicate the error.
-                
-            so...I gotta handle both 0 and -1 I guess
-    */
 
-        if (bytes <= 0 ) {
+        char buf[BUF_SIZE] = {0};
+        ssize_t bytes = recv(client_sock, buf, sizeof(buf)-1, 0);
+        if (bytes <= 0) {
             close(client_sock);
             continue;
         }
-        
-        char method[16] = { 0 };
-        char path[512] = { 0 };
-        sscanf(buf, "%15s %511s", method, path);    
-        //I mean you should know this at this point but %is means scanf reads i bytes and prevents overflow
+
+        buf[bytes] = '\0';
+
+        char method[16] = {0};
+        char path[512] = {0};
+        sscanf(buf, "%15s %511s", method, path);
 
         printf("Request: %s %s\n", method, path);
 
-        if (strcmp(method, "POST") == 0)  {
-            char *body = strstr(buf, "\r\n\r\n");
-            /*
-            DESCRIPTION
-    
-                strstr() finds the first occurrence of the substring needle in the string haystack.
-                Brooo...haystack? Needle? which cursed person chose the names? 
-                This is way shitpostier than my names
-            */   
-            if (body) {
-                body += 4;
-                //This is where I need to make the helper funcitons
+        if (strcmp(method, "POST") == 0) {
 
-                if (strcmp(path, "/update") == 0) { handle_update(client_sock, body); }
-                else if (strcmp(path, "/delete") == 0) { handle_delete(client_sock, body); }
-                else { handle_post(client_sock, body); }
+            char *header_end = strstr(buf, "\r\n\r\n");
+            
+            if (!header_end) {
+                close(client_sock);
+                continue;
+            }
+            header_end += 4;
+
+            //Content-Length getting attempt vol:1928491
+            int content_length = 0;
+            char *cl = strstr(buf, "Content-Length:");
+            if (cl) {
+                sscanf(cl, "Content-Length: %d", &content_length);
+            }
+
+            
+            int already_have = bytes - (header_end - buf);
+
+            // If don't have the full body yet read EVERYTHING
+            if (content_length > 0 && already_have < content_length) {
+                int remaining = content_length - already_have;
+                if (remaining > 0 && (header_end + already_have + remaining) < (buf + BUF_SIZE - 1)) {
+                    ssize_t more = recv(client_sock, header_end + already_have, remaining, 0);
+                    if (more > 0) {
+                        already_have += more;
+                        header_end[already_have] = '\0';
+                    }
+                }
+            }
+
+            char *body = header_end;
+
+
+            printf("=== FULL BODY (len=%d) ===\n[%s]\n=========================\n", already_have, body);
+
+            if (strcmp(path, "/update") == 0) {
+                handle_update(client_sock, body);
+            } else if (strcmp(path, "/delete") == 0) {
+                handle_delete(client_sock, body);
+            } else {
+                handle_post(client_sock, body);
             }
         }
 
         else if (strcmp(path, "/") == 0 || strcmp(path, "/index.html") == 0) {
             send_homepage(client_sock);
-            //yeah this could've been just an after thougt like an @app.route decorator...
-            //Had I known Python instead of C... 
         }
-
-        else if (strncmp(path, "/todos/", strlen("/todos/")) == 0) {
-            send_todo_page(client_sock,path+strlen("/todos/")); //if I forget those slashes that's gonna fuck me bad
+        
+        else if (strncmp(path, "/todos/", 7) == 0) {
+            send_todo_page(client_sock, path + 7);
         }
-
-        else {
-            send_404(client_sock);
-        }
+        
+        else { send_404(client_sock); }
 
         close(client_sock);
     }
-
 
     close(server_sock);
     return(0);
@@ -256,7 +284,7 @@ void send_homepage(int client_socket)
         "<head>\n"
         "  <meta charset=\"UTF-8\">\n"
         "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-        "  <title>Todo App</title>\n"
+        "  <title>Neuro's Cyberspace™</title>\n"
         "  <style>\n"
         "    body { font-family: sans-serif; background: #111; color: #eee; max-width: 700px; margin: 40px auto; padding: 20px; }\n"
         "    input[type=text] { width: 70%%; padding: 12px; font-size: 16px; border: none; border-radius: 6px; }\n"
@@ -425,7 +453,7 @@ void handle_update(int client_socket, char *body)
 
     id_start += 3;
 
-    char *id_end = strpbrk(content_start, "&\r\n");
+    char *id_end = strpbrk(id_start, "&\r\n");
 
     if (id_end) { *id_end = '\0'; }
     url_decode(id_start);
@@ -489,14 +517,20 @@ void handle_post(int client_socket, char *body)
     //Yeah this is a Batman Begins joke
     if (!todo_begins) {
         //When I try to create anything it redirects here which waits hanging...WHYYYYYYYY
-        send_homepage(client_socket);   //Yup when I change this with send_404() it goes there but not to homepage...
-        //Besides why function goes here...My parsing is fucked up?
+        const char *redirect =
+                    "HTTP/1.1 303 See Other\r\n"
+                    "Location: /\r\n"
+                    "Connection: close\r\n\r\n";
+        
+        send(client_socket, redirect, strlen(redirect), 0);
         return;
     }
+
+
     //printf("Unless\n?"); This line never got exectured
     todo_begins += 5;
     char *todo_returns = strpbrk(todo_begins, "&\r\n");
-    
+
     /*
     The  strpbrk() function locates the first occurrence in the string s of any of the bytes in
         the string accept.
@@ -521,9 +555,20 @@ void handle_delete(int client_socket, char *body)
 {
 
     char *id_start = strstr(body, "id=");
-    if (id_start == NULL) { return;/*This null here 'cuz test purposes I guess...my brain gave up*/ }
-    if (id_start) { *id_start = '\0'; }
+    if (!id_start) { 
+        const char *redirect =
+                "HTTP/1.1 303 See Other\r\n"
+                "Location: /\r\n"
+                "Connection: close\r\n\r\n";
 
+        send(client_socket, redirect, strlen(redirect), 0);    
+        return;/*This null here 'cuz test purposes I guess...my brain gave up*/ 
+    }
+
+    id_start += 3;
+
+    char *id_end = strpbrk(id_start, "&\r\n");
+    if (id_end) { *id_end = '\0'; }
     url_decode(id_start);
 
     char filepath[512] = { 0 };
