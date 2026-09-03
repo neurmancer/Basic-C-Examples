@@ -66,7 +66,7 @@
 #define BACKLOG 10 //This time I know this isn't overkill for bind lol
 #define BUF_SIZE 8192   //Two-pages of bytes are good yk...
 
-#define TODO_DIR "todoThingies" //Yeah I am future-proofing my typos
+#define TODO_DIR "todos" //Yeah I am future-proofing my typos
 
 //These gonna bite me in the ass when I wanna change the infrastructure to .db
 void send_404(int client_socket);
@@ -331,6 +331,56 @@ void handle_update(int client_socket, char *body)
         return;
     }
 
+    id_start += 3;
+
+    char *id_end = strpbrk(content_start, "&\r\n");
+
+    if (id_end) { *id_end = '\0'; }
+    url_decode(id_start);
+
+    content_start += 8;
+    char *content_end = strpbrk(content_start, "&\r\n");
+    if (content_end) { *content_end = '\0'; }
+    
+    url_decode(content_start);
+    
+    char fpath[512] = { 0 };
+    snprintf(fpath, sizeof(fpath), "todos/%s", id_start);
+    
+    FILE *file = fopen(fpath, "w");
+
+    if (file) {
+        fputs(content_start, file);
+        //Btw I never used file fputs or fopen I usually force-close stdout with dup2 to use printf to print shit into files...so this is new to me either
+        fclose(file);
+        printf("Updated: %s\n",fpath);
+    }
+
+    char location[512] = { 0 };
+
+    snprintf(location, sizeof(location), "Location: /todos/%s\r\n", id_start);
+
+    /*
+    
+        Dev Blog Time!!!!! (Yeah I know you wanna hear me yap another 40 lines so here you go)
+
+        First it's 7PM of the same day...I've been working on this for roughly ~13 hours...
+        Yeah I know...pathetic, still don't have a working CRUD app 
+        but new ideas occured while I've been working on this so here is a To-do list...in...source code...of a To-Do List...
+        I've been wanting to fuck with libcurl for a while now and I found out something called ntfy
+        (https://github.com/binwiederhier/ntfy <- here is the repo) and wanna use that to extend my working env
+        I'll probably won't get into curl in this file but idea is getting notified on my phone when I create/delete a to-do 
+        And knowing myself...probably that's gonna get a way cursed project on the way    
+    */
+
+    char redirect[1024];
+    snprintf(redirect, sizeof(redirect),
+        "HTTP/1.1 303 See Other\r\n"
+        "%s"
+        "Connection: close\r\n\r\n", location);
+
+    send(client_socket, redirect, strlen(redirect), 0);
+
 }
 
 //I wonder what happens if I put [[gnu::noreturn]] instead of void lol
@@ -364,13 +414,14 @@ void handle_post(int client_socket, char *body)
         "Connection: close\r\n\r\n";
     
     send(client_socket, redirect, strlen(redirect), 0);
-
 }
 
+void create_todo_file(const char *content)
+{
 
 
-
-
+    
+}
 
 void url_decode(char *str)
 {
