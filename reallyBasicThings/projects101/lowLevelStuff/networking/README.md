@@ -29,10 +29,7 @@ This readme exists for classification sake or I'll loose my mind dwelling into f
 
 - Empty for now (as you can see) I'll probably start taking notes (since networking is something related to CS more than C itself) and I'll give you my notes as PDF in a subfolder called 'Notes' (thx...mr obvious)  
 
-- and I refuse to learn front-end shit such as HTML,CSS or JS so I'll probably yoink front-end material or beg for my friend to create some for me 
-
-> Template for 1.c (Intro for networking) added
-
+- and I refuse to learn front-end shit such as HTML,CSS or JS so I'll probably yoink front-end material or beg for my friend to create some for me
 
 
 ### Making Shit Up
@@ -40,7 +37,7 @@ This readme exists for classification sake or I'll loose my mind dwelling into f
 >
 > A HTTP TCP Server in Raw C with sockets (**Will be developed further when I learn more shit**) and an index.html for testing (my max capability is that in front-end don't judge...or do IDC)
 >
->
+> A To-Do app. (As a proof of concept) _Will continue its development journey in another repo_
 >
 >
 >
