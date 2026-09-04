@@ -266,7 +266,9 @@
 
 > - _**Networking**_ Files has their own [README](/reallyBasicThings/projects101/lowLevelStuff/networking/README.md) in the networking subfolder for lecture descritions this part will only be used to display my cursed projects 
 > - A basic HTTP TCP server using sockets (pure C...no external libs) **Will be Developed Further**
-> - A fucking CRUD app (yeah I've become a suit whatever in a C repo, there is no place for a CRUD app I knowwwww)
+> - A fucking CRUD app (yeah I've become a suit whatever. in a C repo, there is no place for a CRUD app I knowwwww)
+
+--- 
 ### Other Low-Level Stuff
 > - A mainless C file that you can run (for no apperant reason)
 > - Buffer oveflow for lulz. 
