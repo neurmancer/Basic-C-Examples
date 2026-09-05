@@ -14,13 +14,17 @@
 *       2-And esentials of DSA for doubly linked lists (I guess...haven't started writing a single line of code yet) 
 *
 *       Here we descend...
-*
+*       
+*       Sources are: this blog: https://levelup.gitconnected.com/malloc-is-not-magic-implementing-my-own-memory-allocator-e0354e914402
+*       And ofc for syscalls man pages as always
 * */
 
 
-
+#include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h> //This file is to ditch you out bro sorry... but you're here to watch your funeral 
+#include <string.h>
 #include <unistd.h>
 
 /* If we go full low level we'll GO FULL LOW LEVEL 
@@ -62,22 +66,22 @@
 #endif 
 
 struct free_sectors {
-  uint8_t marker;
-  struct free_sectors *prev;  //As I said you need to have a rough understanding of doubly linked lists
-  bool in_use; 
-  uint32_t length;
-  struct free_sectors *next;
+    uint8_t marker;
+    struct free_sectors *prev;  //As I said you need to have a rough understanding of doubly linked lists
+    bool in_use; 
+    uint32_t length;
+    struct free_sectors *next;
 };
 
 //Btw I won't use typedef on those structs...cuz yk...we're going low-low-low-level so we're following Linus's convetion about those structs
 
 
 struct stats{
-  int dope_bytes; //4 bytes
-  uint32_t block_amount;  //4 bytes
-  uint16_t page_amount; //2 bytes
-  bool lock;  //1 byte 
-  
+    int dope_bytes; //4 bytes
+    uint32_t block_amount;  //4 bytes
+    uint16_t page_amount; //2 bytes
+    bool lock;  //1 byte 
+    
 };
 
 //You know shit's getting seriouser when your shit invokes magical bytes  -John Carmack (Quake type shit)
@@ -88,8 +92,12 @@ const int PAGE_SIZE = 4096; //FUCKING FINALLY I'VE USED 4096 FOR REALLY PAGE REL
 
 int8_t *heap_begins = NULL;
 
-struct free_sectors *find_last_block();
+//Debug tools
+void debug_log(const char *msg);
 
+struct free_sectors *find_last_block();
+struct free_sectors *find_previous_used_block(struct free_sectors *ptr);
+struct stats *get_malloc_header(void);
 int *so_this_is_malloc(ssize_t size); //doesn't malloc return (void *) implement first, question next ig...
 
 int main(void)
@@ -97,35 +105,68 @@ int main(void)
 
 
 
-  return(0);
+    return(0);
+}
+
+void debug_log(const char *msg)
+{
+    write(STDOUT_FILENO, msg, strlen(msg));
 }
 
 
+struct stats *get_malloc_header(void)
+{
+
+    assert(heap_begins != NULL);  //Prints shit to stderr then calls abort()
+    struct stats *malloc_header = (struct stats *)heap_begins;
+    
+    assert(malloc_header->dope_bytes == DOPE_BYTES);
+    return(malloc_header);
+}
+
+
+struct free_sectors *find_previous_used_block(struct free_sectors *ptr)
+{
+    struct free_sectors *mov_ptr = ptr;
+
+    while (mov_ptr->prev != NULL) {
+        mov_ptr = mov_ptr->prev;
+        if (mov_ptr->in_use) {
+            return(mov_ptr);
+        }
+    }
+    return(NULL);
+}
+
+struct free_sectors *find_first_block(void)
+{
+    struct stats *malloc_header = get_malloc_header();
+    return((struct free_sectors *)((int8_t *)malloc_header + sizeof(struct stats)));
+}
 
 int *so_this_is_malloc(ssize_t size)
 {
-  if (heap_begins == NULL)
-  {
-    heap_begins = sbrk(0);
-    if (heap_begins == (void *)-1) {
-      perror("Yup...sbrk throwing a tantrum rn...");
+    if (heap_begins == NULL)
+    {
+        heap_begins = sbrk(0);
+        if (heap_begins == (void *)-1) {
+        perror("Yup...sbrk throwing a tantrum rn...");
+        }
+
+        if (sbrk(PAGE_SIZE) == (void *)-1) {
+        perror("Bruh you won't believe me but this time sbrk really said NOPE!");
+        }
     }
 
-    if (sbrk(PAGE_SIZE) == (void *)-1) {
-      perror("Bruh you won't believe me but this time sbrk really said NOPE!");
+    int8_t *heap_end = sbrk(0);
+    if (heap_end == (void *)-1) {
+        perror("Sbrk...");
     }
-  }
 
-  int8_t *heap_end = sbrk(0);
-  if (heap_end == (void *)-1) {
-    perror("Sbrk...");
-  }
+    int64_t len = heap_end - heap_begins;
 
-  int64_t len = heap_end - heap_begins;
-
-  if ((*heap_begins) != DOPE_BYTES) {
-    (*heap_begins) = DOPE_BYTES;
-    //Yeah I'm calling it a night it's almsot 00AM again...
-  }
-
+    if ((*heap_begins) != DOPE_BYTES) {
+        (*heap_begins) = DOPE_BYTES;
+        //Yeah I'm calling it a night it's almsot 00AM again...
+    }
 }
