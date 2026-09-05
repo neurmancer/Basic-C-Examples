@@ -34,6 +34,16 @@ int main(void)
     char c = 'A';
 
     print_it("Let's test the whole zoo\nint: %d\nfloat: %f\nchar: %c\nString: %s",x,y,c,string);
+
+    /*
+        Now the second part I wanna look at...
+        before this part you may use it without any flags but if you wanna uncomment this you need to use 
+        clang print_it.c -o your_output -fwritable-strings 
+        string[0] = 'i';
+        Normally char * are stored in .rodata (read only) but this clang flag allows you to chage that and yeah that was the 
+        second thing that I wanted to try out
+    */
+    
     //as expected float has a rounding error (.529999) it was an expected outcome  
     return(0);
 }  
