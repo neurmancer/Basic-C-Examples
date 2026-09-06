@@ -242,7 +242,7 @@
 
 > **None-functional Attempt files** (whether not compiling or fucking your kernel they'll be here)
 
-> - [Kernel Drivers](/reallyBasicThings/projects101/lowLevelStuff/kernelStuff/notWorking/)
+> - [Failed Attempts](/reallyBasicThings/projects101/lowLevelStuff/kernelStuff/notWorking/)
 <br>
 
 > - First failed attempt added(using TLDP's old sources)
@@ -250,7 +250,7 @@
 
 > **Functional Files**
 
-> - [Kernel Drivers](/reallyBasicThings/projects101/lowLevelStuff/kernelStuff/working/)
+> - [WOrking(Allegedly) Attempts](/reallyBasicThings/projects101/lowLevelStuff/kernelStuff/working/)
 <br>
 
 > - Non-failed second modern-attempt with no tutorial (I'll add shit in the future let me learn first TnT) 
@@ -273,6 +273,8 @@
 > - A mainless C file that you can run (for no apperant reason)
 > - Buffer oveflow for lulz. 
 > - A system deamon that spits out prime numbers to journalctl (if you turn the progam to a deamon duh...)(And yeah I know my ideas are getting repetitve)
+> - A printf() implementation (print_it)
+> - malloc implementation (_WIP_)
 ---
 
 ## Retro Shit
@@ -284,7 +286,6 @@
 - CRT/VHS filter (SUMMONS CTHULHU **DO NOT APPROACH**) __ABONDENED__
 - Atari Breakout Clone
 - Galaga (_Not started to work on yet_)
-
 ---
 
 ## Funny Things
