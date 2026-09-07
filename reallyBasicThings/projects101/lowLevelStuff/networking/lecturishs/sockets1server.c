@@ -45,6 +45,6 @@ int main(void)
     send(cli_sock, str, strlen(str), 0);
     printf("Sent a msg to cli\n");
     if(close(sd) == -1) { perror("Close fucked..."); return(-1); }
-
+    if (close(cli_sock) == -1) { perror("Client still here tho"); return(-1); }
     return(0);
 }

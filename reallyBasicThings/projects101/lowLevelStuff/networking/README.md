@@ -27,10 +27,8 @@ This readme exists for classification sake or I'll loose my mind dwelling into f
 
 ### Learning shit
 
-- Empty for now (as you can see) I'll probably start taking notes (since networking is something related to CS more than C itself) and I'll give you my notes as PDF in a subfolder called 'Notes' (thx...mr obvious)  
-
-- and I refuse to learn front-end shit such as HTML,CSS or JS so I'll probably yoink front-end material or beg for my friend to create some for me
-
+- Added basic client-server connection with sockets
+- Added more basic HTTP stuff with client&server POVs
 
 ### Making Shit Up
 > You may find the files listed down here in the subfolder 'projects' (unless I rename it then you gotta look for the new version...) 
