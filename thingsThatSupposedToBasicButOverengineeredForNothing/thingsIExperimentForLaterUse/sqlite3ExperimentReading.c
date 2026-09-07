@@ -45,7 +45,7 @@ int main(void)
         
         printf("%-5d | %-20s\n", id, name);
     }
-
+        //FUCK YEAH IT  WORKS!!!! 
     sqlite3_finalize(res);
     sqlite3_close(db);
     return(0);
