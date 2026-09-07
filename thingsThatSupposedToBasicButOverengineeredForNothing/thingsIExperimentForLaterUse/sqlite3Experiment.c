@@ -17,14 +17,14 @@ int main(void)
     
     rc = sqlite3_open(cwd, &db);
     if (rc != SQLITE_OK) {
-        fprintf(stderr, "Veritabanı açılamadı: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Db can not be opened: %s\n", sqlite3_errmsg(db));
         sqlite3_close(db);
         return(-1);
     }
     const char *create_sql = "CREATE TABLE IF NOT EXISTS People(Id INT, Name TEXT);";
     rc = sqlite3_exec(db, create_sql, 0, 0, NULL);
     if (rc != SQLITE_OK) {
-        fprintf(stderr, "Tablo oluşturma hatası: %s\n", sqlite3_errmsg(db));
+        fprintf(stderr, "Table creation fuck up: %s\n", sqlite3_errmsg(db));
         sqlite3_close(db);
         return(-1);
     }
@@ -37,16 +37,16 @@ int main(void)
         sqlite3_bind_text(res, 2, "Thea", -1, SQLITE_STATIC);
     }
     else {
-        fprintf(stderr, "Sorgu hazırlanamadı: %s (Kod: %d)\n", sqlite3_errmsg(db), rc);
+        fprintf(stderr, "problem: %s (Code: %d)\n", sqlite3_errmsg(db), rc);
         sqlite3_close(db); 
         return(-1);
     }
 
     rc = sqlite3_step(res);
     if (rc != SQLITE_DONE) {
-        fprintf(stderr, "Ekleme başarısız: %s (Kod: %d)\n", sqlite3_errmsg(db), rc);
+        fprintf(stderr, "damn: %s (Code: %d)\n", sqlite3_errmsg(db), rc);
     } else {
-        printf("Veri başarıyla eklendi!\n");
+        printf("Successfully added!\n");
     }
 
     sqlite3_finalize(res);
