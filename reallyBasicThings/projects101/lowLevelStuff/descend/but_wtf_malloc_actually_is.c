@@ -1,5 +1,5 @@
 /*
-*
+*                   ====== THIS PROJECT IS ON STAND-BY UNTIL FURTHER NOTICE =====   (I am getting side-tracked by the todo server)
 *
 *
 *       'Sup? What's today's low-level fuckery? wriitng malloc using ancient scrolls (sbrk) before building a VM and understand virtual memory to do the same shit using 
