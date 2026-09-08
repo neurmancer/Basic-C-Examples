@@ -127,7 +127,7 @@ void put_int(int num)
 
 void putf(float n)
 {
-    int precision = 6;  //Lol like DnD session
+    int precision = 6;  //Lol like a DnD session
     if (n < 0) {
         put_char('-');
         n*=-1;

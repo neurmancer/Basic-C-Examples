@@ -147,6 +147,8 @@ n *example2(int);
 //my primary motivation to use camelCase for functions is making them distinguishable from raylib.h functions which are using PascalCase such as:
 //  IsKeyPressed(int Key) 
 
+//Future update: Low-level stuff and CLI tools will use snake_case for vars too but for raylib camelCase is still the meta
+
 
 /*MAIN*/
 
