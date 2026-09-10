@@ -53,12 +53,12 @@
 typedef struct{
     //Well...what should I put here again?
 
-    float th1, th2; //Theta 1 and theta 2 (angles)
+    float th1, th2; //Theta 1 and theta 2 (angles) (btw I'll be following the notation given below)
     float dTh1, dTh2;   //First deriv. of angles (angular velo)
     float ddTh1, ddTh2; //Second deriv of angles (first deriv of angular vel (angualar accel))
     
     float m1,m2;    //Masses
-    float l1,l2;    //Line 
+    float l1,l2;    //Rod lengths  
     float gravity; //You know what gravity is right? 
 
 }Physics;    //as the giant nerd yapping down here suggests we need both balls affecting each other's movement so keeping physics separate make sense I guess
@@ -218,7 +218,7 @@ Well...I am feeling too smart and too fucking dumb at the same time rn... Who wo
 //That's it I guess
 /* =================== FUNCTION PROTOTYPES ==================*/
 
-void drawThingies(Pendulum *pend, Physics *engine);
+void drawThingies(Entities *ent);
 void setStage(Entities *ent, Config *cfg);
 int setEnv(void);
 
@@ -251,11 +251,16 @@ int main(void)
         .engineCfg.m2 = 15.f,        
     };
 
+    Entities objs = { 0 };
+
+    setStage(&objs, &cfg);
+
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { break; }
  
         BeginDrawing();
         ClearBackground(BLACK);
+        drawThingies(&objs);
         EndDrawing();
     }
 
@@ -266,22 +271,32 @@ int main(void)
 
 void setStage(Entities *ent, Config *cfg)
 {
-    //This will do shit
+    ent->engine = cfg->engineCfg;
+    for (int i = 0; i < 2; i++) {
+        ent->pend[i] = cfg->pendCfg[i];
+    }
 
-
-
-    return;
 }
 
-void drawThingies(Pendulum *pend, Physics *engine)
+void drawThingies(Entities *ent)
 {
     //TO future me: Please separate(and yeah I finally learned how to spell separate) this shit from draw function current me fucking function purity 
-    pend->line.endPos = (Vector2){pend->line.startPos.x + pend->line.len * sinf(engine->th1), pend->line.startPos.y + pend->line.len * cosf(engine->th1)};
-    pend->ball.pos = pend->line.endPos; //the line linked exactly to the center of the ball for now(might change)
+    ent->pend[0].line.endPos = (Vector2){ent->pend[0].line.startPos.x + ent->pend[0].line.len * sinf(ent->engine.th1),
+    ent->pend[0].line.startPos.y + ent->pend[0].line.len * cosf(ent->engine.th1)};
+    ent->pend[0].ball.pos = ent->pend[0].line.endPos; //the line linked exactly to the center of the ball for now(might change)
+
+    ent->pend[1].line.startPos = ent->pend[0].ball.pos;
+    ent->pend[1].line.endPos = (Vector2){ent->pend[1].line.startPos.x + ent->pend[1].line.len * sinf(PI/6),
+    ent->pend[1].line.startPos.y + ent->pend[1].line.len * cosf(PI/12)};
+    ent->pend[1].ball.pos = ent->pend[1].line.endPos; //the line linked exactly to the center of the ball for now(might change)
 
 
-    DrawLineEx(pend->line.startPos, pend->line.endPos, 2.5f, SHE_LOVES_PURPLE);
-    DrawCircleV(pend->ball.pos, pend->ball.radius, SO_DO_I);
+    
+    for (int i = 0; i < 2; i++) {
+
+        DrawLineEx(ent->pend[i].line.startPos, ent->pend[i].line.endPos, 2.5f, ent->pend[i].ball.color);
+        DrawCircleV(ent->pend[i].ball.pos, ent->pend[i].ball.radius, ent->pend[i].ball.color);
+    }
 }
 
 
