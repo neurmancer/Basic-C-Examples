@@ -45,7 +45,7 @@
 
 // Object defines
 #define BALL_RADIUS (13.53f)
-
+#define LINE_THICKNESS (3.5)
 
 /* ====================== OBJECTS ============================= */
 
@@ -220,6 +220,7 @@ Well...I am feeling too smart and too fucking dumb at the same time rn... Who wo
 
 void drawThingies(Entities *ent);
 void setStage(Entities *ent, Config *cfg);
+void math(Physics *eng);
 int setEnv(void);
 
 
@@ -234,19 +235,17 @@ int main(void)
         .pendCfg[0].ball.radius = BALL_RADIUS,
         .pendCfg[0].line.startPos = (Vector2){(float)WIDTH/2, (float)HEIGHT/3},
         .pendCfg[0].line.endPos = { 0 },
-        .pendCfg[0].line.len = (float)HEIGHT/12,
         .pendCfg[0].line.color = SO_DO_I,
         .pendCfg[1].ball.color = SO_DO_I,
         .pendCfg[1].ball.pos = { 0 },
         .pendCfg[1].ball.radius = BALL_RADIUS,
         .pendCfg[1].line.startPos = (Vector2){(float)WIDTH/2, (float)(2*HEIGHT)/3},
         .pendCfg[1].line.endPos = { 0 },
-        .pendCfg[1].line.len = (float)HEIGHT/12,
         .pendCfg[1].line.color = SHE_LOVES_PURPLE,
         .engineCfg = { 0 },
         .engineCfg.gravity = 9.8f,
-        .engineCfg.l1 = 10.f,
-        .engineCfg.l2 = 13.53f,
+        .engineCfg.l1 = 90.f,
+        .engineCfg.l2 = 53.13f,
         .engineCfg.m1 = 30.f,
         .engineCfg.m2 = 15.f,        
     };
@@ -275,7 +274,8 @@ void setStage(Entities *ent, Config *cfg)
     for (int i = 0; i < 2; i++) {
         ent->pend[i] = cfg->pendCfg[i];
     }
-
+    ent->pend[0].line.len = ent->engine.l1;
+    ent->pend[1].line.len = ent->engine.l2;
 }
 
 void drawThingies(Entities *ent)
@@ -292,13 +292,27 @@ void drawThingies(Entities *ent)
 
 
     
-    for (int i = 0; i < 2; i++) {
-
-        DrawLineEx(ent->pend[i].line.startPos, ent->pend[i].line.endPos, 2.5f, ent->pend[i].ball.color);
+    for (int i = 1; i >= 0; i--) {
+        //To 
+        DrawLineEx(ent->pend[i].line.startPos, ent->pend[i].line.endPos, 3.5f, ent->pend[i].ball.color);
         DrawCircleV(ent->pend[i].ball.pos, ent->pend[i].ball.radius, ent->pend[i].ball.color);
     }
 }
 
+void math(Physics *eng)
+{
+    //Bruh...this feels like defusing a bomb...one misplaced parenthesis and your sim is fucked
+    //any future reader: those are text substitues if you don't know what that implies please do not fuck with defines
+    #define NUMARATOR (-eng->gravity*((2*eng->m1+eng->m2)*sinf(eng->th1) - eng->m2*eng->gravity*sinf(eng->th1-2*eng->th2) - 2*sinf(eng->th1 - eng->th2) * eng->m2*(eng->dTh2*eng->dTh2*eng->l2 + eng->dTh1*eng->dTh1*eng->l1*cosf(eng->th1 - eng->th2))))
+    #define DENOMINATOR (eng->l1 * (2*eng->m1+eng->m2-eng->m2*cosf(2*eng->th1-2*eng->th2)))
+    if (!DENOMINATOR) {
+        return;
+    }
+    eng-> ddTh1 = NUMARATOR / DENOMINATOR;  //FUUUUUUUUUUUUUUUUUUUUUUUUCK
+
+    #undef NUMARATOR
+    #undef DENOMINATOR
+}
 
 int setEnv(void)
 {
