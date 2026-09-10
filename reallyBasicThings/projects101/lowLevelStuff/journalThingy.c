@@ -1,5 +1,5 @@
 /*
-        'Sup? Today's episode of 'How to disappoint Ghost of Dennis Ritchie' we're fucking with JournalCTL...
+        'Sup? Welcome to today's episode of 'How to disappoint Ghost of Dennis Ritchie' we're fucking with JournalCTL...
         Reason is simple...My dwm was able to spit primes but my hyprland setup doesn't play nice with X11. 
         But it has a fancy screen to show journalctl -n 200 -auto-refresh thingies...so let's put primes in there
 
