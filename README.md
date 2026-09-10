@@ -187,7 +187,10 @@
 
 > > - Estimating π with Monte Carlo Square and Circle type shit 
 
+> > - Estiamting π with Leibniz formula for π
+
 > > - Calculating π using two boxes and collision (yk...the 3Blue1Brown video)
+
 
 > > - **Spoiler Alert**:Next π fuckery will be, Ramanujan-type series for calculating _1/π_
 
@@ -221,6 +224,8 @@
 > > N Body(Particle) Simulation with Newtonian Gravity (using raylib.h)
 
 > > Added a Basic Frictionless Environment Pendulum (yeah after those two this is nothing appealing IK)
+
+> > Yet another pendulum but this time it's **doubled** the trouble!
 
 ---
 

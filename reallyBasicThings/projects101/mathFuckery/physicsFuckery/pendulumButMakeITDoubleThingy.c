@@ -38,17 +38,22 @@
 #define HEIGHT 960
 #define TITLE "Strings and Balls Thingy"
 
-#ifndef FPS 
-    #define FPS 120
-#endif
 
 //Color defines
 #define SHE_LOVES_PURPLE CLITERAL(Color){191, 0, 255,255}
 #define SO_DO_I CLITERAL(Color){153, 102, 204,255}
-
+#define RED_AF CLITERAL(Color){53,0,13,255}
 // Object defines
-#define BALL_RADIUS (13.53f)
+#define BALL_RADIUS (33.3f)
 #define LINE_THICKNESS (3.5)
+
+#ifndef FPS 
+    #define FPS 120
+#endif
+
+#ifndef SIM_SPEED
+    #define SIM_SPEED 2.5f
+#endif
 
 /* ====================== OBJECTS ============================= */
 
@@ -98,6 +103,10 @@ typedef struct{
     Physics engineCfg;
 
 }Config;
+
+typedef struct {
+    float th1, th2, dTh1, dTh2;
+} State;
 
 //and here is the fun shit... wtf fuck is the formula
 /*
@@ -223,8 +232,12 @@ Well...I am feeling too smart and too fucking dumb at the same time rn... Who wo
 
 void drawThingies(Entities *ent);
 void setStage(Entities *ent, Config *cfg);
-void math(Physics *eng);
+void rk4Step(Physics *engine, float dt);
+void updatePositions(Entities *ent);
 int setEnv(void);
+
+
+State math(State s, Physics *eng);
 
 
 int main(void)
@@ -233,42 +246,45 @@ int main(void)
     if (setEnv()) { perror("Blame raylib bruh"); return(-53); }
 
 
-    Config cfg = { 
-        .pendCfg[0].ball.color = SHE_LOVES_PURPLE,
-        .pendCfg[0].ball.pos = { 0 },
-        .pendCfg[0].ball.radius = BALL_RADIUS,
-        .pendCfg[0].line.startPos = (Vector2){(float)WIDTH/2, (float)HEIGHT/3},
-        .pendCfg[0].line.endPos = { 0 },
-        .pendCfg[0].line.color = SO_DO_I,
-        .pendCfg[1].ball.color = SO_DO_I,
-        .pendCfg[1].ball.pos = { 0 },
-        .pendCfg[1].ball.radius = BALL_RADIUS,
-        .pendCfg[1].line.startPos = (Vector2){(float)WIDTH/2, (float)(2*HEIGHT)/3},
-        .pendCfg[1].line.endPos = { 0 },
-        .pendCfg[1].line.color = SHE_LOVES_PURPLE,
-        .engineCfg.th1 = GetRandomValue(-90, 90)*DEG2RAD,
-        .engineCfg.th2 = GetRandomValue(-90, 90)*DEG2RAD,
-        .engineCfg.gravity = 9.8f,
-        .engineCfg.l1 = 90.f,
-        .engineCfg.l2 = 53.13f,
-        .engineCfg.m1 = 30.f,
-        .engineCfg.m2 = 15.f,        
-        .engineCfg.dTh1 = 0,
-        .engineCfg.dTh2 = 0,
-        .engineCfg.ddTh1 = 0,
-        .engineCfg.ddTh2 = 0,
-    };
+Config cfg = {
+    .engineCfg = {
+        .m1 = 20.0f,
+        .m2 = 10.0f,
+        .l1 = 250.0f,
+        .l2 = 200.0f,
+        .gravity = 9.81f * 80.0f,  
+        .th1 = GetRandomValue(-120, 120) * DEG2RAD,   
+        .th2 = GetRandomValue(-120, 120) * DEG2RAD,
+        .dTh1 = 0.0f,
+        .dTh2 = 0.0f,
+        .ddTh1 = 0.0f,
+        .ddTh2 = 0.0f
+    },
+    .pendCfg[0] = {
+        .line = { (Vector2){WIDTH/2.0f, 80.0f}, {0}, 0, RED_AF },
+        .ball = { {0}, BALL_RADIUS, SO_DO_I }
+    },
+    .pendCfg[1] = {
+        .line = { {0}, {0}, 0, RED_AF },
+        .ball = { {0}, BALL_RADIUS * 0.75f, SHE_LOVES_PURPLE }
+    }
+};
+
     //Btw I never mentioned that but designated initilizers are a C99+ feature so if your standard is C89 or ISO-C compile with -std=c99 and some people say c99 is buggy but I didn't encounter such thing yet tho
 
 
     Entities objs = { 0 };
 
     setStage(&objs, &cfg);
-    printf("%f\n%f\n%f\n%f\n",objs.engine.th1,objs.engine.th2,objs.engine.dTh1,objs.engine.dTh2);
-    //No exectution lol
+    
+    float dt = 0;
     while (!WindowShouldClose()) {
+        dt = GetFrameTime();
         if (IsKeyPressed(KEY_ESCAPE)) { break; }
-        math(&objs.engine);
+
+        rk4Step(&objs.engine, SIM_SPEED*dt);
+        updatePositions(&objs);
+
         BeginDrawing();
         ClearBackground(BLACK);
         drawThingies(&objs);
@@ -282,62 +298,96 @@ int main(void)
 
 void setStage(Entities *ent, Config *cfg)
 {
-    //I'll re-write the entire function and main config...
+
+    ent->engine = cfg->engineCfg;
+
+    for (int i = 0; i < 2; i++) {
+        ent->pend[i].ball.color  = cfg->pendCfg[i].ball.color;
+        ent->pend[i].ball.radius = cfg->pendCfg[i].ball.radius;
+        ent->pend[i].line.color  = cfg->pendCfg[i].line.color;
+    }
+
+    ent->pend[0].line.startPos = (Vector2){ WIDTH / 2.0f, 80.0f };
+
+    updatePositions(ent);
 }
 
 void drawThingies(Entities *ent)
 {
-    
+    Vector2 last_pos[2] = { 0 };
     for (int i = 1; i >= 0; i--) {
-        //To 
-        DrawLineEx(ent->pend[i].line.startPos, ent->pend[i].line.endPos, 3.5f, ent->pend[i].ball.color);
-        DrawCircleV(ent->pend[i].ball.pos, ent->pend[i].ball.radius, ent->pend[i].ball.color);
+         
+        DrawLineEx(ent->pend[i].line.startPos, ent->pend[i].line.endPos, 6.f, ent->pend[i].line.color);
+        DrawCircleV(ent->pend[i].ball.pos, ent->pend[i].ball.radius, ent->pend[i].ball.color);   
     }
 }
 
-void math(Physics *eng)
-{
-    //Bruh...this feels like defusing a bomb...one misplaced parenthesis and your sim is fucked
-    //any future reader: those are text substitues if you don't know what that implies please do not fuck with defines
-    #define NUMERATOR ((-eng->gravity*((2*eng->m1+eng->m2)*sinf(eng->th1)) - eng->m2*eng->gravity*sinf(eng->th1-2*eng->th2) - 2*sinf(eng->th1 - eng->th2) * eng->m2*(eng->dTh2*eng->dTh2*eng->l2 + eng->dTh1*eng->dTh1*eng->l1*cosf(eng->th1 - eng->th2))))
-    #define DENOMINATOR (eng->l1 * (2*eng->m1+eng->m2-eng->m2*cosf(2*eng->th1-2*eng->th2)))
-    if (!DENOMINATOR) { return; }
-    eng->ddTh1 = NUMERATOR / DENOMINATOR;  //FUUUUUUUUUUUUUUUUUUUUUUUUCK
-
-    #undef NUMERATOR 
-    #undef DENOMINATOR
-
-    #define NUMERATOR (2*sinf(eng->th1 - eng->th2)*(eng->dTh1*eng->dTh1*eng->l1*(eng->m1 + eng->m2) + eng->gravity*(eng->m1+eng->m2)*cosf(eng->th1) + eng->dTh2*eng->dTh2*eng->l1*eng->m2*cosf(eng->th1 - eng->th2)))
-    #define DENOMINATOR (eng->l2 * (2*eng->m1+eng->m2*-eng->m2*cosf(2*eng->th1 - 2*eng->th2)))
 
 
-/*
-    Bug hunt time! 
-    Problem: First pendulum appears to be moving normally while second pend is not visually moving but there is an energy gain so probably math is correct yet 
-    let me double check while this is here (There was a math bug too but handled)
+State math(State s, Physics *eng) {
+    State d;
 
-θ2'' =  	2 sin(θ1 − θ2) (θ1'2 L1 (m1 + m2) + g(m1 + m2) cos θ1 + θ2'2 L2 m2 cos(θ1 − θ2))
-L2 (2 m1 + m2 − m2 cos(2 θ1 − 2 θ2))
+    d.th1 = s.dTh1;
+    d.th2 = s.dTh2;
+    
 
-    problem most likely to be visual...
-
-*/
-
-    if (!DENOMINATOR) { return; }
-    eng->ddTh2 = NUMERATOR / DENOMINATOR;
-
-    #undef NUMERATOR
-    #undef DENOMINATOR
-
-    eng->dTh1 += eng->ddTh1;
-    eng->dTh2 += eng->ddTh2;
-
-    eng->th1 += eng->dTh1;
-    eng->th2 += eng->dTh2;    
+    float num1 = -eng->gravity * (2*eng->m1 + eng->m2) * sinf(s.th1)
+                 - eng->m2 * eng->gravity * sinf(s.th1 - 2*s.th2)
+                 - 2 * sinf(s.th1 - s.th2) * eng->m2 
+                   * (s.dTh2*s.dTh2*eng->l2 + s.dTh1*s.dTh1*eng->l1*cosf(s.th1 - s.th2));
+    float den1 = eng->l1 * (2*eng->m1 + eng->m2 - eng->m2*cosf(2*s.th1 - 2*s.th2));
+    d.dTh1 = (den1 != 0.0f) ? num1 / den1 : 0.0f;
+    
+    float num2 = 2 * sinf(s.th1 - s.th2) 
+                 * (s.dTh1*s.dTh1*eng->l1*(eng->m1 + eng->m2)
+                    + eng->gravity*(eng->m1 + eng->m2)*cosf(s.th1)
+                    + s.dTh2*s.dTh2*eng->l2*eng->m2*cosf(s.th1 - s.th2));
+    float den2 = eng->l2 * (2*eng->m1 + eng->m2 - eng->m2*cosf(2*s.th1 - 2*s.th2));
+    d.dTh2 = (den2 != 0.0f) ? num2 / den2 : 0.0f;
+    
+    return(d);
 }
+
+void rk4Step(Physics *eng, float dt) {
+    State y0 = { eng->th1, eng->th2, eng->dTh1, eng->dTh2 };
+    
+    State k1 = math(y0, eng);
+    
+    State y1 = {
+        y0.th1  + k1.th1  * dt * 0.5f,
+        y0.th2  + k1.th2  * dt * 0.5f,
+        y0.dTh1 + k1.dTh1 * dt * 0.5f,
+        y0.dTh2 + k1.dTh2 * dt * 0.5f
+    };
+    State k2 = math(y1, eng);
+    
+    State y2 = {
+        y0.th1  + k2.th1  * dt * 0.5f,
+        y0.th2  + k2.th2  * dt * 0.5f,
+        y0.dTh1 + k2.dTh1 * dt * 0.5f,
+        y0.dTh2 + k2.dTh2 * dt * 0.5f
+    };
+    State k3 = math(y2, eng);
+    
+    State y3 = {
+        y0.th1  + k3.th1  * dt,
+        y0.th2  + k3.th2  * dt,
+        y0.dTh1 + k3.dTh1 * dt,
+        y0.dTh2 + k3.dTh2 * dt
+    };
+    State k4 = math(y3, eng);
+    
+    eng->th1  += (k1.th1  + 2.0f*k2.th1  + 2.0f*k3.th1  + k4.th1)  * dt / 6.0f;
+    eng->th2  += (k1.th2  + 2.0f*k2.th2  + 2.0f*k3.th2  + k4.th2)  * dt / 6.0f;
+    eng->dTh1 += (k1.dTh1 + 2.0f*k2.dTh1 + 2.0f*k3.dTh1 + k4.dTh1) * dt / 6.0f;
+    eng->dTh2 += (k1.dTh2 + 2.0f*k2.dTh2 + 2.0f*k3.dTh2 + k4.dTh2) * dt / 6.0f;
+}
+
 
 int setEnv(void)
 {
+
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
 
     InitWindow(WIDTH, HEIGHT, TITLE);
     if (!IsWindowReady()) {
@@ -353,4 +403,15 @@ int setEnv(void)
 
     return(0);
 }
+void updatePositions(Entities *ent)
+{
+    //Yeah I could'vce used arrays for thetas too to iterate everything with loops but...sun already arisen and I am half-dead
+    ent->pend[0].line.endPos.x = ent->pend[0].line.startPos.x + ent->engine.l1 * sinf(ent->engine.th1);
+    ent->pend[0].line.endPos.y = ent->pend[0].line.startPos.y + ent->engine.l1 * cosf(ent->engine.th1);
+    ent->pend[0].ball.pos     = ent->pend[0].line.endPos;
 
+    ent->pend[1].line.startPos = ent->pend[0].ball.pos;
+    ent->pend[1].line.endPos.x = ent->pend[1].line.startPos.x + ent->engine.l2 * sinf(ent->engine.th2);
+    ent->pend[1].line.endPos.y = ent->pend[1].line.startPos.y + ent->engine.l2 * cosf(ent->engine.th2);
+    ent->pend[1].ball.pos     = ent->pend[1].line.endPos;
+}
