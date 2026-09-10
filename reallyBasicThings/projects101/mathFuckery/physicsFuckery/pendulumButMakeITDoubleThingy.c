@@ -23,10 +23,13 @@
 
 
 /* ======================= INCLUDES =================== */
-
-#include <raylib.h>
+//cool headers
 #include <stdio.h>
+#include <time.h>
+//Headers that will bitch about not linking them
+#include <raylib.h>
 #include <math.h>
+
 
 
 /* ======================= DEFINES ======================= */
@@ -226,6 +229,7 @@ int setEnv(void);
 
 int main(void)
 {
+    SetRandomSeed(time(NULL));
     if (setEnv()) { perror("Blame raylib bruh"); return(-53); }
 
 
@@ -242,13 +246,20 @@ int main(void)
         .pendCfg[1].line.startPos = (Vector2){(float)WIDTH/2, (float)(2*HEIGHT)/3},
         .pendCfg[1].line.endPos = { 0 },
         .pendCfg[1].line.color = SHE_LOVES_PURPLE,
-        .engineCfg = { 0 },
+        .engineCfg.th1 = GetRandomValue(-90, 90)*DEG2RAD,
+        .engineCfg.th2 = GetRandomValue(-90, 90)*DEG2RAD,
         .engineCfg.gravity = 9.8f,
         .engineCfg.l1 = 90.f,
         .engineCfg.l2 = 53.13f,
         .engineCfg.m1 = 30.f,
         .engineCfg.m2 = 15.f,        
+        .engineCfg.dTh1 = 0,
+        .engineCfg.dTh2 = 0,
+        .engineCfg.ddTh1 = 0,
+        .engineCfg.ddTh2 = 0,
     };
+    //Btw I never mentioned that but designated initilizers are a C99+ feature so if your standard is C89 or ISO-C compile with -std=c99 and some people say c99 is buggy but I didn't encounter such thing yet tho
+
 
     Entities objs = { 0 };
 
@@ -256,7 +267,7 @@ int main(void)
 
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { break; }
- 
+        math(&objs.engine);
         BeginDrawing();
         ClearBackground(BLACK);
         drawThingies(&objs);
@@ -303,15 +314,29 @@ void math(Physics *eng)
 {
     //Bruh...this feels like defusing a bomb...one misplaced parenthesis and your sim is fucked
     //any future reader: those are text substitues if you don't know what that implies please do not fuck with defines
-    #define NUMARATOR (-eng->gravity*((2*eng->m1+eng->m2)*sinf(eng->th1) - eng->m2*eng->gravity*sinf(eng->th1-2*eng->th2) - 2*sinf(eng->th1 - eng->th2) * eng->m2*(eng->dTh2*eng->dTh2*eng->l2 + eng->dTh1*eng->dTh1*eng->l1*cosf(eng->th1 - eng->th2))))
+    #define NUMERATOR ((-eng->gravity*((2*eng->m1+eng->m2)*sinf(eng->th1)) - eng->m2*eng->gravity*sinf(eng->th1-2*eng->th2) - 2*sinf(eng->th1 - eng->th2) * eng->m2*(eng->dTh2*eng->dTh2*eng->l2 + eng->dTh1*eng->dTh1*eng->l1*cosf(eng->th1 - eng->th2))))
     #define DENOMINATOR (eng->l1 * (2*eng->m1+eng->m2-eng->m2*cosf(2*eng->th1-2*eng->th2)))
     if (!DENOMINATOR) {
         return;
     }
-    eng-> ddTh1 = NUMARATOR / DENOMINATOR;  //FUUUUUUUUUUUUUUUUUUUUUUUUCK
+    eng->ddTh1 = NUMERATOR / DENOMINATOR;  //FUUUUUUUUUUUUUUUUUUUUUUUUCK
 
-    #undef NUMARATOR
+    #undef NUMERATOR 
     #undef DENOMINATOR
+
+    #define NUMERATOR (2*sinf(eng->th1 - eng->th2)*(eng->dTh1*eng->dTh1*eng->l1*(eng->m1 + eng->m2) + eng->gravity*(eng->m1+eng->m2)*cosf(eng->th1) + eng->dTh2*eng->dTh2*eng->l1*eng->m2*cosf(eng->th1 - eng->th2)))
+    #define DENOMINATOR (eng->l2 * (2*eng->m1+eng->m2*cosf(2*eng->th1 - 2*eng->th2)))
+
+    eng->ddTh2 = NUMERATOR / DENOMINATOR;
+
+    #undef NUMERATOR
+    #undef DENOMINATOR
+
+    eng->dTh1 += eng->ddTh1;
+    eng->dTh2 += eng->ddTh2;
+
+    eng->th1 += eng->dTh1;
+    eng->th2 += eng->dTh2;    
 }
 
 int setEnv(void)
