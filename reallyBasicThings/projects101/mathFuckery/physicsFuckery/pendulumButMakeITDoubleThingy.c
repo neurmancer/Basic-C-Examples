@@ -264,7 +264,8 @@ int main(void)
     Entities objs = { 0 };
 
     setStage(&objs, &cfg);
-
+    printf("%f\n%f\n%f\n%f\n",objs.engine.th1,objs.engine.th2,objs.engine.dTh1,objs.engine.dTh2);
+    //No exectution lol
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { break; }
         math(&objs.engine);
@@ -281,27 +282,11 @@ int main(void)
 
 void setStage(Entities *ent, Config *cfg)
 {
-    ent->engine = cfg->engineCfg;
-    for (int i = 0; i < 2; i++) {
-        ent->pend[i] = cfg->pendCfg[i];
-    }
-    ent->pend[0].line.len = ent->engine.l1;
-    ent->pend[1].line.len = ent->engine.l2;
+    //I'll re-write the entire function and main config...
 }
 
 void drawThingies(Entities *ent)
 {
-    //TO future me: Please separate(and yeah I finally learned how to spell separate) this shit from draw function current me fucking function purity 
-    ent->pend[0].line.endPos = (Vector2){ent->pend[0].line.startPos.x + ent->pend[0].line.len * sinf(ent->engine.th1),
-    ent->pend[0].line.startPos.y + ent->pend[0].line.len * cosf(ent->engine.th1)};
-    ent->pend[0].ball.pos = ent->pend[0].line.endPos; //the line linked exactly to the center of the ball for now(might change)
-
-    ent->pend[1].line.startPos = ent->pend[0].ball.pos;
-    ent->pend[1].line.endPos = (Vector2){ent->pend[1].line.startPos.x + ent->pend[1].line.len * sinf(PI/6),
-    ent->pend[1].line.startPos.y + ent->pend[1].line.len * cosf(PI/12)};
-    ent->pend[1].ball.pos = ent->pend[1].line.endPos; //the line linked exactly to the center of the ball for now(might change)
-
-
     
     for (int i = 1; i >= 0; i--) {
         //To 
@@ -316,17 +301,29 @@ void math(Physics *eng)
     //any future reader: those are text substitues if you don't know what that implies please do not fuck with defines
     #define NUMERATOR ((-eng->gravity*((2*eng->m1+eng->m2)*sinf(eng->th1)) - eng->m2*eng->gravity*sinf(eng->th1-2*eng->th2) - 2*sinf(eng->th1 - eng->th2) * eng->m2*(eng->dTh2*eng->dTh2*eng->l2 + eng->dTh1*eng->dTh1*eng->l1*cosf(eng->th1 - eng->th2))))
     #define DENOMINATOR (eng->l1 * (2*eng->m1+eng->m2-eng->m2*cosf(2*eng->th1-2*eng->th2)))
-    if (!DENOMINATOR) {
-        return;
-    }
+    if (!DENOMINATOR) { return; }
     eng->ddTh1 = NUMERATOR / DENOMINATOR;  //FUUUUUUUUUUUUUUUUUUUUUUUUCK
 
     #undef NUMERATOR 
     #undef DENOMINATOR
 
     #define NUMERATOR (2*sinf(eng->th1 - eng->th2)*(eng->dTh1*eng->dTh1*eng->l1*(eng->m1 + eng->m2) + eng->gravity*(eng->m1+eng->m2)*cosf(eng->th1) + eng->dTh2*eng->dTh2*eng->l1*eng->m2*cosf(eng->th1 - eng->th2)))
-    #define DENOMINATOR (eng->l2 * (2*eng->m1+eng->m2*cosf(2*eng->th1 - 2*eng->th2)))
+    #define DENOMINATOR (eng->l2 * (2*eng->m1+eng->m2*-eng->m2*cosf(2*eng->th1 - 2*eng->th2)))
 
+
+/*
+    Bug hunt time! 
+    Problem: First pendulum appears to be moving normally while second pend is not visually moving but there is an energy gain so probably math is correct yet 
+    let me double check while this is here (There was a math bug too but handled)
+
+θ2'' =  	2 sin(θ1 − θ2) (θ1'2 L1 (m1 + m2) + g(m1 + m2) cos θ1 + θ2'2 L2 m2 cos(θ1 − θ2))
+L2 (2 m1 + m2 − m2 cos(2 θ1 − 2 θ2))
+
+    problem most likely to be visual...
+
+*/
+
+    if (!DENOMINATOR) { return; }
     eng->ddTh2 = NUMERATOR / DENOMINATOR;
 
     #undef NUMERATOR
