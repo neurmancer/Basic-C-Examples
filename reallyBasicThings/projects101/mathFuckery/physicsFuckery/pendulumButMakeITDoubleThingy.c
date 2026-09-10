@@ -39,6 +39,13 @@
     #define FPS 120
 #endif
 
+//Color defines
+#define SHE_LOVES_PURPLE CLITERAL(Color){191, 0, 255,255}
+#define SO_DO_I CLITERAL(Color){153, 102, 204,255}
+
+// Object defines
+#define BALL_RADIUS (13.53f)
+
 
 /* ====================== OBJECTS ============================= */
 
@@ -58,10 +65,12 @@ typedef struct{
 
 
 typedef struct{
-    Vector2 startPos,endPos;  
+    Vector2 startPos;
+    Vector2 endPos;
+    float len;
     Color color;
 }Line;
-
+//Yeah in this file I am getting shit done with weird short names don't mind it...
 typedef struct{
     Vector2 pos;
     float radius;
@@ -75,10 +84,17 @@ typedef struct{
 
 
 typedef struct{
-    Pendulum pend;
+    Pendulum pend[2];   //Yeah as if math is not enough I am going with a little pointer gymnastics too
     Physics engine;
 }Entities;
 
+
+typedef struct{
+
+    Pendulum pendCfg[2];
+    Physics engineCfg;
+
+}Config;
 
 //and here is the fun shit... wtf fuck is the formula
 /*
@@ -193,8 +209,8 @@ L2 (2 m1 + m2 − m2 cos(2 θ1 − 2 θ2))
 This is now exactly the form needed to plug in to the Runge-Kutta method for numerical solution of the system.
 
 
-Well...I am feeling too smart and too fucking dumb at the same time rn... I need angles I guess 
-
+Well...I am feeling too smart and too fucking dumb at the same time rn... Who would have thought that I need to open my calculus book to study at 4 AM before coding anything...me...I'd thought that...
+5AM me gonna read this again and cry...
 
 */
 
@@ -202,13 +218,38 @@ Well...I am feeling too smart and too fucking dumb at the same time rn... I need
 //That's it I guess
 /* =================== FUNCTION PROTOTYPES ==================*/
 
+void drawThingies(Pendulum *pend, Physics *engine);
+void setStage(Entities *ent, Config *cfg);
 int setEnv(void);
-void drawThingies(Pendulum *pend);
 
 
 int main(void)
 {
     if (setEnv()) { perror("Blame raylib bruh"); return(-53); }
+
+
+    Config cfg = { 
+        .pendCfg[0].ball.color = SHE_LOVES_PURPLE,
+        .pendCfg[0].ball.pos = { 0 },
+        .pendCfg[0].ball.radius = BALL_RADIUS,
+        .pendCfg[0].line.startPos = (Vector2){(float)WIDTH/2, (float)HEIGHT/3},
+        .pendCfg[0].line.endPos = { 0 },
+        .pendCfg[0].line.len = (float)HEIGHT/12,
+        .pendCfg[0].line.color = SO_DO_I,
+        .pendCfg[1].ball.color = SO_DO_I,
+        .pendCfg[1].ball.pos = { 0 },
+        .pendCfg[1].ball.radius = BALL_RADIUS,
+        .pendCfg[1].line.startPos = (Vector2){(float)WIDTH/2, (float)(2*HEIGHT)/3},
+        .pendCfg[1].line.endPos = { 0 },
+        .pendCfg[1].line.len = (float)HEIGHT/12,
+        .pendCfg[1].line.color = SHE_LOVES_PURPLE,
+        .engineCfg = { 0 },
+        .engineCfg.gravity = 9.8f,
+        .engineCfg.l1 = 10.f,
+        .engineCfg.l2 = 13.53f,
+        .engineCfg.m1 = 30.f,
+        .engineCfg.m2 = 15.f,        
+    };
 
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_ESCAPE)) { break; }
@@ -223,12 +264,26 @@ int main(void)
     return(0);
 }
 
-
-void drawThingies(Pendulum *pend)
+void setStage(Entities *ent, Config *cfg)
 {
+    //This will do shit
 
 
+
+    return;
 }
+
+void drawThingies(Pendulum *pend, Physics *engine)
+{
+    //TO future me: Please separate(and yeah I finally learned how to spell separate) this shit from draw function current me fucking function purity 
+    pend->line.endPos = (Vector2){pend->line.startPos.x + pend->line.len * sinf(engine->th1), pend->line.startPos.y + pend->line.len * cosf(engine->th1)};
+    pend->ball.pos = pend->line.endPos; //the line linked exactly to the center of the ball for now(might change)
+
+
+    DrawLineEx(pend->line.startPos, pend->line.endPos, 2.5f, SHE_LOVES_PURPLE);
+    DrawCircleV(pend->ball.pos, pend->ball.radius, SO_DO_I);
+}
+
 
 int setEnv(void)
 {
