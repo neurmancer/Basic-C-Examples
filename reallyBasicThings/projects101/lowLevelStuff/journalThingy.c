@@ -19,7 +19,7 @@
 
 
 
-        here is the .service file will get into /etc/sytemd/yourShit.service
+        here is the .service file will get into /etc/sytemd/system/yourShit.service
 
 
 

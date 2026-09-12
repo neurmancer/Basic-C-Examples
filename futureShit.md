@@ -26,7 +26,7 @@
 - [ ] Render Tupper's self-referential graph (possible, but no promises)
 - [ ] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement('Ehm actually it's topologically 2 Dimensional' I do know Mr...Nerd).
 - [ ] Implement a MANIM(3B1B math animation engine) in C (cuz yk... why the fuck not?)
-- [X] Build a Fourier Epicycle Visualization thingy using raylib and shit...probably I'll start working on this today
+- [X] Build a Fourier Epicycle Visualization thingy using raylib
 
 ---
 
@@ -66,7 +66,7 @@ Yeah all retro... I am a retro guy, after all.
 
 - [X] Prime number spitter for dwm status bar for no apperant reason besides being cool
 - [ ] More experiments for DWM environment(My idea well ran dry...I know it's vague)
-- [ ] Fuck with journalctl (Just to see some shit on my fancy logs)
+- [X] Fuck with journalctl (Just to see some shit on my fancy logs)
 
 ## Rediscovering America
 
