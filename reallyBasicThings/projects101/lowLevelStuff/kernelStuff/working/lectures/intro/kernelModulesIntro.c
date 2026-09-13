@@ -35,6 +35,7 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Your Name");
 MODULE_DESCRIPTION("Intro module");
 
+
                 Final notes before including: 
                     1- It's better to know what is where in your system at least roughly since I presume we'll mention /proc/modules or sbin 
                     2- Being comfortable with fucking your entire system
@@ -43,6 +44,13 @@ MODULE_DESCRIPTION("Intro module");
                     5- Every lecture will have it's own subfolder with needed Makefile (since I don't know how to do it with cc or even possible)
                     6- I'll be copying the Makefiles from the said sources since I don't trust myself with Makefiles
 
+
+                Before we continue let me tell you why people say kernel code code can be dangerous
+                besides the obvious malwares having god privs on a rig... and this one should concern you more
+                while learning to code your own modules. Here is linux kernel 101: Linux kernel is a monolithic kernel which means in kernel space the headers, code and modules 
+                shares the same ecosystem. So unlike a userspace app giving you a segfault because you deref'd a NULL pointer in kernel space you may overwrite filesystem
+                corrupt your scheduler or staright up fuck your system. Because when you install a module it becomes a part of the kernel, it's not a mere program just happens to run
+                on kernel so crashing your module means crashing the kernel itself...Proceed with this knowledge 
 
                 Faced problems (and possible solutions)
                     1- My kernel version and header version was conflicting (14.smth headers and 13.smth kernel itself) ran pacman -Syu and rebooted *Fixed*

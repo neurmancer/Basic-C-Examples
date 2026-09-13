@@ -122,6 +122,13 @@ int main(void)
 
     const int width = window.ws_col;
     const int height = window.ws_row;
+    
+    if (INT_MAX / window.ws_row < window.ws_col) {
+        printf("Bruh what's your screensize? Are you on a fucking Times Square billboard or smthng?\n");
+        sleep(SECOND*1.3);
+        amIFuckedUp = INT_MIN+1; //Just to scare the user lmfao
+        goto farewell;
+    }
 
     int primeCount = 0;
     int targetCount = width*height;
@@ -143,12 +150,7 @@ int main(void)
         goto farewell;
     }
 
-    if (INT_MAX / window.ws_row < window.ws_col) {
-        printf("Bruh what's your screensize? Are you on a fucking Times Square billboard or smthng?\n");
-        sleep(SECOND*1.3);
-        amIFuckedUp = INT_MIN+1; //Just to scare the user lmfao
-        goto farewell;
-    }
+
 
     int index = 0;
     
