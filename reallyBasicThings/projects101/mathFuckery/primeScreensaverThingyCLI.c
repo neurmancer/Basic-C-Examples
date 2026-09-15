@@ -125,7 +125,7 @@ int main(void)
     
     if (INT_MAX / window.ws_row < window.ws_col) {
         printf("Bruh what's your screensize? Are you on a fucking Times Square billboard or smthng?\n");
-        sleep(SECOND*1.3);
+        usleep(SECOND*1.3);
         amIFuckedUp = INT_MIN+1; //Just to scare the user lmfao
         goto farewell;
     }
