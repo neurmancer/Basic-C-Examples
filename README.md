@@ -281,6 +281,7 @@
 > - Buffer oveflow for lulz. 
 > - A system deamon that spits out prime numbers to journalctl (if you turn the progam to a deamon duh...)(And yeah I know my ideas are getting repetitve)
 > - A printf() implementation (print_it)
+> - Custom malloc implementation using sbrk (_W.I.P_);
 
 ## Retro Shit
 

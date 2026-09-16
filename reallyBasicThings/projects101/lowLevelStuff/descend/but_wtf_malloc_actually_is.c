@@ -14,11 +14,17 @@
             2- Well...know how to use malloc and free at least
 
         and here is the source I am using implement malloc: https://levelup.gitconnected.com/malloc-is-not-magic-implementing-my-own-memory-allocator-e0354e914402
-        So...let's fucking get the keyboard moving before I need to eventually use pyt*n for the android client for the TODO server
+        So...let's fucking get the keyboard moving before I need to eventually use pyt*n (or worse java) for the android client for the TODO server
         and as always this is here as a template...
     
         
         and since we're doing low-level fuckery I'll be using structs as they are no typedefing we're going with full Linus Doctrine
+
+
+        Future shit:
+            0- Check the return value of sbrk before proceeding (which returns (void *)-1 btw)
+            1- Error handlig for sbrk
+            2- implement sbrk() lol (yeah..that's a joke I am not writing my own syscalls just yet) 
 */
 
 
