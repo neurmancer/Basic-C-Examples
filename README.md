@@ -17,7 +17,6 @@
 - [CLI Thingies](#cli-tool-clones)
 - [Books & Learning Sources](#nerdy-part)
 - [LICENSE](#legal-shit)
-- [Farewell](#i-will-be-back-eventually)
 ---
 
 ## Parental Advisory
@@ -281,7 +280,7 @@
 > - Buffer oveflow for lulz. 
 > - A system deamon that spits out prime numbers to journalctl (if you turn the progam to a deamon duh...)(And yeah I know my ideas are getting repetitve)
 > - A printf() implementation (print_it)
-> - Custom malloc implementation using sbrk (_W.I.P_);
+> - Custom malloc implementation using sbrk(delta);
 
 ## Retro Shit
 
@@ -381,10 +380,3 @@ cc filename.c -o output -lraylib -lm    #or one of them...if needed, source file
 > This repository uses GPL-3.0 (or higher) license to ensure open-source distribution.
 > Don't make me say those as if I am in a tuxedo you got the idea. 
 > For the license details check [**LICENSE**](LICENSE.md)
-
-
-### I will be back (eventually)
-
-> All my github repos will be at a complete halt 'till next summer...
-> I'll try to add new things as well but if you see less commit than 10 in a week
-> Just so you know that...I am not working on a project so...fare well

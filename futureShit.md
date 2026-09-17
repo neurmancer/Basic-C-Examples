@@ -51,7 +51,7 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] A Bytecode interpreter in C
 - [ ] A Basic Virtual Machine (since that's somehow all related to things I'll list below this one) 
 - [ ] A Garbage Collector (Mark&Sweep yk...the one Lua's using)
-- [ ] A Memory Allocator (always sbrk)
+- [X] A Memory Allocator (always sbrk)
 - [ ] A RegEx 
 - [ ] CLI Chat App
 - [ ] A TCP/IP Stack
