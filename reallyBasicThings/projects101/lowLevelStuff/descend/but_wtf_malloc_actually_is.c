@@ -282,7 +282,7 @@ int *add_used_block(size_t size)
         while (last_block->len < size) {
             sbrk(PAGE_SIZE);
             last_block->len += PAGE_SIZE;
-            allocator_header->amount_of_blocks += 1;
+            allocator_header->amount_of_pages += 1;
         }
         smallest_block = last_block;
     }
@@ -545,16 +545,26 @@ void call_test(void (*test_func)(), const char *msg) {
 
 /*
 
-==492959== HEAP SUMMARY:
-==492959==     in use at exit: 0 bytes in 0 blocks
-==492959==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
-==492959== 
-==492959== All heap blocks were freed -- no leaks are possible
-==492959== 
-==492959== For lists of detected and suppressed errors, rerun with: -s
-==492959== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==514891== HEAP SUMMARY:
+==514891==     in use at exit: 0 bytes in 0 blocks
+==514891==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+==514891== 
+==514891== All heap blocks were freed -- no leaks are possible
+==514891== 
+==514891== Use --track-origins=yes to see where uninitialised values come from
+==514891== For lists of detected and suppressed errors, rerun with: -s
+==514891== ERROR SUMMARY: 27 errors from 22 contexts (suppressed: 0 from 0)
+Heap fuckery passed
+We're done ig?==514870== 
+==514870== HEAP SUMMARY:
+==514870==     in use at exit: 0 bytes in 0 blocks
+==514870==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+==514870== 
+==514870== All heap blocks were freed -- no leaks are possible
+==514870== 
+==514870== For lists of detected and suppressed errors, rerun with: -s
+==514870== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 
 
-lol valgrind didn't even register my malloc...I've failed...
-
+now it's better...
 */
