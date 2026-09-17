@@ -5,6 +5,14 @@
     So...I am experimenting with camera movements (2D and 3D) for next triangle fuckery...that's it!
 
     requires -lm for lib math even tough I haven't used it and -lraylib for raylib 
+
+    Fuck around is done!
+
+    Found out things:
+
+        Raylib handles basic camera input itself (WASD for moving, scroll for zoom etc.)
+        and if I can draw the tetraheadron (or how tf u spell it is almost 00AM again) the rest will be on raylib... but the further fuckery is 
+        while the cube spinning I remembered there was a thingy like an ASCII donut spinning in the terminal...I wonder if I can do it or not too...
 */
 
 
@@ -47,7 +55,6 @@ int main(void)
         BeginMode3D(cam);
         DrawCubeWiresV(cube_pos, (Vector3){2.f, 2.f, 2.f}, PURPLE);
         DrawCube(cube_pos, 2.f, 2.f, 2.f, VIOLET);
-
         EndMode3D();
         EndDrawing();
 
