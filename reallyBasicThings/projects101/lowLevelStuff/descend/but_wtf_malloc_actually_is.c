@@ -34,7 +34,7 @@
 
 #include <malloc.h>
 #include <stddef.h>
-//#include <stdlib.h> //This file is here to ditch you bruh just come and watch your funeral from a better seat
+#include <stdlib.h> //This file is here to ditch you bruh just come and watch your funeral from a better seat
 #include <stdbool.h> 
 #include <stdint.h> //For data types such as uint32_t
 #include <stdio.h>
@@ -75,8 +75,8 @@ void debug_print(const char *msg);
 
 void reduce_heap_size_if_possible();
 
-int *add_used_block(ssize_t size);
-int *so_this_is_malloc(ssize_t size); //Original malloc returns (void *) so...should I do that instead?
+int *add_used_block(size_t size);
+int *so_this_is_malloc(size_t size); //Original malloc returns (void *) so...should I do that instead?
 
 struct free_block *find_last_block(void);
 struct free_block *find_fisrt_block(void);
@@ -86,10 +86,24 @@ struct data *get_allocator_header(void);
 
 bool free_shit(void *ptr);
 
+//Test case prototypes
+void call_test(void (*test_func)(), const char *msg);
+void complex_set_of_malloc_and_free_calls();
+void test_free();
+void test_bigger_than_available_malloc();
+void test_basic_malloc();
+
+
 int main(void)
 {
 
-
+    call_test(test_basic_malloc, "Basic Malloc");
+    call_test(test_bigger_than_available_malloc, "More ALLOCATION");
+    call_test(test_free, "Free your shit");
+    call_test(complex_set_of_malloc_and_free_calls, "Heap fuckery");
+    
+    debug_print("We're done ig?");
+    
     return(0);
 }
 
@@ -125,7 +139,7 @@ struct free_block *find_previous_used_block(struct free_block *ptr)
 struct free_block *find_fisrt_block(void)
 {
     struct data *allocator_header = get_allocator_header();
-    return((struct free_block *)(char *)allocator_header + sizeof(struct data));    //Lol welcome to the low level pointer fuckery
+    return((struct free_block *)((char *)allocator_header + sizeof(struct data)));    //Lol welcome to the low level pointer fuckery
 }
 
 
@@ -226,7 +240,7 @@ struct free_block *find_last_block(void)
 {
     struct data *allocator_header = get_allocator_header();
     
-    struct free_block *block = (struct free_block *)(char *)allocator_header + sizeof(struct data);
+    struct free_block *block = (struct free_block *)((char *)allocator_header + sizeof(struct data));
 
     while (block->next != NULL) {
         block = block->next;    //Forward list walk (conceptually same as the backwards walk)
@@ -235,7 +249,7 @@ struct free_block *find_last_block(void)
 }
 
 
-int *add_used_block(ssize_t size)
+int *add_used_block(size_t size)
 {
 
     struct data *allocator_header = get_allocator_header(); //Even this started to feel repetitive tho
@@ -246,7 +260,7 @@ int *add_used_block(ssize_t size)
 
     allocator_header->lock = true;
     
-    struct free_block *block = (struct free_block *)(char *)heap_begins + sizeof(struct data);
+    struct free_block *block = (struct free_block *)((char *)heap_begins + sizeof(struct data));
     struct free_block *smallest_block = NULL;
     struct free_block *last_block = block;
 
@@ -300,13 +314,247 @@ int *add_used_block(ssize_t size)
     smallest_block->len = size;
     allocator_header->lock = false;
 
-    return((int *)(char *)smallest_block + sizeof(struct free_block));
+    return((int *)((char *)smallest_block + sizeof(struct free_block)));
 }
 
-int *so_this_is_malloc(ssize_t size)
+int *so_this_is_malloc(size_t size)
 {
-    //Placeholder for future just to edge you lol
-    void *x = NULL;
+    if (heap_begins == NULL) {
+        heap_begins = sbrk(0);
+        sbrk(PAGE_SIZE);
+    }
 
-    return((int *)x);
+    char *heap_end = sbrk(0);
+    long int len = heap_end - heap_begins;
+
+    if ((*heap_begins) != DOPE_BYES) {
+        *(heap_begins) = DOPE_BYES;
+        struct data *allocator_header = (struct data *)heap_begins;
+
+        allocator_header->amount_of_blocks = 1;
+        allocator_header->amount_of_pages = 1;
+
+        struct free_block *first_block = (struct free_block *)((char *)heap_begins + sizeof(struct data));
+
+        first_block->marker = BLOCK_MARKER;
+        first_block->in_use = false;
+        first_block->len = len - sizeof(struct data) - sizeof(struct free_block);
+        first_block->prev = NULL;
+        first_block->next = NULL;
+    }
+    return add_used_block(size);
 }
+
+
+void test_basic_malloc() {
+  char *ptr = (char *)so_this_is_malloc(1);
+  struct free_block *first_block = (void *)ptr - sizeof(struct free_block);
+  assert(first_block->marker == BLOCK_MARKER);
+  *ptr = 'C';
+  assert(*ptr == 'C');
+}
+
+void test_bigger_than_available_malloc() {
+    uint16_t *ptr = (uint16_t *)so_this_is_malloc(5000);
+    struct free_block *first_block = (void *)ptr - sizeof(struct free_block);
+    
+    for (uint16_t i = 0; i <= 2499; i = i + 1) {
+        *(ptr + i) = i;
+    }
+
+    assert(first_block->marker == BLOCK_MARKER);
+    assert(*ptr == 0);
+    assert(*(ptr + 2) == 2);
+    assert(*(ptr + 2499) == 2499);
+    
+    assert(*((uint8_t *)ptr + 4999) == (2499 >> 8));
+    assert(*((uint8_t *)ptr + 4998) == (2499 & 0xFF));
+}
+
+void test_free() {
+    uint8_t *first = (uint8_t *)so_this_is_malloc(2048);
+    
+    struct free_block *first_block = (void *)first - sizeof(struct free_block);
+    
+    assert(first_block->next != NULL);
+    assert(first_block->len == 2048);
+    
+    struct free_block *second_block = first_block->next;
+    
+    assert(second_block->marker == BLOCK_MARKER);
+    assert(second_block->in_use == false);
+    assert(second_block->next == NULL);
+    assert(second_block->len == PAGE_SIZE - sizeof(struct data) - (2 * sizeof(struct free_block)) - first_block->len);
+    
+    free_shit(first);
+    
+    assert(first_block->marker == BLOCK_MARKER);
+    assert(first_block->next == NULL);
+    assert(first_block->len == PAGE_SIZE - sizeof(struct data) - sizeof(struct free_block));
+}
+
+void complex_set_of_malloc_and_free_calls() {
+    
+    uint8_t *first =
+        (uint8_t *)so_this_is_malloc(2048);
+    
+    struct free_block *first_block = find_fisrt_block();
+    
+    assert(first_block->len == 2048);
+    
+    struct free_block *second_block = first_block->next;
+    
+    assert(second_block->len ==
+            PAGE_SIZE - sizeof(struct data) - 2 * sizeof(struct free_block) - first_block->len);
+    assert(second_block->next == NULL);
+    assert(second_block->prev == first_block);
+    
+    uint8_t *second =
+        (uint8_t *)so_this_is_malloc(10000);
+    
+        assert(second_block->len == 10000);
+    assert(second_block->next != NULL);
+    
+    struct free_block *third_block = second_block->next;
+    
+    assert(third_block->len == 3 * PAGE_SIZE - sizeof(struct data) -
+                                    3 * sizeof(struct free_block) - first_block->len -
+                                    second_block->len);
+                                    struct data *malloc_header = get_allocator_header();
+  
+    assert(malloc_header->amount_of_pages == 3);
+    assert(malloc_header->amount_of_blocks == 3);
+    
+    free_shit(second);
+    
+    assert(malloc_header->amount_of_pages == 1);
+    assert(malloc_header->amount_of_blocks == 2);
+    
+    int heap_size = sbrk(0) - (void *)heap_begins;
+    
+    assert(heap_size == PAGE_SIZE);
+    
+    // The second block is whatever is left from the first page
+    assert(second_block->in_use == false);
+    assert(first_block->len == 2048);
+    assert(second_block->len ==
+            PAGE_SIZE - sizeof(struct data) - 2 * sizeof(struct free_block) - first_block->len);
+    
+    assert(second_block->next == NULL);
+    // test block unification, add three blocks, free the left, free the right,
+    // and then free the middle
+    
+    uint8_t *third = (uint8_t *)so_this_is_malloc(1000);
+    
+    assert(malloc_header->amount_of_pages == 1);
+    assert(malloc_header->amount_of_blocks == 3);
+    // A third, empty block has been created
+    
+    struct free_block *third_block_new = second_block->next;
+    
+    assert(third_block_new->marker == BLOCK_MARKER);
+    assert(third_block_new->in_use == false);
+    assert(second_block->len == 1000);
+    assert(third_block_new->len == PAGE_SIZE - sizeof(struct data) -
+                                            3 * sizeof(struct free_block) - first_block->len -
+                                            second_block->len);
+    assert(third_block_new->next == NULL);
+    
+    uint8_t *fourth = (uint8_t *)so_this_is_malloc(5000);
+    
+    assert(third_block_new->len == 5000);
+    assert(third_block_new->next != NULL);
+    assert(third_block_new->in_use == true);
+    assert(third_block_new->prev == second_block);
+    assert(malloc_header->amount_of_pages ==
+            3); // the 5000 needed a second page, and then another page was needed
+                // to create a third block
+    assert(malloc_header->amount_of_blocks == 4);
+    
+    uint8_t *fifth = (uint8_t *)so_this_is_malloc(1000);
+    // a new block has been created
+    
+    struct free_block *fourth_block = third_block_new->next;
+    
+    assert(fourth_block->marker == BLOCK_MARKER);
+    assert(third_block_new->len == 5000);
+    assert(fourth_block->len == 1000);
+    assert(fourth_block->in_use == true);
+    assert(fourth_block->next != NULL);
+    
+    struct free_block *fifth_block = fourth_block->next;
+    
+    assert(fifth_block->marker == BLOCK_MARKER);
+    assert(fifth_block->in_use == false);
+    assert(fifth_block->next == NULL);
+    assert(malloc_header->amount_of_pages == 3);
+    assert(malloc_header->amount_of_blocks == 5); // fifth malloc made a new block
+    
+    uint8_t *sixth = (uint8_t *)so_this_is_malloc(
+        1000); 
+    
+    assert(fifth_block->in_use == true);
+    assert(fifth_block->len == 1000);
+    assert(fifth_block->next != NULL);
+    assert(fifth_block->prev == fourth_block);
+    
+    struct free_block *sixth_block = fifth_block->next;
+    
+    assert(sixth_block->marker == BLOCK_MARKER);
+    assert(sixth_block->in_use == false);
+    assert(sixth_block->next == NULL);
+    assert(malloc_header->amount_of_pages == 3);
+    assert(malloc_header->amount_of_blocks == 6);
+    
+    free_shit(third);
+    
+    assert(second_block->in_use == false);
+    assert(second_block->len == 1000); // should be unchanged
+    assert(malloc_header->amount_of_pages == 3);
+    assert(malloc_header->amount_of_blocks == 6); // 'cuz we have a free block
+    
+    free_shit(fifth);
+    
+    assert(fourth_block->in_use == false);
+    assert(malloc_header->amount_of_pages == 3);
+    assert(malloc_header->amount_of_blocks == 6);
+    
+    free_shit(fourth);
+    
+    assert(third_block_new->in_use == false);
+    assert(malloc_header->amount_of_pages == 3);  
+    assert(malloc_header->amount_of_blocks == 4); 
+}
+
+void call_test(void (*test_func)(), const char *msg) {
+    pid_t pid = fork();
+    
+    if (pid == 0) {
+        test_func();
+        exit(0);
+    } 
+    
+    else {
+        int status;
+        waitpid(pid, &status, 0);
+        if (WIFSIGNALED(status)) { printf("%s crashed with signal %d\n", msg, WTERMSIG(status)); } 
+        else { printf("%s passed\n", msg); }
+    }
+}
+
+
+/*
+
+==492959== HEAP SUMMARY:
+==492959==     in use at exit: 0 bytes in 0 blocks
+==492959==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==492959== 
+==492959== All heap blocks were freed -- no leaks are possible
+==492959== 
+==492959== For lists of detected and suppressed errors, rerun with: -s
+==492959== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+lol valgrind didn't even register my malloc...I've failed...
+
+*/
