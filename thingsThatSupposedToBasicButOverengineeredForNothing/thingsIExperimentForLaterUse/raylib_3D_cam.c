@@ -29,8 +29,7 @@ int main(void)
     Vector3 pos_obj = {0, 0, 0};
     Vector3 up_vec = {0, 0, 1};
 
-    float fov_y = 120;  //Quake FOV go brrrrrrrrrrrrrrr   
-
+    float fov_y = 90;  
     Camera3D cam = {pos_cam, pos_obj, up_vec, fov_y, CAMERA_PERSPECTIVE};
     Vector3  cube_pos = { 0 };  //let's see where the origin is first I guess...
 
@@ -39,12 +38,16 @@ int main(void)
 
     //Event loop
     while (!WindowShouldClose()) {
+        //Well...rotating cube it is then...
     
-        
+        UpdateCamera(&cam, CAMERA_ORBITAL);
         BeginDrawing();
+        ClearBackground(BLACK);
+
         BeginMode3D(cam);
-        DrawCube(cube_pos, 2.f, 2.f, 2.f, PURPLE);
-        
+        DrawCubeWiresV(cube_pos, (Vector3){2.f, 2.f, 2.f}, PURPLE);
+        DrawCube(cube_pos, 2.f, 2.f, 2.f, VIOLET);
+
         EndMode3D();
         EndDrawing();
 
@@ -54,10 +57,9 @@ int main(void)
     return(0);
 }
 
-
 int setupEnv(void)
 {
-
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(WIDTH, HEIGHT, TITLE);
     if (!IsWindowReady()) { return(1); }
 
