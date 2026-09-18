@@ -45,7 +45,7 @@ int main(void)
 
 
     Camera3D cam = { 0 };
-    int cam_modes[3] = {CAMERA_PERSPECTIVE, CAMERA_ORBITAL, CAMERA_FREE};
+    int cam_modes[3] = {CAMERA_ORBITAL, CAMERA_FREE};
     size_t cam_mode_selector = 0;
     int cam_mode = cam_modes[cam_mode_selector]; 
 
@@ -53,7 +53,7 @@ int main(void)
     cam.target = (Vector3){ 0 };    //it targets the origin of the plane? screen? what the fucking entity called in 3D space IDK...
     cam.up = (Vector3){0.f, 1.0f, 0.f}; //Still no clue what is up besides a rough understanding
     cam.fovy = 120.0f; //Quake-ass fov..
-    cam.projection = cam_mode;
+    cam.projection = CAMERA_PERSPECTIVE;
 
     float size = 0.5f;
     //What the fuck is the singular version of vertices? Vertex? 
