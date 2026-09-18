@@ -7,7 +7,11 @@
 
 
 
-    Well...today's not my moody day so we're only trying to get the triangle on the screen... and let the camera orbit around it I guess...
+    Well...today's not my moody day so we're only trying to get the triangle on the screen... and let the camera orbit around it I guess... well we have the thing...
+    but I heard something called mash and found those and I'll be reading those before proceeding further here is the sources:
+
+    arXiv: https://arxiv.org/abs/2504.09149,
+    arXiv: https://arxiv.org/pdf/2504.09149 (THIS ONE IS A FUCKING 11 PAGES OF MATH WTF? A WHOLE ASS PDF FOR A TRINAGLE? FUUUUUUUCK THERE GOES MY SLEEP SCHEDULE)
 */
 
 
@@ -35,7 +39,7 @@
 
     Wikipedia says:
 
-    In geometry, a tetrahedron (pl.: tetrahedra or tetrahedrons), also known as a triangular pyramid, (isn't all pyramids 'triangular?')
+    In geometry, a tetrahedron (pl.: tetrahedra or tetrahedrons), also known as a triangular pyramid, (aren't all pyramids 'triangular?' anyways? have you seen a rectangluar pyramid?)
     is a polyhedron composed of four triangular faces, six straight edges, and four vertices. 
     The tetrahedron is the simplest of all the ordinary convex polyhedra.[1]
 
@@ -73,14 +77,14 @@ int main(void)
 
 
     Camera3D cam = { 0 };
-    int cam_modes[3] = {CAMERA_ORBITAL, CAMERA_FREE};
+    int cam_modes[2] = {CAMERA_ORBITAL, CAMERA_FREE};
     size_t cam_mode_selector = 0;
     int cam_mode = cam_modes[cam_mode_selector]; 
 
     cam.position = (Vector3){4.f, 4.f, 4.f};
     cam.target = (Vector3){ 0 };    //it targets the origin of the plane? screen? what the fucking entity called in 3D space IDK...
     cam.up = (Vector3){0.f, 1.0f, 0.f}; //Still no clue what is up besides a rough understanding
-    cam.fovy = 120.0f; //Quake-ass fov..
+    cam.fovy = 120.0f; //Quake-ass fov.. (and what happens if I give it 360? Does it look like as if it's on an event horizon of a Black Hole?)
     cam.projection = CAMERA_PERSPECTIVE;
 
     float size = 0.5f;
@@ -100,9 +104,9 @@ int main(void)
         if (IsKeyPressed(KEY_ESCAPE)) { break ;}
         if (IsKeyPressed(KEY_SPACE)) { 
             cam_mode_selector++;
-            cam_mode = cam_modes[cam_mode_selector % 3];
+            cam_mode = cam_modes[cam_mode_selector % 2];
         } 
-        
+
         UpdateCamera(&cam, cam_mode);
         BeginDrawing();
         ClearBackground(BLACK);
