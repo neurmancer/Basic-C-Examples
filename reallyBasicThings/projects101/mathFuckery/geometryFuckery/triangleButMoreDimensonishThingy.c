@@ -30,6 +30,34 @@
 
 
 /* ============================ OBJECTS ====================== */
+/*
+    So..wtf is a tetrahedron? A triangular prism?
+
+    Wikipedia says:
+
+    In geometry, a tetrahedron (pl.: tetrahedra or tetrahedrons), also known as a triangular pyramid, (isn't all pyramids 'triangular?')
+    is a polyhedron composed of four triangular faces, six straight edges, and four vertices. 
+    The tetrahedron is the simplest of all the ordinary convex polyhedra.[1]
+
+    A tetrahedron. The tetrahedron is the three-dimensional case of the more general concept of a Euclidean simplex, and may thus also be called a 3-simplex.
+
+    The tetrahedron is one kind of pyramid, which is a polyhedron with a flat polygon base and triangular faces connecting the base to a common point.
+    In the case of a tetrahedron, the base is a triangle (any of the four faces can be considered the base), 
+    so a tetrahedron is also known as a "triangular pyramid".
+        
+    Like all convex polyhedra (yeah silly me for not knowing general convex polyhedra structure...WTF IS IT?), a tetrahedron can be folded from a single sheet of paper. It has two such nets.
+
+
+*/
+
+
+typedef struct{
+    Vector3 v1;
+    Vector3 v2;
+    Vector3 v3;
+    Vector3 v4;
+    
+}Tetrahedron;   //That's gonna be a spelling nightmare for the rest of the file
 
 
 
@@ -62,6 +90,7 @@ int main(void)
     Vector3 vertices2 = {-size, -size, size};
     Vector3 vertices3 = {-size, size, -size};
     Vector3 vertices4 = {size, -size, -size};
+    Tetrahedron t = {vertices1, vertices2,  vertices3, vertices4};
 
 
     DisableCursor();
@@ -81,10 +110,10 @@ int main(void)
         //If I haven't fucked up this should work...
         //after compiling...I ,in fact, fucked up
         DrawGrid(50.f, 2.0f);
-        DrawTriangle3D(vertices1, vertices2, vertices3, RED);
-        DrawTriangle3D(vertices1, vertices3, vertices4, GREEN);
-        DrawTriangle3D(vertices1, vertices4, vertices2, BLUE);
-        DrawTriangle3D(vertices2, vertices4, vertices3, PURPLE);    
+        DrawTriangle3D(t.v1, t.v2, t.v3, RED);
+        DrawTriangle3D(t.v1, t.v3, t.v4, GREEN);
+        DrawTriangle3D(t.v1, t.v4, t.v2, BLUE);
+        DrawTriangle3D(t.v2, t.v4, t.v3, PURPLE);    
         //Well that's the most cursed shit I've done but funny enough if you look at it beneath the grid with correct angle it looks like CMake logo
         
         EndMode3D();
