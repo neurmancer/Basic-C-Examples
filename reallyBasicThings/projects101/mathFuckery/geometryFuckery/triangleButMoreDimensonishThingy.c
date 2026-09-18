@@ -12,6 +12,10 @@
 
     arXiv: https://arxiv.org/abs/2504.09149,
     arXiv: https://arxiv.org/pdf/2504.09149 (THIS ONE IS A FUCKING 11 PAGES OF MATH WTF? A WHOLE ASS PDF FOR A TRINAGLE? FUUUUUUUCK THERE GOES MY SLEEP SCHEDULE)
+
+    well...those 2 articles were unnecessary I typed 'mesh' as 'mash' and learned
+    Masked Anchored SpHerical Distances for 3D Shape Representation and Generation
+    by mistake...so wtf is mesh? 
 */
 
 
@@ -21,7 +25,7 @@
 #include <stdio.h>
 //-lm -lraylib required to link libm and raylib
 #include <raylib.h>
-#include <math.h>
+//#include <math.h>
 
 
 /* ========================== DEFINES ===================== */
