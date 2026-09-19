@@ -22,10 +22,12 @@
 
 /* ========================= INCLUDES ==================== */
 
+#include <stdbool.h>
 #include <stdio.h>
 //-lm -lraylib required to link libm and raylib
 #include <raylib.h>
-//#include <math.h>
+#include <math.h>
+#include <stdlib.h>
 
 
 /* ========================== DEFINES ===================== */
@@ -65,12 +67,24 @@ typedef struct{
     Vector3 v3;
     Vector3 v4;
     
-}Tetrahedron;   //That's gonna be a spelling nightmare for the rest of the file
+}Tetrahedron;   //Keeping this for the visual will get ditched when I finish the mesh thingy
+
+typedef struct{
+    float *vertices;
+    unsigned short*indices;
+    int vertexIndex;
+    unsigned short indexIndex;     //index has index...recursion already started...
+
+}TetrahedronMesh;   //That's gonna be a spelling nightmare for the rest of the file
 
 
 
 /* ==================== FUNCTION PROTOTYPES ================== */
+void meshThingy(TetrahedronMesh *builder, Vector3 p1,Vector3 p2,Vector3 p3);
+void genRecursion(TetrahedronMesh *builder, Vector3 top, Vector3 left, Vector3 right, Vector3 back, int depth);
 int setUpEnv(void);
+
+Mesh makeTheFuckingTriangle(int depth);
 
 
 /* ========================== MAIN ================= */
@@ -143,4 +157,88 @@ int setUpEnv(void)
     if (!IsWindowReady()) { return(-1); }
 
     return(0);
+}
+
+
+
+void meshThingy(TetrahedronMesh *builder, Vector3 p1,Vector3 p2,Vector3 p3)
+{
+    int v = builder->vertexIndex;
+
+    //1st corner? vertex? well...my English gave up on jargon at this point...
+    builder->vertices[v] = p1.x;
+    builder->vertices[v+1] = p1.y;
+    builder->vertices[v+2] = p1.z;
+
+    //2nd of the same thing
+    builder->vertices[v+3] = p2.x;
+    builder->vertices[v+4] = p2.y;
+    builder->vertices[v+5] = p2.z;
+
+    //3rd one
+    builder->vertices[v+6] = p3.x;
+    builder->vertices[v+7] = p3.y;
+    builder->vertices[v+8] = p3.z;
+
+    int idx = builder->indexIndex;
+    int vOffset = v / 3;
+
+    //and here comes the math connecting math...
+     
+    builder->indices[idx] = vOffset;
+    builder->indices[idx+1] = vOffset+1;
+    builder->indices[idx+2] = vOffset+2;
+
+    builder->vertexIndex += 9;
+    builder->indexIndex += 3;
+    //That should work...
+}
+
+
+Mesh makeTheFuckingTriangle(int depth)
+{
+    Mesh mesh = { 0 };
+    int totalTriangles = 4*(int)pow(4,depth);   //Why no pow(4, depth+1) and 4* pow(4,depth)? 'cuz I love wasting cpu cycles
+
+    mesh.triangleCount = totalTriangles;
+    mesh.vertexCount = totalTriangles * 3;
+
+    mesh.vertices = (float *)malloc(mesh.vertexCount*3*sizeof(float));
+    if (mesh.vertices == NULL) { return((Mesh){ 0 }); }
+    mesh.indices = (unsigned short*)malloc(mesh.vertexCount * sizeof(unsigned short));
+    if (mesh.indices == NULL) {
+        free(mesh.vertices);
+        return((Mesh){ 0 });
+    }
+
+    float size = 7.5f;
+    
+    Vector3 top = {size, size, size};
+    Vector3 left = {-size, -size, size};
+    Vector3 right = {-size, size, -size};
+    Vector3 back = {size, -size, -size};
+ 
+    TetrahedronMesh tMesh = {mesh.vertices, mesh.indices, 0, 0};
+
+    genRecursion(&tMesh, top, left, right, back, depth);
+
+    UploadMesh(&mesh, false);       //Wtf dynamic upload?
+
+    return(mesh);
+}
+
+
+
+void genRecursion(TetrahedronMesh *builder, Vector3 top, Vector3 left, Vector3 right, Vector3 back, int depth)
+{
+
+    if (depth == 0) {
+        //First depth(thx...mr obvious)
+        meshThingy(builder, top, left, right);
+        meshThingy(builder, top, right, back);
+        meshThingy(builder, top, back, left);
+        meshThingy(builder, left, back, right);
+        //This should be correct...
+    }
+
 }
