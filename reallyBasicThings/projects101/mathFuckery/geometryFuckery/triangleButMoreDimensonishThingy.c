@@ -26,6 +26,7 @@
 #include <stdio.h>
 //-lm -lraylib required to link libm and raylib
 #include <raylib.h>
+#include <raymath.h>    //Yup more math headers...
 #include <math.h>
 #include <stdlib.h>
 
@@ -73,7 +74,7 @@ typedef struct{
     float *vertices;
     unsigned short*indices;
     int vertexIndex;
-    unsigned short indexIndex;     //index has index...recursion already started...
+    unsigned int indexIndex;     //index has index...recursion already started...
 
 }TetrahedronMesh;   //That's gonna be a spelling nightmare for the rest of the file
 
@@ -239,6 +240,19 @@ void genRecursion(TetrahedronMesh *builder, Vector3 top, Vector3 left, Vector3 r
         meshThingy(builder, top, back, left);
         meshThingy(builder, left, back, right);
         //This should be correct...
+        return;
     }
 
+    Vector3 mTopLeft = Vector3Scale(Vector3Add(top, left),0.5);
+    Vector3 mTopRight = Vector3Scale(Vector3Add(top, right),0.5);
+    Vector3 mTopBack = Vector3Scale(Vector3Add(top, back),0.5);
+    Vector3 mLeftRight = Vector3Scale(Vector3Add(left, right),0.5);
+    Vector3 mRightBack =Vector3Scale(Vector3Add(right, back),0.5);
+    Vector3 mBackLeft = Vector3Scale(Vector3Add(back, left),0.5);
+
+    //Now...this should work?
+    genRecursion(builder, top, mTopLeft, mTopRight, mTopBack, depth - 1);
+    genRecursion(builder, mTopLeft, left, mLeftRight, mBackLeft, depth - 1);
+    genRecursion(builder, mTopRight, mLeftRight, right, mRightBack, depth - 1);
+    genRecursion(builder, mTopBack, mBackLeft, mRightBack, back, depth - 1);
 }
