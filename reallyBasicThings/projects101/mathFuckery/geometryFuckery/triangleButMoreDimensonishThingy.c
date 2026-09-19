@@ -39,7 +39,10 @@
 #define FPS 120
 #define TITLE "Thingyangle: Revolutions"    //Yup matrix thing continues...
 
+#define MAX_DEPTH 6 //if given more it fucks up
 
+#define RED_AF CLITERAL(Color){53,0,13,255}
+#define DA_BLUE CLITERAL(Color){1,12,122,255}
 /* ============================ OBJECTS ====================== */
 /*
     So..wtf is a tetrahedron? A triangular prism?
@@ -60,15 +63,6 @@
 
 
 */
-
-
-typedef struct{
-    Vector3 v1;
-    Vector3 v2;
-    Vector3 v3;
-    Vector3 v4;
-    
-}Tetrahedron;   //Keeping this for the visual will get ditched when I finish the mesh thingy
 
 typedef struct{
     float *vertices;
@@ -92,58 +86,79 @@ Mesh makeTheFuckingTriangle(int depth);
 
 int main(void)
 {
+    
     if (setUpEnv()) { perror("Window is not emotionally ready "); return(-53); }
 
+    int cam_modes[2] = {CAMERA_ORBITAL, CAMERA_FREE};
+    int cam_mode = 0;
+    unsigned int depth = 1;
+    
+    Mesh triangle =makeTheFuckingTriangle(depth);
+
+    Model model = LoadModelFromMesh(triangle);  //Blind-faith to raylib tbh...
 
     Camera3D cam = { 0 };
-    int cam_modes[2] = {CAMERA_ORBITAL, CAMERA_FREE};
-    size_t cam_mode_selector = 0;
-    int cam_mode = cam_modes[cam_mode_selector]; 
-
-    cam.position = (Vector3){4.f, 4.f, 4.f};
-    cam.target = (Vector3){ 0 };    //it targets the origin of the plane? screen? what the fucking entity called in 3D space IDK...
-    cam.up = (Vector3){0.f, 1.0f, 0.f}; //Still no clue what is up besides a rough understanding
-    cam.fovy = 120.0f; //Quake-ass fov.. (and what happens if I give it 360? Does it look like as if it's on an event horizon of a Black Hole?)
+    cam.position = (Vector3){0.f,0.f,50.f};
+    cam.target = (Vector3){0.f,0.f,0.f};    
+    cam.up = (Vector3){0.f,1.f,0.f};
+    cam.fovy = 60.f;    //no more quake-ass FOV...
     cam.projection = CAMERA_PERSPECTIVE;
 
-    float size = 0.5f;
-    //What the fuck is the singular version of vertices? Vertex? 
-    //This placement may be way off...I am trying to imagine a 3D shape on a 2D screen and it fucks with my neurons
-    Vector3 vertices1 = {size, size, size};
-    Vector3 vertices2 = {-size, -size, size};
-    Vector3 vertices3 = {-size, size, -size};
-    Vector3 vertices4 = {size, -size, -size};
-    Tetrahedron t = {vertices1, vertices2,  vertices3, vertices4};
-
+    model.materials[0].maps[MATERIAL_MAP_DIFFUSE].color = DA_BLUE;
+    int wires = 0;
 
     DisableCursor();
 
     while (!WindowShouldClose()) {
 
         if (IsKeyPressed(KEY_ESCAPE)) { break ;}
-        if (IsKeyPressed(KEY_SPACE)) { 
-            cam_mode_selector++;
-            cam_mode = cam_modes[cam_mode_selector % 2];
-        } 
+        if (IsKeyPressed(KEY_C)) { cam_mode = cam_mode ? 0 : 1;}
+        if (IsKeyPressed(KEY_F)) { wires = wires ? 0 : 1;}
 
-        UpdateCamera(&cam, cam_mode);
-        BeginDrawing();
-        ClearBackground(BLACK);
-        BeginMode3D(cam);
-        //If I haven't fucked up this should work...
-        //after compiling...I ,in fact, fucked up
-        DrawGrid(50.f, 2.0f);
-        DrawTriangle3D(t.v1, t.v2, t.v3, RED);
-        DrawTriangle3D(t.v1, t.v3, t.v4, GREEN);
-        DrawTriangle3D(t.v1, t.v4, t.v2, BLUE);
-        DrawTriangle3D(t.v2, t.v4, t.v3, PURPLE);    
-        //Well that's the most cursed shit I've done but funny enough if you look at it beneath the grid with correct angle it looks like CMake logo
+        if (IsKeyPressed(KEY_E))
+        {
+            if (depth < MAX_DEPTH)
+            {
+                depth++;
+
+                UnloadModel(model);
+
+                Mesh newMesh = makeTheFuckingTriangle(depth);
+                model = LoadModelFromMesh(newMesh);
+
+                model.materials[0].maps[MATERIAL_MAP_DIFFUSE].color = DA_BLUE;
+            }
+        }
+
+        if (IsKeyPressed(KEY_Q) && depth > 0)
+        {
+            depth--;
+            UnloadModel(model);
+            Mesh newMesh = makeTheFuckingTriangle(depth);
+            model = LoadModelFromMesh(newMesh);
+            model.materials[0].maps[MATERIAL_MAP_DIFFUSE].color = DA_BLUE;
+        }
+
+
+        UpdateCamera(&cam, cam_modes[cam_mode]);
         
+        BeginDrawing();
+        ClearBackground(RED_AF);
+        
+        BeginMode3D(cam);
+
+        DrawModel(model, (Vector3){0,0,0}, 1.0f, WHITE);
+        if (wires) {
+            DrawModelWires(model, (Vector3){0,0,0}, 1.f, BLACK);
+        }
+
         EndMode3D();
+        
         EndDrawing();
     }
 
     EnableCursor();
+    UnloadModel(model); //This free()'s the arrays? 
     CloseWindow();
 
 
@@ -212,13 +227,15 @@ Mesh makeTheFuckingTriangle(int depth)
         return((Mesh){ 0 });
     }
 
-    float size = 7.5f;
+
     
-    Vector3 top = {size, size, size};
-    Vector3 left = {-size, -size, size};
-    Vector3 right = {-size, size, -size};
-    Vector3 back = {size, -size, -size};
- 
+    float s = 15.f;
+
+    Vector3 top   = { 0.0f,  s,  0.0f };
+    Vector3 left  = {-s, -s/2.0f,  s * 0.866f};   
+    Vector3 right = { s, -s/2.0f,  s * 0.866f};
+    Vector3 back  = { 0.0f, -s/2.0f, -s * 1.732f}; 
+    
     TetrahedronMesh tMesh = {mesh.vertices, mesh.indices, 0, 0};
 
     genRecursion(&tMesh, top, left, right, back, depth);
