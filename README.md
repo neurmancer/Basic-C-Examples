@@ -174,6 +174,8 @@
 
 > > Yet another Sierpinski's triangle using iteration (math was mildly more favorable in this one) 
 
+> > Well...another Sierpinski's triangle but with more dimensionish (Tetrahedron (yk the convex polyhedra gang))
+
 > > Fourier Epicycle Thingy(math was as usual...)
 
 ##### PI fuckery

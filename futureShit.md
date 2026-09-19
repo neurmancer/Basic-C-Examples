@@ -24,7 +24,7 @@
 - [ ] Create a function visualizer. (I know it's vauge but I don't know what to do...let's say something like Desmos or Wolfram Alpha. yeah, yeah sure also solve P = NP by next tuesday too while you are at it nerd!)
 - [X] Build an big-num lib(Yeah I didn't build that FFT for nothing)
 - [ ] Render Tupper's self-referential graph (possible, but no promises)
-- [ ] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement('Ehm actually it's topologically 2 Dimensional' I do know Mr...Nerd).
+- [X] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement('Ehm actually it's topologically 2 Dimensional' I do know Mr...Nerd).
 - [ ] Implement a MANIM(3B1B math animation engine) in C (cuz yk... why the fuck not?)
 - [X] Build a Fourier Epicycle Visualization thingy using raylib
 
