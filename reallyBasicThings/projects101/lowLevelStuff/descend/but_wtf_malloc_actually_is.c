@@ -33,6 +33,7 @@
 #include <assert.h>
 
 #include <malloc.h>
+// #include <setjmp.h>yet another cursed plan gets out
 #include <stddef.h>
 #include <stdlib.h> //This file is here to ditch you bruh just come and watch your funeral from a better seat
 #include <stdbool.h> 
@@ -103,8 +104,8 @@ int main(void)
     call_test(complex_set_of_malloc_and_free_calls, "Heap fuckery");
     
     debug_print("We're done ig?");
-    
     return(0);
+    
 }
 
 
@@ -155,9 +156,21 @@ void reduce_heap_size_if_possible()
     void *new_end = (void *)prev_block + sizeof(struct free_block) + prev_block->len;
 
     void *heap_end = sbrk(0);
+    if (heap_end == (void *)-1) {
+        perror("Sbrk really said nope...");
+        exit(EXIT_FAILURE); //Yup  I feel fancy this time
+    }
     while (new_end < heap_end - PAGE_SIZE) {
-        sbrk(-PAGE_SIZE);
+        if( sbrk(-PAGE_SIZE) == (void *)-1){
+            perror("Sbrk having a tantrum");
+            exit(EXIT_FAILURE);
+        } 
         heap_end = sbrk(0);
+        if (heap_end == (void *)-1) {
+            perror("Same story...");
+            exit(EXIT_FAILURE);
+        }
+
         struct data *allocator_header = get_allocator_header();
         allocator_header->amount_of_pages -= 1;
     }
@@ -280,17 +293,29 @@ int *add_used_block(size_t size)
         struct free_block *last_block = find_last_block();
         
         while (last_block->len < size) {
-            sbrk(PAGE_SIZE);
+            if(sbrk(PAGE_SIZE) == (void *)-1)
+            {
+                perror("Fuckk...");
+                exit(EXIT_FAILURE);
+            }
+
             last_block->len += PAGE_SIZE;
             allocator_header->amount_of_pages += 1;
         }
+
         smallest_block = last_block;
     }
 
     smallest_block->in_use = true;
     int must_size = smallest_block->len - size - sizeof(struct free_block) - 1;
+    
     if (must_size <= 0 ) {
-        sbrk(PAGE_SIZE);
+        if(sbrk(PAGE_SIZE) == (void *)-1)
+        {
+            perror("Fuckyty fuck...");
+            exit(EXIT_FAILURE);
+
+        }
         allocator_header->amount_of_pages += 1;
         last_block->len += PAGE_SIZE;
 
@@ -321,10 +346,20 @@ int *so_this_is_malloc(size_t size)
 {
     if (heap_begins == NULL) {
         heap_begins = sbrk(0);
+        if (heap_begins == (void *)-1 ) {
+            perror("My error codes getting worse and worse...");
+            exit(EXIT_FAILURE);
+        }
+
         sbrk(PAGE_SIZE);
     }
 
     char *heap_end = sbrk(0);
+    if (heap_end == (void *)-1) {
+        perror("Heap end error in add_used_block and yeah this one says exactly what needs to be said...");
+        exit(EXIT_FAILURE);
+    }
+
     long int len = heap_end - heap_begins;
 
     if ((*heap_begins) != DOPE_BYES) {
@@ -430,7 +465,13 @@ void complex_set_of_malloc_and_free_calls() {
     assert(malloc_header->amount_of_pages == 1);
     assert(malloc_header->amount_of_blocks == 2);
     
-    int heap_size = sbrk(0) - (void *)heap_begins;
+    void *sys_break = sbrk(0);
+    if (sys_break == (void *)-1) {
+        perror("Yet another sbrk nope");
+        exit(EXIT_FAILURE);
+    }
+
+    int heap_size = sys_break  - (void *)heap_begins;
     
     assert(heap_size == PAGE_SIZE);
     
