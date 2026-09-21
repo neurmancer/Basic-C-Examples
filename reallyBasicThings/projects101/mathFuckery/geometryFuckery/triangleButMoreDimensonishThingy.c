@@ -39,7 +39,7 @@
 #define FPS 120
 #define TITLE "Thingyangle: Revolutions"    //Yup matrix thing continues...
 
-#define MAX_DEPTH 6 //if given more it fucks up
+#define MAX_DEPTH 6 //if given more it fucks up (raylib accepts indices as shorts...it can't hold more than that...)
 
 #define RED_AF CLITERAL(Color){53,0,13,255}
 #define DA_BLUE CLITERAL(Color){1,12,122,255}
@@ -66,7 +66,7 @@
 
 typedef struct{
     float *vertices;
-    unsigned short*indices;
+    unsigned short *indices;
     int vertexIndex;
     unsigned int indexIndex;     //index has index...recursion already started...
 
@@ -172,6 +172,7 @@ int setUpEnv(void)
     InitWindow(WIDTH, HEIGHT, TITLE);
     if (!IsWindowReady()) { return(-1); }
 
+    SetTargetFPS(FPS);
     return(0);
 }
 
