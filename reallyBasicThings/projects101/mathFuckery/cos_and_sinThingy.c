@@ -22,7 +22,7 @@
     [-PI/2, PI/2] where the Taylor series converges much faster
 
     This simple reduction uses a rounded TWO_PI, so accuracy degrades for
-    very large angles. Keep animation angles bounded for best results.
+    very large angles. Keep animation angles bounded for best results. (yes you future me...)
 */
 
 static double reduce_angle(double x){

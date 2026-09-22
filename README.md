@@ -155,6 +155,8 @@
 
 > > A sqrt function approximation attempt to scratch my curious itch (it's not accurate but kinda is atp...and the others are just there for no reason)
 
+> > Implementing my own sin and cos functions using Taylor series esimation(No inline assembly this time I swear)
+
 > > Prime indicator (I guess it's optimized but dunno for sure) when the Satan took the wheels
 
 > > Screensaver that paints screen from scratch using primes  with ANSI for CLI 
