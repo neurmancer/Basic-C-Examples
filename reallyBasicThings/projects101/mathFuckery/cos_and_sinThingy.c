@@ -3,13 +3,14 @@
     'Sup? This gonna be quicky I'll make my own sin and cos implementation using Taylor series and shit so I can use them for my
     spinning ASCII Donut and just to try I'll be writing the math in LaTeX lol...
 
-
+    I did put this into experiment folder but then I remembered the sqrtThingy was in math fuckery so...this gets the same treatmant I guess...
+    btw I haven't add the .tex file but I'll gimme a min
 */
 
 
 #ifndef DBL_MAX
-    #define DBL_MAX __DBL_MAX__
-#endif
+    #define DBL_MAX __DBL_MAX__ //This is from <floats.h> or smthg GCC macro I guess 
+#endif  //Why my 'endif' is red now?
 
 #define PI (3.14159265358979323846)
 #define TWO_PI (2.0 * PI)
@@ -18,7 +19,7 @@
 /*
     Inputs are in radians (duh...). Reduce to [-PI, PI] by subtracting decending
     powers-of-two multiples of TWO_PI then use symmetry to reach
-    [-PI/2, PI/2], where the Taylor series converges much faster
+    [-PI/2, PI/2] where the Taylor series converges much faster
 
     This simple reduction uses a rounded TWO_PI, so accuracy degrades for
     very large angles. Keep animation angles bounded for best results.
