@@ -56,7 +56,7 @@
 
 /* ====================== INCLUDES =================== */
 
-#include <iso646.h>
+#include <iso646.h> //added by mistake and I refuse to delete after realizing (go check wtf is iso646 (spoiler: you'll find trigraphs and digraphs on the way) )
 #include <stddef.h>
 #include <stdlib.h>     //Dynamic shit will get involved so...malloc it is 
 #include <stdio.h>
@@ -133,7 +133,13 @@ int main(void)
 
     input = (complexNum *)malloc(N*sizeof(complexNum));
     output = (dftData *)malloc(N*sizeof(dftData));
-    if (input == NULL || output == NULL) { printf("SBRK SAID NOPE!\n"); return(-1); }
+    if (input == NULL || output == NULL) {
+        printf("SBRK SAID NOPE!\n");
+        free(input);    //I could've checked them seperately but free(NULL) is no-op so I'll cheese like that
+        free(output);
+        CloseWindow();
+        return(-1); 
+    }
 
     for (size_t i = 0 ; i < N; i++) {
         input[i] = (complexNum){rand()%500, rand()%500};
@@ -277,7 +283,7 @@ int compareAmp(const void *a, const void *b)
     -   Why FFT is fast AF O(n*log(n))
     -   What is bit-reversal
     -   Why I chose iterate/recurse 
-    -   What is Bluestein algorithm and chirp-z (since we need to handle non-radix2 input and native cooley-turkey is incapable of that)
+    -   What is Bluestein algorithm and chirp-z (since we need to handle non-radix2 input and native cooley-tukey is incapable of that)
 */
 
 int dft(complexNum *input, dftData *output , size_t arrLen)

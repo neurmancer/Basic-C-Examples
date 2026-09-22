@@ -10,11 +10,6 @@
 
                 This shit here because I found out this cool graph in MIT's website: https://web.mit.edu/jorloff/www/chaosTalk/double-pendulum/double-pendulum-en.html
 
-
-
-                and I may add the graphs too but no promises 
-
-
                 and lol as always this is a template for now....
 
 */
@@ -43,16 +38,22 @@
 #define SHE_LOVES_PURPLE CLITERAL(Color){191, 0, 255,255}
 #define SO_DO_I CLITERAL(Color){153, 102, 204,255}
 #define RED_AF CLITERAL(Color){53,0,13,255}
+#define GRAYISH       CLITERAL(Color){ 144, 164, 174, 255 }  
 // Object defines
 #define BALL_RADIUS (33.3f)
 #define LINE_THICKNESS (3.5)
+#define POSITION_HISTORY_LENGTH 1000
+#define TRAIL_HISTORY_LENGTH 240
+#define PHYSICS_DT (1.0 / 480.0)  // Accuracy shit : seconds per RK4 step
+#define HISTORY_SAMPLE_STEPS 10  
+#define MAX_FRAME_TIME 0.25 //Simply to prevent continental drift ater a freeze      
 
 #ifndef FPS 
     #define FPS 120
 #endif
 
 #ifndef SIM_SPEED
-    #define SIM_SPEED 2.5f
+    #define SIM_SPEED 2.5
 #endif
 
 /* ====================== OBJECTS ============================= */
@@ -61,13 +62,13 @@
 typedef struct{
     //Well...what should I put here again?
 
-    float th1, th2; //Theta 1 and theta 2 (angles) (btw I'll be following the notation given below)
-    float dTh1, dTh2;   //First deriv. of angles (angular velo)
-    float ddTh1, ddTh2; //Second deriv of angles (first deriv of angular vel (angualar accel))
+    double th1, th2; //Theta 1 and theta 2 (angles) (btw I'll be following the notation given below)
+    double dTh1, dTh2;   //First deriv. of angles (angular velo)
+    double ddTh1, ddTh2; //Second deriv of angles (first deriv of angular vel (angualar accel))
     
-    float m1,m2;    //Masses
-    float l1,l2;    //Rod lengths  
-    float gravity; //You know what gravity is right? 
+    double m1,m2;    //Masses
+    double l1,l2;    //Rod lengths in pixels (80 pixels per metre).
+    double gravity; //Pixels per simulation second squared.
 
 }Physics;    //as the giant nerd yapping down here suggests we need both balls affecting each other's movement so keeping physics separate make sense I guess
 
@@ -105,11 +106,24 @@ typedef struct{
 }Config;
 
 typedef struct {
-    float th1, th2, dTh1, dTh2;
+    double th1, th2, dTh1, dTh2;
 } State;
+
+typedef struct {
+    double accumulator;
+    int sampleSteps;
+} SimulationClock;
+
+typedef struct {
+    Vector2 positions[2][POSITION_HISTORY_LENGTH];
+    int next;  // Next slot to overwrite, both bobs (who is bob tho?).
+    int count;
+} PositionHistory;
 
 //and here is the fun shit... wtf fuck is the formula
 /*
+
+            ====================== MINI CALCULUS LECTURE =========================
 
 x = horizontal position of pendulum mass
 y = vertical position of pendulum mass
@@ -232,8 +246,13 @@ Well...I am feeling too smart and too fucking dumb at the same time rn... Who wo
 
 void drawThingies(Entities *ent);
 void setStage(Entities *ent, Config *cfg);
-void rk4Step(Physics *engine, float dt);
+void rk4Step(Physics *engine, double dt);
+void updateAccelerations(Physics *engine);
+void advanceSimulation(Entities *ent, PositionHistory *history, SimulationClock *clock, double frameTime);
 void updatePositions(Entities *ent);
+void recordPositions(PositionHistory *history, const Entities *ent);
+void drawTrail(const PositionHistory *history, Vector2 currentPosition);
+void drawPositionGraphs(const PositionHistory *history, const Entities *ent);
 int setEnv(void);
 
 
@@ -252,21 +271,21 @@ Config cfg = {
         .m2 = 10.0f,
         .l1 = 250.0f,
         .l2 = 200.0f,
-        .gravity = 9.81f * 80.0f,  
-        .th1 = GetRandomValue(-120, 120) * DEG2RAD,   
-        .th2 = GetRandomValue(-120, 120) * DEG2RAD,
+        .gravity = 9.81 * 80.0,
+        .th1 = GetRandomValue(-120, 120) * (acos(-1.0) / 180.0),
+        .th2 = GetRandomValue(-120, 120) * (acos(-1.0) / 180.0),
         .dTh1 = 0.0f,
         .dTh2 = 0.0f,
         .ddTh1 = 0.0f,
         .ddTh2 = 0.0f
     },
     .pendCfg[0] = {
-        .line = { (Vector2){WIDTH/2.0f, 80.0f}, {0}, 0, RED_AF },
-        .ball = { {0}, BALL_RADIUS, SO_DO_I }
+        .line = { (Vector2){WIDTH/2.0f, 80.0f}, {0}, 0,  GRAYISH},
+        .ball = { {0}, BALL_RADIUS, RED_AF }
     },
     .pendCfg[1] = {
-        .line = { {0}, {0}, 0, RED_AF },
-        .ball = { {0}, BALL_RADIUS * 0.75f, SHE_LOVES_PURPLE }
+        .line = { {0}, {0}, 0, GRAYISH },
+        .ball = { {0}, BALL_RADIUS * 0.75f, RED_AF }
     }
 };
 
@@ -276,18 +295,28 @@ Config cfg = {
     Entities objs = { 0 };
 
     setStage(&objs, &cfg);
+    PositionHistory history = { 0 };
+    bool showGraphs = false;
+    recordPositions(&history, &objs);
     
-    float dt = 0;
+    SimulationClock clock = { 0 };
+    double previousTime = GetTime();
     while (!WindowShouldClose()) {
-        dt = GetFrameTime();
+        double now = GetTime();
+        double dt = now - previousTime;
+        previousTime = now;
         if (IsKeyPressed(KEY_ESCAPE)) { break; }
+        if (IsKeyPressed(KEY_G)) { showGraphs = !showGraphs; }
 
-        rk4Step(&objs.engine, SIM_SPEED*dt);
-        updatePositions(&objs);
+        advanceSimulation(&objs, &history, &clock, dt);
 
         BeginDrawing();
         ClearBackground(BLACK);
+        drawTrail(&history, objs.pend[1].ball.pos);
         drawThingies(&objs);
+        if (showGraphs) { drawPositionGraphs(&history, &objs); }
+        DrawText(showGraphs ? "[G] Hide position graphs" : "[G] Show position graphs", 20, 20, 20, RAYWHITE);
+        DrawText("Peak autism...", 20, 50 , 20, RAYWHITE);
         EndDrawing();
     }
 
@@ -309,16 +338,109 @@ void setStage(Entities *ent, Config *cfg)
 
     ent->pend[0].line.startPos = (Vector2){ WIDTH / 2.0f, 80.0f };
 
+    updateAccelerations(&ent->engine);
+    updatePositions(ent);
+}
+
+void advanceSimulation(Entities *ent, PositionHistory *history, SimulationClock *clock, double frameTime)
+{
+    clock->accumulator += fmin(frameTime, MAX_FRAME_TIME) * SIM_SPEED;
+    while (clock->accumulator >= PHYSICS_DT) {
+        rk4Step(&ent->engine, PHYSICS_DT);
+        clock->accumulator -= PHYSICS_DT;
+        if (++clock->sampleSteps == HISTORY_SAMPLE_STEPS) {
+            updatePositions(ent);
+            recordPositions(history, ent);
+            clock->sampleSteps = 0;
+        }
+    }
     updatePositions(ent);
 }
 
 void drawThingies(Entities *ent)
 {
-    Vector2 last_pos[2] = { 0 };
     for (int i = 1; i >= 0; i--) {
          
         DrawLineEx(ent->pend[i].line.startPos, ent->pend[i].line.endPos, 6.f, ent->pend[i].line.color);
         DrawCircleV(ent->pend[i].ball.pos, ent->pend[i].ball.radius, ent->pend[i].ball.color);   
+    }
+}
+
+void recordPositions(PositionHistory *history, const Entities *ent)
+{
+    for (int bob = 0; bob < 2; bob++) {
+        history->positions[bob][history->next] = ent->pend[bob].ball.pos;
+    }
+    history->next = (history->next + 1) % POSITION_HISTORY_LENGTH;
+    if (history->count < POSITION_HISTORY_LENGTH) { history->count++; }
+}
+
+void drawTrail(const PositionHistory *history, Vector2 currentPosition)
+{
+    int length = history->count < TRAIL_HISTORY_LENGTH ? history->count : TRAIL_HISTORY_LENGTH;
+    int start = (history->next - length + POSITION_HISTORY_LENGTH) % POSITION_HISTORY_LENGTH;
+    for (int i = 1; i < length; i++) {
+        int previous = (start + i - 1) % POSITION_HISTORY_LENGTH;
+        int current = (start + i) % POSITION_HISTORY_LENGTH;
+        float opacity = (float)i / (length - 1);
+        DrawLineEx(history->positions[1][previous], history->positions[1][current],
+                   2.5f, Fade(SHE_LOVES_PURPLE, opacity));
+    }
+    if (length > 0) {
+        int newest = (history->next - 1 + POSITION_HISTORY_LENGTH) % POSITION_HISTORY_LENGTH;
+        DrawLineEx(history->positions[1][newest], currentPosition, 2.5f, SHE_LOVES_PURPLE);
+    }
+}
+
+void drawPositionGraphs(const PositionHistory *history, const Entities *ent)
+{
+
+    //Graphing was fucking harder than the math itself wtf? (yup I added graph as a second thought Hi!)
+    Vector2 pivot = ent->pend[0].line.startPos;
+
+    float range = ent->engine.l1 + ent->engine.l2;
+
+    int oldest = (history->next - history->count + POSITION_HISTORY_LENGTH) % POSITION_HISTORY_LENGTH;
+
+    for (int bob = 0; bob < 2; bob++) {
+        int left = 20 + bob * (WIDTH / 2);
+        
+        Rectangle panel = { (float)left, HEIGHT - 290.0f, WIDTH / 2.0f - 40.0f, 270.0f };
+        Rectangle plot = { panel.x + 60.0f, panel.y + 70.0f, panel.width - 80.0f, 160.0f };
+        
+        float middle = plot.y + plot.height / 2.0f;
+
+        DrawRectangleRec(panel, Fade(DARKGRAY, 0.95f));
+        DrawText(TextFormat("Bob %d position / samples (%d of %d)", bob + 1,
+                            history->count, POSITION_HISTORY_LENGTH), left + 12, (int)panel.y + 12, 18, RAYWHITE);
+
+        DrawText("X (pixels)", left + 12, (int)panel.y + 40, 18, SKYBLUE);
+        DrawText("Y (pixels, down +)", left + 150, (int)panel.y + 40, 18, ORANGE);
+        
+        DrawRectangleLinesEx(plot, 1.0f, GRAY);
+        DrawLineEx((Vector2){plot.x, middle}, (Vector2){plot.x + plot.width, middle}, 1.0f, GRAY);
+        
+        DrawText(TextFormat("+%.0f", range), left + 5, (int)plot.y, 16, LIGHTGRAY);
+        DrawText("0", left + 35, (int)middle - 8, 16, LIGHTGRAY);
+        DrawText(TextFormat("-%.0f", range), left + 5, (int)(plot.y + plot.height) - 16, 16, LIGHTGRAY);
+        DrawText(TextFormat("-%.2f simulation s", (POSITION_HISTORY_LENGTH - 1) * HISTORY_SAMPLE_STEPS * PHYSICS_DT),
+                 (int)plot.x, (int)(plot.y + plot.height) + 10, 16, LIGHTGRAY);
+        DrawText("Latest sample", (int)(plot.x + plot.width) - 115,
+                 (int)(plot.y + plot.height) + 10, 16, LIGHTGRAY);
+        
+        for (int i = 1; i < history->count; i++) {
+            Vector2 previous = history->positions[bob][(oldest + i - 1) % POSITION_HISTORY_LENGTH];
+            Vector2 current = history->positions[bob][(oldest + i) % POSITION_HISTORY_LENGTH];
+            
+            float x0 = plot.x + plot.width * (POSITION_HISTORY_LENGTH - history->count + i - 1) / (POSITION_HISTORY_LENGTH - 1);
+            float x1 = x0 + plot.width / (POSITION_HISTORY_LENGTH - 1);
+            float scale = plot.height / (2.0f * range);
+            
+            DrawLineEx((Vector2){x0, middle - (previous.x - pivot.x) * scale},
+                       (Vector2){x1, middle - (current.x - pivot.x) * scale}, 1.5f, SKYBLUE);
+            DrawLineEx((Vector2){x0, middle - (previous.y - pivot.y) * scale},
+                       (Vector2){x1, middle - (current.y - pivot.y) * scale}, 1.5f, ORANGE);
+        }
     }
 }
 
@@ -331,24 +453,25 @@ State math(State s, Physics *eng) {
     d.th2 = s.dTh2;
     
 
-    float num1 = -eng->gravity * (2*eng->m1 + eng->m2) * sinf(s.th1)
-                 - eng->m2 * eng->gravity * sinf(s.th1 - 2*s.th2)
-                 - 2 * sinf(s.th1 - s.th2) * eng->m2 
-                   * (s.dTh2*s.dTh2*eng->l2 + s.dTh1*s.dTh1*eng->l1*cosf(s.th1 - s.th2));
-    float den1 = eng->l1 * (2*eng->m1 + eng->m2 - eng->m2*cosf(2*s.th1 - 2*s.th2));
+    double num1 = -eng->gravity * (2*eng->m1 + eng->m2) * sin(s.th1)
+                 - eng->m2 * eng->gravity * sin(s.th1 - 2*s.th2)
+                 - 2 * sin(s.th1 - s.th2) * eng->m2
+                   * (s.dTh2*s.dTh2*eng->l2 + s.dTh1*s.dTh1*eng->l1*cos(s.th1 - s.th2));
+    double den1 = eng->l1 * (2*eng->m1 + eng->m2 - eng->m2*cos(2*s.th1 - 2*s.th2));
+    
     d.dTh1 = (den1 != 0.0f) ? num1 / den1 : 0.0f;
     
-    float num2 = 2 * sinf(s.th1 - s.th2) 
+    double num2 = 2 * sin(s.th1 - s.th2)
                  * (s.dTh1*s.dTh1*eng->l1*(eng->m1 + eng->m2)
-                    + eng->gravity*(eng->m1 + eng->m2)*cosf(s.th1)
-                    + s.dTh2*s.dTh2*eng->l2*eng->m2*cosf(s.th1 - s.th2));
-    float den2 = eng->l2 * (2*eng->m1 + eng->m2 - eng->m2*cosf(2*s.th1 - 2*s.th2));
+                    + eng->gravity*(eng->m1 + eng->m2)*cos(s.th1)
+                    + s.dTh2*s.dTh2*eng->l2*eng->m2*cos(s.th1 - s.th2));
+    double den2 = eng->l2 * (2*eng->m1 + eng->m2 - eng->m2*cos(2*s.th1 - 2*s.th2));
     d.dTh2 = (den2 != 0.0f) ? num2 / den2 : 0.0f;
     
     return(d);
 }
 
-void rk4Step(Physics *eng, float dt) {
+void rk4Step(Physics *eng, double dt) {
     State y0 = { eng->th1, eng->th2, eng->dTh1, eng->dTh2 };
     
     State k1 = math(y0, eng);
@@ -381,6 +504,14 @@ void rk4Step(Physics *eng, float dt) {
     eng->th2  += (k1.th2  + 2.0f*k2.th2  + 2.0f*k3.th2  + k4.th2)  * dt / 6.0f;
     eng->dTh1 += (k1.dTh1 + 2.0f*k2.dTh1 + 2.0f*k3.dTh1 + k4.dTh1) * dt / 6.0f;
     eng->dTh2 += (k1.dTh2 + 2.0f*k2.dTh2 + 2.0f*k3.dTh2 + k4.dTh2) * dt / 6.0f;
+    updateAccelerations(eng);
+}
+
+void updateAccelerations(Physics *eng)
+{
+    State derivative = math((State){eng->th1, eng->th2, eng->dTh1, eng->dTh2}, eng);
+    eng->ddTh1 = derivative.dTh1;
+    eng->ddTh2 = derivative.dTh2;
 }
 
 
@@ -406,12 +537,12 @@ int setEnv(void)
 void updatePositions(Entities *ent)
 {
     //Yeah I could'vce used arrays for thetas too to iterate everything with loops but...sun already arisen and I am half-dead
-    ent->pend[0].line.endPos.x = ent->pend[0].line.startPos.x + ent->engine.l1 * sinf(ent->engine.th1);
-    ent->pend[0].line.endPos.y = ent->pend[0].line.startPos.y + ent->engine.l1 * cosf(ent->engine.th1);
+    ent->pend[0].line.endPos.x = ent->pend[0].line.startPos.x + ent->engine.l1 * sin(ent->engine.th1);
+    ent->pend[0].line.endPos.y = ent->pend[0].line.startPos.y + ent->engine.l1 * cos(ent->engine.th1);
     ent->pend[0].ball.pos     = ent->pend[0].line.endPos;
 
     ent->pend[1].line.startPos = ent->pend[0].ball.pos;
-    ent->pend[1].line.endPos.x = ent->pend[1].line.startPos.x + ent->engine.l2 * sinf(ent->engine.th2);
-    ent->pend[1].line.endPos.y = ent->pend[1].line.startPos.y + ent->engine.l2 * cosf(ent->engine.th2);
+    ent->pend[1].line.endPos.x = ent->pend[1].line.startPos.x + ent->engine.l2 * sin(ent->engine.th2);
+    ent->pend[1].line.endPos.y = ent->pend[1].line.startPos.y + ent->engine.l2 * cos(ent->engine.th2);
     ent->pend[1].ball.pos     = ent->pend[1].line.endPos;
 }
