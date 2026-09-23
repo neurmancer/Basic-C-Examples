@@ -1,0 +1,132 @@
+\documentclass{article}
+\usepackage{amsmath}
+
+
+\begin{document}
+
+
+
+
+Well\ldots this is a test to be honest, yes I am using a highly convinient typsetting language to shitpost but listen me for a
+second bruh when math fuckery graduates from Basic-C-Repo (Which will in the future) math must be in a readable form + I need to FUCKING practice LaTeX duh\ldots
+
+
+So here is the formula (actual math this time):
+\begin{align*}
+    \sin x &= \sum_{n=0}^{\infty}{(-1)}^n\frac{x^{2n+1}}{(2n+1)!}
+            = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots, \\
+    \cos x &= \sum_{n=0}^{\infty}{(-1)}^n\frac{x^{2n}}{(2n)!}
+            = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \cdots.
+\end{align*}
+
+Technically those are Maclaurin series, which is just Taylor series centered
+at zero. Inputs are in radians (duh\ldots). Also that exclamation mark is a
+factorial, the equation isn't yelling at you yet.
+
+Now how does this become \texttt{cos\_and\_sinThingy.c}? Because writing
+infinity into a for loop sounds like a great way to never see my donut again.
+
+\section*{First make the angle fucking chill}
+
+The series converges for every real angle, but throwing a huge number directly
+into those powers is asking for floating-point fuckery. Sine and cosine repeat
+every $2\pi$, so \texttt{reduce\_angle} first brings the input into
+$[-\pi,\pi]$ without changing which point on the circle we mean.
+
+If the angle is already in that interval, it just returns it. Otherwise the
+code takes its magnitude and starts with \texttt{period} equal to $2\pi$.
+It doubles that period while
+\[
+    \texttt{period} \leq \frac{|x|}{2},
+\]
+then walks back down by halving it, subtracting each period if it fits inside
+the remaining magnitude. Basically subtract big chunks first instead of
+subtracting $2\pi$ a billion times like an idiot (me, probably). The division
+by two in that condition also keeps the next doubling from overflowing.
+
+After that, the remainder satisfies $0 \leq r < 2\pi$ in exact arithmetic. If it is bigger
+than $\pi$, subtract another $2\pi$; finally restore the original input's sign.
+For example, $3\pi/2$ becomes $-\pi/2$. Same point on the circle, smaller
+number to fuck with.
+
+Then both functions fold the angle again, this time into
+$[-\pi/2,\pi/2]$. Call the reduced angle $r$ and the folded angle $u$:
+\[
+    u =
+    \begin{cases}
+        \pi-r,  & r > \pi/2, \\
+        -\pi-r, & r < -\pi/2, \\
+        r,      & \text{otherwise}.
+    \end{cases}
+\]
+Sine keeps its value under those folds: $\sin r = \sin u$.
+Cosine needs a sign flip when either fold happens, so
+\texttt{taylor\_cos} starts with \texttt{sign = 1.0} and changes it to
+$-1$ in those two branches. That's why its return is
+\texttt{sign * sum}. Smaller angle, same answer, fewer numerical headaches.
+
+\section*{No factorial factory needed}
+
+I could calculate every power and factorial separately, but the next term
+already knows how to come from the previous one. For sine, divide two
+consecutive terms and everything cancels down to
+\[
+    t_0=u, \qquad
+    t_n=-t_{n-1}\frac{u^2}{(2n)(2n+1)}.
+\]
+For cosine it is the same trick with the even powers:
+\[
+    t_0=1, \qquad
+    t_n=-t_{n-1}\frac{u^2}{(2n-1)(2n)}.
+\]
+That's literally what the two loops do. \texttt{x\_squared} stores $u^2$
+once, \texttt{term} holds the current term, and \texttt{sum} collects them.
+The minus sign alternates the terms for us. No \texttt{pow}, no factorial
+function, no \texttt{math.h}; just multiplication, division and addition.
+
+Both loops run from $n=1$ through $n=10$, but the initial term is already
+in \texttt{sum}, so we actually use eleven terms:
+\begin{align*}
+    \sin u &\approx \sum_{n=0}^{10}{(-1)}^n\frac{u^{2n+1}}{(2n+1)!}
+             &&(\text{through }-u^{19}/19! + u^{21}/21!), \\
+    \cos u &\approx \sum_{n=0}^{10}{(-1)}^n\frac{u^{2n}}{(2n)!}
+             &&(\text{through }-u^{18}/18! + u^{20}/20!).
+\end{align*}
+The code uses a fixed number of terms, not a ``keep going until accurate
+enough'' check. Since $|u|\leq\pi/2$, the omitted alternating tail has shrinking
+terms, and its first term bounds the truncation error:
+\[
+    |E_{\sin}|\leq\frac{{(\pi/2)}^{23}}{23!}, \qquad
+    |E_{\cos}|\leq\frac{{(\pi/2)}^{22}}{22!}.
+\]
+Those are bounds for the series truncation in exact arithmetic, not a promise
+that my C doubles magically have infinite precision. Rounding still exists,
+because of course it does.
+
+\section*{The weird inputs and the catch}
+
+\verb|x != x| catches NaN and returns it. Comparing against
+\texttt{DBL\_MAX} catches positive and negative infinity, and
+\verb|x - x| turns those into NaN under the usual IEEE floating-point
+behavior. There isn't a useful angle hiding inside infinity, bruh.
+The fallback \texttt{\_\_DBL\_MAX\_\_} is a compiler-provided macro;
+the standard header for \texttt{DBL\_MAX} is \texttt{<float.h>}.
+
+Sine also returns immediately when \texttt{x == 0.0}. That preserves negative
+zero too. Yes, negative zero is a thing, apparently regular zero wasn't enough.
+Cosine at zero starts at $1$ and all the remaining terms are zero, as expected.
+
+The big catch is angle reduction: \texttt{PI} and \texttt{TWO\_PI} are rounded
+floating-point constants. For very large angles, reducing with that rounded
+period can give a bad remainder, and doubles themselves stop resolving tiny
+changes between huge numbers. Adding more Taylor terms won't fix an angle
+that was already wrong before the loop started.
+
+So for the spinning ASCII donut, keep the rotation angles bounded instead of
+letting them grow forever (yes, future me, this part is for you). This is my
+small sin/cos implementation for the experiment, not a claim that I somehow
+outsmarted the entire math library in two for loops lol.
+
+
+
+\end{document}

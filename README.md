@@ -165,6 +165,8 @@
 
 > > Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 
+> > A fucking spinning ASCII Donut (prototype yet...I'll develop that a little further and it has explanations too...)
+
 #### Geomoetry Fuckery 
 
 > - [Geometry Fuckery](/reallyBasicThings/projects101/mathFuckery/geometryFuckery/)
