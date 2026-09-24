@@ -15,7 +15,7 @@
 
         1/pi = (2*sqrt(2)/9801) * sum((4k)!*(1103+26390k) / ((k!)^4*396^(4k)))
         The sum starts at k=0. Flip the result at the end to get pi.
-        max is 2260 digits something (still better than M_PI tho lol)
+        max is 9180 digits something (still better than M_PI tho lol)
 */
 
 #include <stdio.h>

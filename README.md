@@ -196,7 +196,7 @@
 
 > > - Calculating π using two boxes and collision (yk...the 3Blue1Brown video)
 
-> > - **ULTIMATE π GAMBA** Ramanujan-type series for calculating 1/π (upto 2000+ digits) 
+> > - **ULTIMATE π GAMBA** Ramanujan-type series for calculating 1/π (upto 9000+ digits) 
 
 #### DSP Fuckery
 
