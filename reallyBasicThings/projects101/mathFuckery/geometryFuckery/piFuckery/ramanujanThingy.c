@@ -7,7 +7,7 @@
         I'll be using my own big nums to hold the values and shit and you'll see include with <bignums.h> instead of "bignums.h"
         since I have it installed in the path and I highly recommend you to do too if you wanna run this code but you can use it with local builds and shit with a few tweaks
 
-        So... self-promo: https://github.com/neurmancer/Big-Nums go read this 
+        So...shamless self-promo: https://github.com/neurmancer/Big-Nums go read this 
 
         and it requires -lbignums to compile lol
         cc ramanujanThingy.c -lbignums -o ramanujan
@@ -16,6 +16,12 @@
         1/pi = (2*sqrt(2)/9801) * sum((4k)!*(1103+26390k) / ((k!)^4*396^(4k)))
         The sum starts at k=0. Flip the result at the end to get pi.
         max is 9180 digits something (still better than M_PI tho lol)
+
+
+    btw 2 hours after  finishing this there is an Pi gamba ultimate²
+
+    so...I gotta update the big nums yet once again for dynamic allocation instead of stack 
+    based limbs to use the Chudnovsky algorithm lol 
 */
 
 #include <stdio.h>
