@@ -165,7 +165,7 @@
 
 > > Koch Curve from Binary interpretation I made (not sure if it's accurate) 
 
-> > A fucking spinning ASCII Donut (prototype yet...I'll develop that a little further and it has explanations too...)
+> > A fucking spinning RGB ASCII Donut 
 
 #### Geomoetry Fuckery 
 
