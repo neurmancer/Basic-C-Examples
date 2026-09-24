@@ -7,6 +7,8 @@
     opposing forces attract each other for initial draft we'll see how it goes... 
 
 
+    Anyways this is here as a template tho...
+
 */
 
 
