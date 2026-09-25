@@ -196,7 +196,9 @@
 
 > > - Calculating π using two boxes and collision (yk...the 3Blue1Brown video)
 
-> > - **ULTIMATE π GAMBA** Ramanujan-type series for calculating 1/π (upto 9000+ digits) 
+> > - **ULTIMATE π GAMBA** Ramanujan-type series for calculating 1/π 
+
+> > - **ULTIMATE π GAMBA²** Using _Chudnovsky's algorithm_ (after 50k digits it slows down tho...)
 
 #### DSP Fuckery
 
