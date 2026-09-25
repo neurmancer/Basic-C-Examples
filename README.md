@@ -233,6 +233,7 @@
 
 > > Yet another pendulum but this time it's **doubled** the trouble!
 
+> > Electrostatic charge simulation with neat colors...
 ---
 
 ### Forcing Silicon Into Thinking
