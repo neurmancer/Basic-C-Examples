@@ -183,7 +183,8 @@ int sendFBuffer(hid_device *handle, unsigned char *framebuffer) {
 }
 
 int getSpotiInfo(char *artist, size_t artist_size, char *title, size_t title_size) {
-    FILE *fp = popen("playerctl -p spotify metadata --format \"{{artist}}||{{title}}\" 2>/dev/null", "r");
+    FILE *fp = popen(
+        "playerctl -p spotify metadata --format \"{{artist}}||{{title}}\" 2>/dev/null", "r");
     if (!fp) {
         snprintf(artist, artist_size, "No Spotify");
         title[0] = '\0';
