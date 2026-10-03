@@ -290,6 +290,7 @@
 > - A printf() implementation (print_it)
 > - Custom malloc implementation using sbrk(delta);
 > - A basic bytecode interpreter (single register)
+> - A slightly better bytecode interpreter
 > - A process injection demo
 ## Retro Shit
 
