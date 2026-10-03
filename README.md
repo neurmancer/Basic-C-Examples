@@ -72,6 +72,7 @@
 > - Struct intro 
 > - Unions intro
 > - A basic inverted array walk via pointers (with memory address laid out)
+> - [x86 Assembly Lecture](reallyBasicThings/basics/asm_lecture/00_start_here.asm) - Crash from NSD Hardware & Architecture takes the console. Registers, syscalls, SIMD and a FizzBuzz field exercise, explained in assembly comments (Linux x86-64, with an optional i386 briefing)
 > - Subfoldef for bitwise sorcery 
 > - A bitwise operations chart 
 > - and a cmpbits program 
