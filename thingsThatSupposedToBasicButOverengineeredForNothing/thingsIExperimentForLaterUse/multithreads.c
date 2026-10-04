@@ -2,8 +2,6 @@
     'sup? actual POSIX thread fuckery this time.
     Four workers split the sum of 1 through 1000000 between themselves.
 
-    Compile: cc -std=c11 -Wall -Wextra -Wpedantic -pthread multithreads.c -o multithreads
-    Run:     ./multithreads
 
     Create ALL workers before joining them. Joining immediately after each
     creation would make main wait before it even starts the next worker.

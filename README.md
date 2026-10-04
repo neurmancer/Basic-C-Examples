@@ -301,6 +301,7 @@
 - Pong (Rite of _Passage_)  
 - CRT/VHS filter (SUMMONS CTHULHU **DO NOT APPROACH**) __ABONDENED__
 - Atari Breakout Clone
+- DOOM terminal port (just a port I did not fucking recreate the game)
 - Galaga (_Not started to work on yet_)
 ---
 

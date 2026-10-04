@@ -1,0 +1,9 @@
+.engine/
+build/
+terminal-doom
+*.log
+*.wad
+*.WAD
+.savegame/
+*.cfg
+!demo.wad
