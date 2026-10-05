@@ -293,6 +293,8 @@
 > - A basic bytecode interpreter (single register)
 > - A slightly better bytecode interpreter
 > - A process injection demo
+> - A stage one bootloader that loads no shit
+
 ## Retro Shit
 
 > - [Retro shit...](reallyBasicThings/retroShit/)
