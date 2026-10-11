@@ -9,12 +9,19 @@
 #include <stdio.h>
 #include <alpm.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 int main(void)
 {
 
     alpm_errno_t err_no;    //To prevent namespace collison with BSD err.h  
 
+    int priv_level = geteuid();
+    if (!priv_level) {
+        //root, pls don't run as root just now (actually it doesn't do anything yet but paranoid coding go brr)
+        fprintf(stderr, "Can not run as root\n");
+        return(-1);
+    }
     //Init startes here
     alpm_handle_t *handler = alpm_initialize("/", "/var/lib/pacman", &err_no);
 
