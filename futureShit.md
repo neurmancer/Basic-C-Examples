@@ -58,8 +58,8 @@ Yeah all retro... I am a retro guy, after all.
 - [ ] A Basic Shell
 - [ ] A GameBoy Advanced Emulator (probably will take a joruney from CHIP-8 to Gameboy to GBA as final destination)
 - [ ] A C Compiler 
-- [ ] A Bootloader
-- [ ] And eventually an OS
+- [X] A Bootloader
+- [ ] And eventually an OS _W.I.P(a linux distro not from scratch at the moment)_ 
 ---
 
 ## Personal Fuckeries
