@@ -301,6 +301,9 @@
 > - [Retro shit...](reallyBasicThings/retroShit/)
 <br> 
 
+- A better retro game bundle is [HERE](https://github.com/neurmancer/Retro-Bundle)
+
+
 - Pong (Rite of _Passage_)  
 - CRT/VHS filter (SUMMONS CTHULHU **DO NOT APPROACH**) __ABONDENED__
 - Atari Breakout Clone
