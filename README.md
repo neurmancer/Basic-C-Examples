@@ -302,14 +302,14 @@
 > - [Retro shit...](reallyBasicThings/retroShit/)
 <br> 
 
+- Retro game production for this repo is at a complete halt.
 - A better retro game bundle is [HERE](https://github.com/neurmancer/Retro-Bundle)
-
 
 - Pong (Rite of _Passage_)  
 - CRT/VHS filter (SUMMONS CTHULHU **DO NOT APPROACH**) __ABONDENED__
 - Atari Breakout Clone
 - DOOM terminal port (just a port I did not fucking recreate the game)
-- Galaga (_Not started to work on yet_)
+- Galaga (not in this repo)
 ---
 
 ## Funny Things

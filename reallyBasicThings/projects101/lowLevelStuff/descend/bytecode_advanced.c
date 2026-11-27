@@ -20,7 +20,10 @@
     JZ tests the accumulator; PUSH/STORE leave it alone; POP/LOAD replace it.
     Locals start at zero on every run. Falling off the program is an error.
     All bytes must decode, even unreachable ones. Jumps must land on opcodes.
-    No files, compiler or JIT here yet. One educational VM, not a whole OS lol.
+    Run with no arguments for the built-in checks, or pass a raw bytecode file:
+      ./bytecode_advanced assembler/program.bin
+    The assembler's output gets the same validation and instruction budget as
+    the little programs below. Still no JIT or whole OS here, calm down lol.
 */
 
 #include <stdio.h>
@@ -31,6 +34,8 @@
 
 #define STACK_CAPACITY 64
 #define LOCAL_COUNT 16
+#define CODE_LIMIT 65536
+#define FILE_STEP_LIMIT 1000000
 
 /* Keep the original five values so its little programs still work. */
 enum opcode {
@@ -233,6 +238,45 @@ static const char *result_name(enum interpret_res rc)
     }
 }
 
+/* The assembler makes bytes; this is where we finally let them do something.
+   Read one extra byte so a huge file doesn't get silently chopped into a
+   completely different (and probably very confused) program. */
+static int run_file(const char *path)
+{
+    int retValue = EXIT_FAILURE;
+    FILE *input = NULL;
+    uint8_t *code = NULL;
+    size_t length;
+    struct vm vm;
+    enum interpret_res rc;
+
+    input = fopen(path, "rb");
+    if (input == NULL) { perror(path); return(EXIT_FAILURE); }
+    code = (uint8_t *)malloc(CODE_LIMIT + 1);
+    if (code == NULL) { perror("malloc"); goto cleanUp; }
+
+    length = fread(code, 1, CODE_LIMIT + 1, input);
+    if (ferror(input)) { perror("reading bytecode"); goto cleanUp; }
+    if (length > CODE_LIMIT) {
+        fprintf(stderr, "Bytecode is too big (maximum %d bytes).\n", CODE_LIMIT);
+        goto cleanUp;
+    }
+    rc = vm_interpret(&vm, code, length, FILE_STEP_LIMIT);
+    if (rc != SUCCESS) {
+        fprintf(stderr, "VM error at byte %zu: %s (after %zu instructions).\n",
+                vm.fault_ip, result_name(rc), vm.steps);
+        goto cleanUp;
+    }
+    printf("vm state: %" PRIu64 " (%s, %zu instructions)\n",
+           vm.accumulator, result_name(rc), vm.steps);
+    retValue = EXIT_SUCCESS;
+
+cleanUp:
+    free(code);
+    if (fclose(input) != 0) { perror("closing bytecode"); retValue = EXIT_FAILURE; }
+    return(retValue);
+}
+
 /* These checks still run with -DNDEBUG. assert disappearing would be awkward. */
 static int check(const char *name, const uint8_t *code, size_t length,
                  size_t budget, enum interpret_res expected, uint64_t value,
@@ -250,11 +294,18 @@ static int check(const char *name, const uint8_t *code, size_t length,
     return 0;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
     struct vm vm;
     int failures = 0;
     enum interpret_res rc;
+
+    if (argc == 2)
+        return(run_file(argv[1]));
+    if (argc != 1) {
+        fprintf(stderr, "Usage: %s [program.bin]\n", argv[0]);
+        return(EXIT_FAILURE);
+    }
 
     /* Count down from 5. Each lap adds 3 to local 1. Result: 15.
        Byte offsets are written out because counting these by eye sucks. */
