@@ -25,7 +25,7 @@
 - [X] Build an big-num lib(Yeah I didn't build that FFT for nothing)
 - [ ] Render Tupper's self-referential graph (possible, but no promises)
 - [X] Build a Sierpinski tetrahedron visualizer after learning raylib cameras and movement('Ehm actually it's topologically 2 Dimensional' I do know Mr...Nerd).
-- [ ] Implement a MANIM(3B1B math animation engine) in C (cuz yk... why the fuck not?)
+- [ ] Implement a MANIM(3B1B math animation engine) in C (cuz yk... why the fuck not?) [_W.I.P._]
 - [X] Build a Fourier Epicycle Visualization thingy using raylib
 
 ---
@@ -34,10 +34,10 @@
 
 These may live in this repository or in a separate games repository. The aim is to keep them beginner-friendly; no DS emulation yet.
 
-- [ ] Create a Galaga clone. and I might connect this with Celestial Doppler Sim to make an partially physically accurate Galaga lol
+- [X] Create a Galaga clone. and I might connect this with Celestial Doppler Sim to make an partially physically accurate Galaga lol
 - [X] Create Pong. The online multiplayer/server flex is still pending. (and it'll wait for at least a year)
 - [X] Rediscover Breakout.
-- [ ] Tetris (ofc Tetris duh)
+- [X] Tetris (ofc Tetris duh)
 
 Yeah all retro... I am a retro guy, after all.
 
@@ -65,7 +65,6 @@ Yeah all retro... I am a retro guy, after all.
 ## Personal Fuckeries
 
 - [X] Prime number spitter for dwm status bar for no apperant reason besides being cool
-- [ ] More experiments for DWM environment(My idea well ran dry...I know it's vague)
 - [X] Fuck with journalctl (Just to see some shit on my fancy logs)
 
 ## Rediscovering America

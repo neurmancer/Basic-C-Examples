@@ -292,6 +292,7 @@
 > - Custom malloc implementation using sbrk(delta);
 > - A basic bytecode interpreter (single register)
 > - A slightly better bytecode interpreter
+> - An assembler for the slightly better bytecode interpreter
 > - A process injection demo
 > - A stage one bootloader that loads no shit
 > - [A x86_64 Bootloader that actually loads linux kernel](https://github.com/Neuro-Software-Distribution/NeurOS-Bootloader)
